@@ -47,3 +47,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# R project file created by Rstudio
+*.Rproj
+
+# Log files from Docker 
+bash_script_collection/docker_log_files
