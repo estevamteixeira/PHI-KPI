@@ -50,6 +50,7 @@ rsconnect/
 
 # Data folder
 data/
+/data/
 
 # R project file created by Rstudio
 *.Rproj
