@@ -50,7 +50,9 @@ hr_shp <- sf::read_sf("./data/NSC_hr.shp") %>%
 
 ## Health Authority Zones (HR) ----
 
-urb_shp <- sf::read_sf("./data/NSC_urban.shp")
+urb_shp <- sf::read_sf("./data/NSC_urban.shp") %>%
+ rename(GeoUID = FID) %>%
+ mutate(GeoUID = 1)
 # sf::st_make_valid() %>%
 # rmapshaper::ms_simplify() %>%
 # sf::st_make_valid()
@@ -59,7 +61,9 @@ urb_shp <- sf::read_sf("./data/NSC_urban.shp")
 
 dta <- arrow::read_parquet("./data/data.parquet", as_data_frame = FALSE)
 
-# Geographies for maps ----
+# Labels for SelectInput() ----
+
+## Geographies for maps ----
 
 geo_lbl <- c(
  "cd", "cl", "chn", "hr", "urb"
