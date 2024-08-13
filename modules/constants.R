@@ -59,9 +59,29 @@ urb_shp <- sf::read_sf("./data/NSC_urban.shp") %>%
 
 # Import dashboard data ----
 
-dta <- arrow::read_parquet("./data/data.parquet", as_data_frame = FALSE)
+cyearly_stats <- arrow::read_parquet("./data/cyearly_stats.parquet", as_data_frame = FALSE)
+fyearly_stats <- arrow::read_parquet("./data/fyearly_stats.parquet", as_data_frame = FALSE)
+
+# Data time range ----
+app_time_range <- paste(min(cyearly_stats %>% select(BrthYear) %>% collect(), na.rm = TRUE),
+                        "-",
+                        max(cyearly_stats %>% select(BrthYear) %>% collect(), na.rm = TRUE))
 
 # Labels for SelectInput() ----
+## Indicator ----
+
+metrics_lbl <- list(
+ ### Hypertension
+ stats::setNames(
+  cyearly_stats %>% select(ends_with("rate")) %>% collect() %>% names(),
+  c("Pre-existing Hypertension","Gestational Hypertension", "Any Hypertension (Pre-existing/Gestational)")
+ )
+)
+
+# List name ----
+## The outermost names will be used as the group labels
+
+names(metrics_lbl) <- c("Hypertension during pregnancy")
 
 ## Geographies for maps ----
 
@@ -74,3 +94,4 @@ geo_lbl <- c(
 names(geo_lbl) <- c(
  "Census Divisions", "Community Clusters", "Community Health Networks", "Health Authority Zones", "Urban x Rural"
 )
+

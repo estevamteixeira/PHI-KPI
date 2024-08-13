@@ -309,9 +309,14 @@ cyearly_stats <- dta %>%
  ) %>%
  ungroup() %>%
  filter(PreExisting_Hypertension %in% 1,Gestational_Hypertension %in% 1, Hypertension %in% 1) %>%
- select(BrthYear,prehyp_count,prehyp_rate,gesthyp_count,gesthyp_rate,hyp_count,hyp_rate, total_year) %>%
+ select(BrthYear,prehyp_count,prehyp_rate,gesthyp_count,gesthyp_rate,hyp_count,hyp_rate, total_year,prehyp_delta,gesthyp_delta,hyp_delta) %>%
  arrange(BrthYear) %>%
- distinct()
+ distinct() %>%
+ mutate(
+  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
+  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
+  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate)
+ )
 
 ## Fiscal year stats ----
 fyearly_stats <- dta %>%
@@ -338,7 +343,12 @@ fyearly_stats <- dta %>%
  filter(PreExisting_Hypertension %in% 1,Gestational_Hypertension %in% 1, Hypertension %in% 1) %>%
  select(FiscalYear,prehyp_count,prehyp_rate,gesthyp_count,gesthyp_rate,hyp_count,hyp_rate,total_year) %>%
  arrange(FiscalYear) %>%
- distinct()
+ distinct() %>%
+ mutate(
+  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
+  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
+  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate)
+ )
 
 # Export dashboard dataset ----
 
@@ -358,7 +368,7 @@ arrow::write_parquet(
 # https://colors.muz.li/
 ## Dark blue - #000054: c("#125d72","#1a70a3","#94e8ff","#c9f3ff","#ffffff")
 ## Light blue - #196f03: c("#5d92a2","#85c2e8","#c9f2ff","#e4f8ff","#ffffff")
-## Dark green - #44ad99: c("#307972","#45ad99","#b2fff8","#d9fffb","#ffffff")
+## Dark green - #44ad99: c("#307972","#44ad99","#b2fff8","#d8fffb","#ffffff")
 ## Light green - #75d6c4: c("#52968f","#75d6c4","#c5fffa","#e2fffc","#ffffff")
 ## Red - #d9715f: c("#99504e","#db7370","#ffc2c1","#ffe1e0","#ffffff")
 ## Yellow - #f2c577: c("#a99554","#f2c478","#fff0bf","#fff7df","#ffffff")
