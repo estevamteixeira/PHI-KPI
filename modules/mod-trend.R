@@ -49,6 +49,7 @@ trendUI <- function(id){
      selected = NULL
     )
    )
+   # tags$img(src = "logo/rcp-logo-transparent.svg", width = "100%", height = "auto")
   ),
   layout_columns(
    col_widths = c(12),
@@ -61,8 +62,7 @@ trendUI <- function(id){
      plotlyOutput(ns("line"))
     )
    )
-  )
- )
+  ))
 }
 
 trendServer <- function(id, df1, df2){
@@ -174,7 +174,7 @@ trendServer <- function(id, df1, df2){
 
    plot_line(selected_dta(),
              input$metric,
-             ylab = paste("Proportion of patients")
+             ylab = paste("Proportion of patients",lbl(),sep = "<br>")
              )
    })
  })

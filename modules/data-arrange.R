@@ -24,11 +24,30 @@ myvec <- c(
  "BTSEX",# Phenotypic Sex
  "BTOUTCOM",# Outcome at Discharge from Birth Admission
  "DMMATAGE",# Mother's Age
+ "DMMETHOD",# Method of Delivery (most serious)
+ ## Hypertension ----
  "PreExisting_Hypertension",# Pre-existing/Pre-pregnancy Hypertension
  "Gestational_Hypertension",# Gestational Hypertension
  "Any_Hypertension",# Any Hypertension
- "Proteinuria",# Any protein in urine
- "Pre_Eclampsia"# Pre_Eclampsia incl. HELLP Syndrome, Eclampsia
+ #"Proteinuria",# Any protein in urine
+ #"Pre_Eclampsia",# Pre_Eclampsia incl. HELLP Syndrome, Eclampsia
+ ## Diabetes ----
+ # Pre-pregnancy diabetes
+ "PreExisting_Diabetes",# Pre-existing diabetes
+ # Gestational diabetes
+ "GDM",# Gestational diabetes mellitus
+ "Any_Diabetes",# Any diabetes: Pre + GDM + any other different type
+ ## Robson group ----
+ "RobsnGrp",# Robson classification
+ ## Postpartum readmission ----
+ "NumPPAdm",# Number of postpartum admissions
+ ## Skin to skin ----
+ "BRSTCON1",# Breast contact within one hour of birth
+ ## Neonatal readmission rate ----
+ "NeoAdmit",# Number of neonatal transfers/readmissions
+ ## Breastfeeding ----
+ "BRSTFDIS",# Breastfeeding during Birth Admission
+ "DLINTBFD"# Intend to Breastfeed
 )
 
 # Load dataset ----
@@ -37,33 +56,36 @@ dta <- haven::read_sas("H:/RCP/RCP_Data/TeixeiEC/Monster/Monster.sas7bdat"
                            ,col_select = myvec
 ) %>%
  # filter data by birth year
- filter(BrthYear >= 2009) %>%
+ filter(between(BrthYear,
+                as.numeric(format(as.Date(Sys.Date()),"%Y"))-10,
+                as.numeric(format(as.Date(Sys.Date()),"%Y"))-1)) %>%
  mutate(
   # Create a fiscal year variable
   FiscalYear = factor(case_when(
-   between(BTBrthDT, as.POSIXct("2008-04-01 00:00:00.0000"), as.POSIXct("2009-03-31 23:59:59.0000")) ~ "2008-2009",
-   between(BTBrthDT, as.POSIXct("2009-04-01 00:00:00.0000"), as.POSIXct("2010-03-31 23:59:59.0000")) ~ "2009-2010",
-   between(BTBrthDT, as.POSIXct("2010-04-01 00:00:00.0000"), as.POSIXct("2011-03-31 23:59:59.0000")) ~ "2010-2011",
-   between(BTBrthDT, as.POSIXct("2011-04-01 00:00:00.0000"), as.POSIXct("2012-03-31 23:59:59.0000")) ~ "2011-2012",
-   between(BTBrthDT, as.POSIXct("2012-04-01 00:00:00.0000"), as.POSIXct("2013-03-31 23:59:59.0000")) ~ "2012-2013",
-   between(BTBrthDT, as.POSIXct("2013-04-01 00:00:00.0000"), as.POSIXct("2014-03-31 23:59:59.0000")) ~ "2013-2014",
-   between(BTBrthDT, as.POSIXct("2014-04-01 00:00:00.0000"), as.POSIXct("2015-03-31 23:59:59.0000")) ~ "2014-2015",
-   between(BTBrthDT, as.POSIXct("2015-04-01 00:00:00.0000"), as.POSIXct("2016-03-31 23:59:59.0000")) ~ "2015-2016",
-   between(BTBrthDT, as.POSIXct("2016-04-01 00:00:00.0000"), as.POSIXct("2017-03-31 23:59:59.0000")) ~ "2016-2017",
-   between(BTBrthDT, as.POSIXct("2017-04-01 00:00:00.0000"), as.POSIXct("2018-03-31 23:59:59.0000")) ~ "2017-2018",
-   between(BTBrthDT, as.POSIXct("2018-04-01 00:00:00.0000"), as.POSIXct("2019-03-31 23:59:59.0000")) ~ "2018-2019",
-   between(BTBrthDT, as.POSIXct("2019-04-01 00:00:00.0000"), as.POSIXct("2020-03-31 23:59:59.0000")) ~ "2019-2020",
-   between(BTBrthDT, as.POSIXct("2020-04-01 00:00:00.0000"), as.POSIXct("2021-03-31 23:59:59.0000")) ~ "2020-2021",
-   between(BTBrthDT, as.POSIXct("2021-04-01 00:00:00.0000"), as.POSIXct("2022-03-31 23:59:59.0000")) ~ "2021-2022",
-   between(BTBrthDT, as.POSIXct("2022-04-01 00:00:00.0000"), as.POSIXct("2023-03-31 23:59:59.0000")) ~ "2022-2023",
-   between(BTBrthDT, as.POSIXct("2023-04-01 00:00:00.0000"), as.POSIXct("2024-03-31 23:59:59.0000")) ~ "2023-2024",
-   between(BTBrthDT, as.POSIXct("2024-04-01 00:00:00.0000"), as.POSIXct("2025-03-31 23:59:59.0000")) ~ "2024-2025",
+   between(BTBrthDT, as.POSIXct("2008-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2009-03-31 23:59:59.0000", tz="UTC")) ~ "2008-2009",
+   between(BTBrthDT, as.POSIXct("2009-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2010-03-31 23:59:59.0000", tz="UTC")) ~ "2009-2010",
+   between(BTBrthDT, as.POSIXct("2010-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2011-03-31 23:59:59.0000", tz="UTC")) ~ "2010-2011",
+   between(BTBrthDT, as.POSIXct("2011-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2012-03-31 23:59:59.0000", tz="UTC")) ~ "2011-2012",
+   between(BTBrthDT, as.POSIXct("2012-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2013-03-31 23:59:59.0000", tz="UTC")) ~ "2012-2013",
+   between(BTBrthDT, as.POSIXct("2013-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2014-03-31 23:59:59.0000", tz="UTC")) ~ "2013-2014",
+   between(BTBrthDT, as.POSIXct("2014-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2015-03-31 23:59:59.0000", tz="UTC")) ~ "2014-2015",
+   between(BTBrthDT, as.POSIXct("2015-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2016-03-31 23:59:59.0000", tz="UTC")) ~ "2015-2016",
+   between(BTBrthDT, as.POSIXct("2016-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2017-03-31 23:59:59.0000", tz="UTC")) ~ "2016-2017",
+   between(BTBrthDT, as.POSIXct("2017-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2018-03-31 23:59:59.0000", tz="UTC")) ~ "2017-2018",
+   between(BTBrthDT, as.POSIXct("2018-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2019-03-31 23:59:59.0000", tz="UTC")) ~ "2018-2019",
+   between(BTBrthDT, as.POSIXct("2019-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2020-03-31 23:59:59.0000", tz="UTC")) ~ "2019-2020",
+   between(BTBrthDT, as.POSIXct("2020-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2021-03-31 23:59:59.0000", tz="UTC")) ~ "2020-2021",
+   between(BTBrthDT, as.POSIXct("2021-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2022-03-31 23:59:59.0000", tz="UTC")) ~ "2021-2022",
+   between(BTBrthDT, as.POSIXct("2022-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2023-03-31 23:59:59.0000", tz="UTC")) ~ "2022-2023",
+   between(BTBrthDT, as.POSIXct("2023-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2024-03-31 23:59:59.0000", tz="UTC")) ~ "2023-2024",
+   between(BTBrthDT, as.POSIXct("2024-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2025-03-31 23:59:59.0000", tz="UTC")) ~ "2024-2025",
    TRUE ~ NA_character_
  ), levels = c(
   "2008-2009","2009-2010","2010-2011","2011-2012","2012-2013","2013-2014",
   "2014-2015","2015-2016","2016-2017","2017-2018","2018-2019","2019-2020",
   "2020-2021","2021-2022","2022-2023","2023-2024","2024-2025"
  )),
+ # Maternal age group
  matagegrp = factor(case_when(
   floor(DMMATAGE) < 15 ~ "< 15",
   between(floor(DMMATAGE), 15, 19) ~ "15-19",
@@ -77,7 +99,74 @@ dta <- haven::read_sas("H:/RCP/RCP_Data/TeixeiEC/Monster/Monster.sas7bdat"
   TRUE ~ NA_character_
  ), levels = c(
   "< 15","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50+"
- )))
+ )),
+ # Numerator
+ rbs1 = case_when(
+  RobsnGrp %in% 1 & tolower(DMMETHOD) %in% "cst" ~ 1,
+  TRUE ~ 0
+ ),
+ rbs21 = case_when(
+  RobsnGrp %in% 2.1 & tolower(DMMETHOD) %in% "cst" ~ 1,
+  TRUE ~ 0
+ ),
+ rbs51 = case_when(
+  RobsnGrp %in% 5.1 & tolower(DMMETHOD) %in% "cst" ~ 1,
+  TRUE ~ 0
+ ),
+ ppreadm = case_when(
+  NumPPAdm > 0 ~ 1,
+  TRUE ~ 0
+ ),
+ sknskn = case_when(
+  tolower(BRSTCON1) %in% "y" ~ 1,
+  TRUE ~ 0
+ ),
+ sknsknvg = case_when(
+  tolower(BRSTCON1) %in% "y" & tolower(DMMETHOD) %in% c("biv","spt","vac","low","mid") ~ 1,
+  TRUE ~ 0
+ ),
+ sknskncs = case_when(
+  tolower(BRSTCON1) %in% "y" & tolower(DMMETHOD) %in% c("cst") ~ 1,
+  TRUE ~ 0
+ ),
+ neoreadm = case_when(
+  NeoAdmit > 0 ~ 1,
+  TRUE ~ 0
+ ),
+ excbrst = case_when(
+  tolower(BRSTFDIS) %in% "e" ~ 1,
+  TRUE ~ 0
+ ),
+ nexcbrst = case_when(
+  tolower(BRSTFDIS) %in% "s" ~ 1,
+  TRUE ~ 0
+ ),
+ nbrst = case_when(
+  tolower(BRSTFDIS) %in% "n" & tolower(DLINTBFD) %in% "y" ~ 1,
+  TRUE ~ 0
+ ),
+ brstinit = case_when(
+  tolower(BRSTFDIS) %in% c("s","e") ~ 1,
+  TRUE ~ 0
+ ),
+ # Denominator
+ lvb = case_when(
+  !tolower(BTOUTCOM) %in% c("ftd") ~ 1,
+  TRUE ~ 0
+ ),
+ lvbvg = case_when(
+  !tolower(BTOUTCOM) %in% c("ftd") & tolower(DMMETHOD) %in% c("biv","spt","vac","low","mid") ~ 1,
+  TRUE ~ 0
+ ),
+ lvbcs = case_when(
+  !tolower(BTOUTCOM) %in% c("ftd") & tolower(DMMETHOD) %in% c("cst") ~ 1,
+  TRUE ~ 0
+ ),
+ lvbint = case_when(
+  !tolower(BTOUTCOM) %in% c("ftd") & tolower(DLINTBFD) %in% "y" ~ 1,
+  TRUE ~ 0
+ )
+ )
 
 # Load PCCF dataset ----
 
@@ -161,13 +250,8 @@ dta <- merge(
    substr(CSDuid, 1, 4) %in% "1217" ~ "Cape Breton",
    substr(CSDuid, 1, 4) %in% "1218" ~ "Victoria",
    TRUE ~ NA_character_
-  ),
-  Hypertension = case_when(
-   PreExisting_Hypertension > 0 | Gestational_Hypertension > 0 ~ 1,
-   PreExisting_Hypertension %in% 0 & Gestational_Hypertension %in% 0 ~ 0,
-   TRUE ~ NA_integer_
-  )
- ) %>%
+   )
+  ) %>%
  distinct(ID, .keep_all = TRUE)
 
 # Bring Community cluster information to dta ----
@@ -287,68 +371,796 @@ dta <- merge(
 
 # Computing stats ----
 ## Calendar year stats ----
-cyearly_stats <- dta %>%
+### Hypertension ----
+
+c1 <- dta %>%
  group_by(BrthYear, PreExisting_Hypertension) %>%
  mutate(
   prehyp_count = n()
  ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  prehyp_rate = prehyp_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(PreExisting_Hypertension %in% 1) %>%
+ select(BrthYear, PreExisting_Hypertension, prehyp_count,prehyp_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
+  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
+ )
+
+c2 <- dta %>%
  group_by(BrthYear, Gestational_Hypertension) %>%
  mutate(
   gesthyp_count = n()
  ) %>%
- group_by(BrthYear, Hypertension) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  gesthyp_rate = gesthyp_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Gestational_Hypertension %in% 1) %>%
+ select(BrthYear, Gestational_Hypertension, gesthyp_count,gesthyp_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
+  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
+ )
+
+c3 <- dta %>%
+ group_by(BrthYear, Any_Hypertension) %>%
  mutate(
   hyp_count = n()
  ) %>%
  group_by(BrthYear) %>%
  mutate(
   total_year = n(),
-  prehyp_rate = prehyp_count/total_year,
-  gesthyp_rate = gesthyp_count/total_year,
   hyp_rate = hyp_count/total_year
  ) %>%
  ungroup() %>%
- filter(PreExisting_Hypertension %in% 1,Gestational_Hypertension %in% 1, Hypertension %in% 1) %>%
- select(BrthYear,prehyp_count,prehyp_rate,gesthyp_count,gesthyp_rate,hyp_count,hyp_rate, total_year,prehyp_delta,gesthyp_delta,hyp_delta) %>%
- arrange(BrthYear) %>%
+ filter(Any_Hypertension %in% 1) %>%
+ select(BrthYear, Any_Hypertension, hyp_count,hyp_rate) %>%
  distinct() %>%
+ arrange(BrthYear) %>%
  mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate)
+  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
+  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
  )
 
+### Diabetes ----
+
+c4 <- dta %>%
+ group_by(BrthYear, PreExisting_Diabetes) %>%
+ mutate(
+  prediab_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  prediab_rate = prediab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(PreExisting_Diabetes %in% 1) %>%
+ select(BrthYear, PreExisting_Diabetes, prediab_count,prediab_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
+  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
+ )
+
+c5 <- dta %>%
+ group_by(BrthYear, GDM) %>%
+ mutate(
+  gestdiab_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  gestdiab_rate = gestdiab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(GDM %in% 1) %>%
+ select(BrthYear, GDM, gestdiab_count,gestdiab_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
+  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
+ )
+
+c6 <- dta %>%
+ group_by(BrthYear, Any_Diabetes) %>%
+ mutate(
+  diab_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  diab_rate = diab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Diabetes %in% 1) %>%
+ select(BrthYear,Any_Diabetes,diab_count,diab_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
+  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
+ )
+
+### Robson group ----
+
+c7 <- dta %>%
+ group_by(BrthYear, rbs1) %>%
+ mutate(
+  rbs1_count = n()
+ ) %>%
+ group_by(BrthYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs1_rate = rbs1_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 1, rbs1 %in% 1) %>%
+ select(BrthYear, RobsnGrp, rbs1_count,rbs1_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
+  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
+ )
+
+c8 <- dta %>%
+ group_by(BrthYear, rbs21) %>%
+ mutate(
+  rbs21_count = n()
+ ) %>%
+ group_by(BrthYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs21_rate = rbs21_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 2.1, rbs21 %in% 1) %>%
+ select(BrthYear, RobsnGrp, rbs21_count,rbs21_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
+  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
+ )
+
+c9 <- dta %>%
+ group_by(BrthYear, rbs51) %>%
+ mutate(
+  rbs51_count = n()
+ ) %>%
+ group_by(BrthYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs51_rate = rbs51_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 5.1, rbs51 %in% 1) %>%
+ select(BrthYear, RobsnGrp, rbs51_count,rbs51_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
+  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
+ )
+
+### Postpartum readmission ----
+
+c10 <- dta %>%
+ group_by(BrthYear, ppreadm) %>%
+ mutate(
+  ppreadm_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  ppreadm_rate = ppreadm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(ppreadm %in% 1) %>%
+ select(BrthYear, ppreadm, ppreadm_count,ppreadm_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
+  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
+ )
+
+### Skin to skin ----
+
+c11 <- dta %>%
+ group_by(BrthYear, sknskn) %>%
+ mutate(
+  sknskn_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  sknskn_rate = sknskn_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknskn %in% 1) %>%
+ select(BrthYear, sknskn, sknskn_count,sknskn_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
+  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
+ )
+
+c12 <- dta %>%
+ group_by(BrthYear, sknsknvg) %>%
+ mutate(
+  sknsknvg_count = n()
+ ) %>%
+ group_by(BrthYear, lvbvg) %>%
+ mutate(
+  total_year = n(),
+  sknsknvg_rate = sknsknvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknsknvg %in% 1) %>%
+ select(BrthYear, sknsknvg, sknsknvg_count,sknsknvg_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
+  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
+ )
+
+c13 <- dta %>%
+ group_by(BrthYear, sknskncs) %>%
+ mutate(
+  sknskncs_count = n()
+ ) %>%
+ group_by(BrthYear, lvbcs) %>%
+ mutate(
+  total_year = n(),
+  sknskncs_rate = sknskncs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknskncs %in% 1) %>%
+ select(BrthYear, sknskncs, sknskncs_count,sknskncs_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
+  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
+ )
+
+### Neonatal readmission ----
+
+c14 <- dta %>%
+ group_by(BrthYear, neoreadm) %>%
+ mutate(
+  neoreadm_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  neoreadm_rate = neoreadm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(neoreadm %in% 1) %>%
+ select(BrthYear, neoreadm, neoreadm_count,neoreadm_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
+  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
+ )
+
+### Milk feeding ----
+
+c15 <- dta %>%
+ group_by(BrthYear, excbrst) %>%
+ mutate(
+  excbrst_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  excbrst_rate = excbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(excbrst %in% 1) %>%
+ select(BrthYear, excbrst, excbrst_count,excbrst_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
+  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
+ )
+
+c16 <- dta %>%
+ group_by(BrthYear, nexcbrst) %>%
+ mutate(
+  nexcbrst_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  nexcbrst_rate = nexcbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(nexcbrst %in% 1) %>%
+ select(BrthYear, nexcbrst, nexcbrst_count,nexcbrst_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
+  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
+ )
+
+c17 <- dta %>%
+ group_by(BrthYear, nbrst) %>%
+ mutate(
+  nbrst_count = n()
+ ) %>%
+ group_by(BrthYear, lvbint) %>%
+ mutate(
+  total_year = n(),
+  nbrst_rate = nbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(nbrst %in% 1) %>%
+ select(BrthYear, nbrst, nbrst_count,nbrst_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
+  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
+ )
+
+c18 <- dta %>%
+ group_by(BrthYear, brstinit) %>%
+ mutate(
+  brstinit_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  brstinit_rate = brstinit_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(brstinit %in% 1) %>%
+ select(BrthYear, brstinit, brstinit_count,brstinit_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
+  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
+ )
+
+cyearly_stats <- cbind(
+ c1 %>% select(-PreExisting_Hypertension),
+ c2 %>% select(-Gestational_Hypertension,-BrthYear),
+ c3 %>% select(-Any_Hypertension,-BrthYear),
+ c4 %>% select(-PreExisting_Diabetes,-BrthYear),
+ c5 %>% select(-GDM,-BrthYear),
+ c6 %>% select(-Any_Diabetes,-BrthYear),
+ c7 %>% select(-RobsnGrp,-BrthYear),
+ c8 %>% select(-RobsnGrp,-BrthYear),
+ c9 %>% select(-RobsnGrp,-BrthYear),
+ c10 %>% select(-ppreadm,-BrthYear),
+ c11 %>% select(-sknskn,-BrthYear),
+ c12 %>% select(-sknsknvg,-BrthYear),
+ c13 %>% select(-sknskncs,-BrthYear),
+ c14 %>% select(-neoreadm,-BrthYear),
+ c15 %>% select(-excbrst,-BrthYear),
+ c16 %>% select(-nexcbrst,-BrthYear),
+ c17 %>% select(-nbrst,-BrthYear),
+ c18 %>% select(-brstinit,-BrthYear)
+)
+
 ## Fiscal year stats ----
-fyearly_stats <- dta %>%
+### Hypertension ----
+
+c1 <- dta %>%
  group_by(FiscalYear, PreExisting_Hypertension) %>%
  mutate(
   prehyp_count = n()
  ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  prehyp_rate = prehyp_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(PreExisting_Hypertension %in% 1) %>%
+ select(FiscalYear, PreExisting_Hypertension, prehyp_count,prehyp_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
+  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
+ )
+
+c2 <- dta %>%
  group_by(FiscalYear, Gestational_Hypertension) %>%
  mutate(
   gesthyp_count = n()
  ) %>%
- group_by(FiscalYear, Hypertension) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  gesthyp_rate = gesthyp_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Gestational_Hypertension %in% 1) %>%
+ select(FiscalYear, Gestational_Hypertension, gesthyp_count,gesthyp_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
+  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
+ )
+
+c3 <- dta %>%
+ group_by(FiscalYear, Any_Hypertension) %>%
  mutate(
   hyp_count = n()
  ) %>%
  group_by(FiscalYear) %>%
  mutate(
   total_year = n(),
-  prehyp_rate = prehyp_count/total_year,
-  gesthyp_rate = gesthyp_count/total_year,
   hyp_rate = hyp_count/total_year
  ) %>%
  ungroup() %>%
- filter(PreExisting_Hypertension %in% 1,Gestational_Hypertension %in% 1, Hypertension %in% 1) %>%
- select(FiscalYear,prehyp_count,prehyp_rate,gesthyp_count,gesthyp_rate,hyp_count,hyp_rate,total_year) %>%
- arrange(FiscalYear) %>%
+ filter(Any_Hypertension %in% 1) %>%
+ select(FiscalYear, Any_Hypertension, hyp_count,hyp_rate) %>%
  distinct() %>%
+ arrange(FiscalYear) %>%
  mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate)
+  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
+  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
  )
+
+### Diabetes ----
+
+c4 <- dta %>%
+ group_by(FiscalYear, PreExisting_Diabetes) %>%
+ mutate(
+  prediab_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  prediab_rate = prediab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(PreExisting_Diabetes %in% 1) %>%
+ select(FiscalYear, PreExisting_Diabetes, prediab_count,prediab_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
+  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
+ )
+
+c5 <- dta %>%
+ group_by(FiscalYear, GDM) %>%
+ mutate(
+  gestdiab_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  gestdiab_rate = gestdiab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(GDM %in% 1) %>%
+ select(FiscalYear, GDM, gestdiab_count,gestdiab_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
+  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
+ )
+
+c6 <- dta %>%
+ group_by(FiscalYear, Any_Diabetes) %>%
+ mutate(
+  diab_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  diab_rate = diab_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Diabetes %in% 1) %>%
+ select(FiscalYear,Any_Diabetes,diab_count,diab_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
+  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
+ )
+
+### Robson group ----
+
+c7 <- dta %>%
+ group_by(FiscalYear, rbs1) %>%
+ mutate(
+  rbs1_count = n()
+ ) %>%
+ group_by(FiscalYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs1_rate = rbs1_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 1, rbs1 %in% 1) %>%
+ select(FiscalYear, RobsnGrp, rbs1_count,rbs1_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
+  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
+ )
+
+c8 <- dta %>%
+ group_by(FiscalYear, rbs21) %>%
+ mutate(
+  rbs21_count = n()
+ ) %>%
+ group_by(FiscalYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs21_rate = rbs21_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 2.1, rbs21 %in% 1) %>%
+ select(FiscalYear, RobsnGrp, rbs21_count,rbs21_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
+  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
+ )
+
+c9 <- dta %>%
+ group_by(FiscalYear, rbs51) %>%
+ mutate(
+  rbs51_count = n()
+ ) %>%
+ group_by(FiscalYear, RobsnGrp) %>%
+ mutate(
+  total_year = n(),
+  rbs51_rate = rbs51_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(RobsnGrp %in% 5.1, rbs51 %in% 1) %>%
+ select(FiscalYear, RobsnGrp, rbs51_count,rbs51_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
+  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
+ )
+
+### Postpartum readmission ----
+
+c10 <- dta %>%
+ group_by(FiscalYear, ppreadm) %>%
+ mutate(
+  ppreadm_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  ppreadm_rate = ppreadm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(ppreadm %in% 1) %>%
+ select(FiscalYear, ppreadm, ppreadm_count,ppreadm_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
+  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
+ )
+
+### Skin to skin ----
+
+c11 <- dta %>%
+ group_by(FiscalYear, sknskn) %>%
+ mutate(
+  sknskn_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  sknskn_rate = sknskn_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknskn %in% 1) %>%
+ select(FiscalYear, sknskn, sknskn_count,sknskn_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
+  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
+ )
+
+c12 <- dta %>%
+ group_by(FiscalYear, sknsknvg) %>%
+ mutate(
+  sknsknvg_count = n()
+ ) %>%
+ group_by(FiscalYear, lvbvg) %>%
+ mutate(
+  total_year = n(),
+  sknsknvg_rate = sknsknvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknsknvg %in% 1) %>%
+ select(FiscalYear, sknsknvg, sknsknvg_count,sknsknvg_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
+  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
+ )
+
+c13 <- dta %>%
+ group_by(FiscalYear, sknskncs) %>%
+ mutate(
+  sknskncs_count = n()
+ ) %>%
+ group_by(FiscalYear, lvbcs) %>%
+ mutate(
+  total_year = n(),
+  sknskncs_rate = sknskncs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sknskncs %in% 1) %>%
+ select(FiscalYear, sknskncs, sknskncs_count,sknskncs_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
+  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
+ )
+
+### Neonatal readmission ----
+
+c14 <- dta %>%
+ group_by(FiscalYear, neoreadm) %>%
+ mutate(
+  neoreadm_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  neoreadm_rate = neoreadm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(neoreadm %in% 1) %>%
+ select(FiscalYear, neoreadm, neoreadm_count,neoreadm_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
+  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
+ )
+
+### Milk feeding ----
+
+c15 <- dta %>%
+ group_by(FiscalYear, excbrst) %>%
+ mutate(
+  excbrst_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  excbrst_rate = excbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(excbrst %in% 1) %>%
+ select(FiscalYear, excbrst, excbrst_count,excbrst_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
+  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
+ )
+
+c16 <- dta %>%
+ group_by(FiscalYear, nexcbrst) %>%
+ mutate(
+  nexcbrst_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  nexcbrst_rate = nexcbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(nexcbrst %in% 1) %>%
+ select(FiscalYear, nexcbrst, nexcbrst_count,nexcbrst_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
+  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
+ )
+
+c17 <- dta %>%
+ group_by(FiscalYear, nbrst) %>%
+ mutate(
+  nbrst_count = n()
+ ) %>%
+ group_by(FiscalYear, lvbint) %>%
+ mutate(
+  total_year = n(),
+  nbrst_rate = nbrst_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(nbrst %in% 1) %>%
+ select(FiscalYear, nbrst, nbrst_count,nbrst_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
+  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
+ )
+
+c18 <- dta %>%
+ group_by(FiscalYear, brstinit) %>%
+ mutate(
+  brstinit_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  brstinit_rate = brstinit_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(brstinit %in% 1) %>%
+ select(FiscalYear, brstinit, brstinit_count,brstinit_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
+  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
+ )
+
+fyearly_stats <- cbind(
+ c1 %>% select(-PreExisting_Hypertension),
+ c2 %>% select(-Gestational_Hypertension,-FiscalYear),
+ c3 %>% select(-Any_Hypertension,-FiscalYear),
+ c4 %>% select(-PreExisting_Diabetes,-FiscalYear),
+ c5 %>% select(-GDM,-FiscalYear),
+ c6 %>% select(-Any_Diabetes,-FiscalYear),
+ c7 %>% select(-RobsnGrp,-FiscalYear),
+ c8 %>% select(-RobsnGrp,-FiscalYear),
+ c9 %>% select(-RobsnGrp,-FiscalYear),
+ c10 %>% select(-ppreadm,-FiscalYear),
+ c11 %>% select(-sknskn,-FiscalYear),
+ c12 %>% select(-sknsknvg,-FiscalYear),
+ c13 %>% select(-sknskncs,-FiscalYear),
+ c14 %>% select(-neoreadm,-FiscalYear),
+ c15 %>% select(-excbrst,-FiscalYear),
+ c16 %>% select(-nexcbrst,-FiscalYear),
+ c17 %>% select(-nbrst,-FiscalYear),
+ c18 %>% select(-brstinit,-FiscalYear)
+)
 
 # Export dashboard dataset ----
 
