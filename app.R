@@ -5,7 +5,7 @@ library(shiny)
 library(webshot)
 library(markdown)
 
-# homeTab <- use("modules/mod-home.R")
+# tableTab <- use("modules/mod-table.R")
 # summTab <- use("modules/mod-summary.R")
 # mapTab <- use("modules/mod-map.R")
 trendTab <- use("modules/mod-trend.R")
@@ -30,11 +30,14 @@ ui <- page_navbar(
   secondary = "#AAAAAA",
   base_font = font_google("Montserrat", local = TRUE)
  ) %>%
-  bs_add_rules(".optgroup-header {font-size: 1rem !important; color: #AAAAAA !important;}"),
+  bs_add_rules(
+   list(
+   "optgroup-header {font-size: 1rem !important; color: #AAAAAA !important;}"
+   )),
  # nav_panel("Home",
- #           homeTab$homeUI("home"),
+ #           tableTab$tableUI("table"),
  #           icon = bsicons::bs_icon("house-fill")
- # ),
+ # )
  # nav_panel("Summary",
  #           summTab$summUI("summary"),
  #           icon = bsicons::bs_icon("list-ul")
@@ -73,7 +76,10 @@ ui <- page_navbar(
 server <- function(input, output, session) {
 
  # Home tab server ----
- # session$userData$homeTab <- homeTab$homeServer("home")
+ # session$userData$tableTab <- tableTab$tableServer(
+ #  id = "table",
+ #  df1 = consts$ctab_stats %>% collect()
+ #  )
 
  # Summary tab server ----
  # session$userData$summTab <- summTab$summServer(
@@ -98,7 +104,8 @@ server <- function(input, output, session) {
  session$userData$trendTab <- trendTab$trendServer(
   id = "trend",
   df1 = consts$metrics_lbl,
-  df2 = consts$cyearly_stats)
+  df2 = consts$cyearly_stats,
+  df3 = consts$ttip)
 }
 
 

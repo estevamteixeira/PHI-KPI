@@ -1162,6 +1162,211 @@ fyearly_stats <- cbind(
  c18 %>% select(-brstinit,-FiscalYear)
 )
 
+# Table stats ----
+## Calendar year ----
+
+ctab_stats <- cyearly_stats %>%
+ filter(BrthYear %in% 2023) %>%
+ select(BrthYear, ends_with(c("rate","deltap","delta"))) %>%
+ tidyr::pivot_longer(
+  ends_with(c("rate")),
+  names_to = c("index_rate"),
+  values_to = "rate"
+ ) %>%
+ tidyr::pivot_longer(
+  ends_with(c("delta")),
+  names_to = c("index_delta"),
+  values_to = "delta"
+ ) %>%
+ tidyr::pivot_longer(
+  ends_with(c("deltap")),
+  names_to = c("index_delta10"),
+  values_to = "delta10"
+ ) %>%
+ filter(gsub("_rate","",index_rate) == gsub("_deltap","",index_delta10),
+        gsub("_rate","",index_rate) == gsub("_delta","",index_delta)) %>%
+ select(-index_delta10, -index_delta) %>%
+ mutate(
+  name = case_when(
+   startsWith(tolower(index_rate),"prehyp")  ~ "Pre-existing Hypertension",
+   startsWith(tolower(index_rate),"gesthyp") ~ "Gestational Hypertension",
+   startsWith(tolower(index_rate),"hyp") ~ "Any Hypertension<br>(Pre-existing/Gestational)",
+   startsWith(tolower(index_rate),"prediab") ~ "Pre-existing Diabetes",
+   startsWith(tolower(index_rate),"gestdiab") ~ "Gestational Diabetes",
+   startsWith(tolower(index_rate),"diab") ~ "Any Diabetes<br>(Pre-existing/Gestational)",
+   startsWith(tolower(index_rate),"rbs1") ~ "Robson Group 1",
+   startsWith(tolower(index_rate),"rbs21") ~ "Robson Group 2a",
+   startsWith(tolower(index_rate),"rbs51") ~ "Robson Group 5a",
+   startsWith(tolower(index_rate),"ppreadm") ~ "Postpartum Readmission",
+   startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
+   startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin <br> following Vaginal birth",
+   startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin  <br> following Caesarean birth",
+   startsWith(tolower(index_rate),"neoreadm") ~ "Neonatal Readmission",
+   startsWith(tolower(index_rate),"excbrst") ~ "Exclusive Breastfeeding",
+   startsWith(tolower(index_rate),"nexcbrst") ~ "Non-exclusive Breastfeeding",
+   startsWith(tolower(index_rate),"nbrst") ~ "No Breastfeeding",
+   startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding Initiation"
+  ),
+  status = case_when(
+   delta > 0 ~ "Increased",
+   delta < 0 ~ "Decreased",
+   delta == 0 ~ "Stable"
+  )
+ ) %>%
+ relocate(name, .after = "BrthYear") %>%
+ relocate(status, .after = "rate") %>%
+ relocate(index_rate, .after = "delta10") %>%
+ mutate(
+  icon10_colors = case_when(
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#44AD99",
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#44AD99",
+   delta10 == 0 ~ "#F2C577"
+  ),
+  icon_colors = case_when(
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#44AD99",
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#44AD99",
+   delta10 == 0 ~ "#F2C577"
+  )
+  # grp = case_when(
+  #  startsWith(tolower(index_rate),"prehyp")  ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"gesthyp") ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"hyp") ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"prediab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"gestdiab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"diab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"rbs1") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"rbs21") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"rbs51") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"ppreadm") ~ "Maternal health",
+  #  startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"neoreadm") ~ "Fetal and Infant health",
+  #  startsWith(tolower(index_rate),"excbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"nexcbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"nbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding"
+  # )
+ )
+
+## Fiscal year ----
+
+ftab_stats <- fyearly_stats %>%
+ filter(FiscalYear %in% "2023-2024") %>%
+ select(FiscalYear, ends_with(c("rate","deltap","delta"))) %>%
+ tidyr::pivot_longer(
+  ends_with(c("rate")),
+  names_to = c("index_rate"),
+  values_to = "rate"
+ ) %>%
+ tidyr::pivot_longer(
+  ends_with(c("delta")),
+  names_to = c("index_delta"),
+  values_to = "delta"
+ ) %>%
+ tidyr::pivot_longer(
+  ends_with(c("deltap")),
+  names_to = c("index_delta10"),
+  values_to = "delta10"
+ ) %>%
+ filter(gsub("_rate","",index_rate) == gsub("_deltap","",index_delta10)) %>%
+ select(-index_delta10) %>%
+ mutate(
+  name = case_when(
+   startsWith(tolower(index_rate),"prehyp")  ~ "Pre-existing Hypertension",
+   startsWith(tolower(index_rate),"gesthyp") ~ "Gestational Hypertension",
+   startsWith(tolower(index_rate),"hyp") ~ "Any Hypertension<br>(Pre-existing/Gestational)",
+   startsWith(tolower(index_rate),"prediab") ~ "Pre-existing Diabetes",
+   startsWith(tolower(index_rate),"gestdiab") ~ "Gestational Diabetes",
+   startsWith(tolower(index_rate),"diab") ~ "Any Diabetes<br>(Pre-existing/Gestational)",
+   startsWith(tolower(index_rate),"rbs1") ~ "Robson Group 1",
+   startsWith(tolower(index_rate),"rbs21") ~ "Robson Group 2a",
+   startsWith(tolower(index_rate),"rbs51") ~ "Robson Group 5a",
+   startsWith(tolower(index_rate),"ppreadm") ~ "Postpartum Readmission",
+   startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
+   startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin <br> following Vaginal birth",
+   startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin  <br> following Caesarean birth",
+   startsWith(tolower(index_rate),"neoreadm") ~ "Neonatal Readmission",
+   startsWith(tolower(index_rate),"excbrst") ~ "Exclusive Breastfeeding",
+   startsWith(tolower(index_rate),"nexcbrst") ~ "Non-exclusive Breastfeeding",
+   startsWith(tolower(index_rate),"nbrst") ~ "No Breastfeeding",
+   startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding Initiation"
+  ),status = case_when(
+   delta > 0 ~ "Increased",
+   delta < 0 ~ "Decreased",
+   delta == 0 ~ "Stable"
+  )
+ ) %>%
+ relocate(name, .after = "FiscalYear") %>%
+ relocate(status, .after = "rate") %>%
+ relocate(index_rate, .after = "delta10") %>%
+ mutate(
+  icon10_colors = case_when(
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#44AD99",
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#44AD99",
+   delta10 == 0 ~ "#F2C577"
+  ),
+  icon_colors = case_when(
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#44AD99",
+   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#D9715F",
+   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#44AD99",
+   delta10 == 0 ~ "#F2C577"
+  ),
+  status = case_when(
+   delta > 0 ~ "Increased",
+   delta < 0 ~ "Decreased",
+   delta == 0 ~ "Stable"
+  )
+  # grp = case_when(
+  #  startsWith(tolower(index_rate),"prehyp")  ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"gesthyp") ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"hyp") ~ "Hypertension during pregnancy",
+  #  startsWith(tolower(index_rate),"prediab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"gestdiab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"diab") ~ "Diabetes during pregnancy",
+  #  startsWith(tolower(index_rate),"rbs1") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"rbs21") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"rbs51") ~ "Robson classification",
+  #  startsWith(tolower(index_rate),"ppreadm") ~ "Maternal health",
+  #  startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin",
+  #  startsWith(tolower(index_rate),"neoreadm") ~ "Fetal and Infant health",
+  #  startsWith(tolower(index_rate),"excbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"nexcbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"nbrst") ~ "Breastfeeding",
+  #  startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding"
+  # )
+ )
+
+# Table distribution ----
+## Calendar year ----
+
+ctab_dist <- cyearly_stats %>%
+ select(BrthYear, ends_with(c("rate"))) %>%
+ tidyr::pivot_longer(
+  ends_with(c("rate")),
+  names_to = c("index_rate"),
+  values_to = "rate"
+ )
+
+## Fiscal year ----
+
+ftab_dist <- fyearly_stats %>%
+ select(FiscalYear, ends_with(c("rate"))) %>%
+ tidyr::pivot_longer(
+  ends_with(c("rate")),
+  names_to = c("index_rate"),
+  values_to = "rate"
+ )
+
 # Export dashboard dataset ----
 
 arrow::write_parquet(
@@ -1175,6 +1380,22 @@ arrow::write_parquet(
 arrow::write_parquet(
  fyearly_stats,
  "./data/fyearly_stats.parquet")
+
+arrow::write_parquet(
+ ctab_stats,
+ "./data/ctab_stats.parquet")
+
+arrow::write_parquet(
+ ftab_stats,
+ "./data/ftab_stats.parquet")
+
+arrow::write_parquet(
+ ctab_dist,
+ "./data/ctab_dist.parquet")
+
+arrow::write_parquet(
+ ftab_dist,
+ "./data/ftab_dist.parquet")
 
 # Color palettes ----
 # https://colors.muz.li/

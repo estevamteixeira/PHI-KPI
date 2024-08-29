@@ -1,6 +1,7 @@
 # Use 'import' from the 'modules' package ----
 # These listed imports are made available inside the module scope
 modules::import("arrow")
+modules::import("bsicons")
 modules::import("bslib")
 modules::import("dplyr")
 modules::import("plotly")
@@ -56,7 +57,16 @@ trendUI <- function(id){
    card(
     full_screen = TRUE,
     card_header(
-     uiOutput(ns("card_title"))
+     div(
+      style = "white-space: nowrap; width: auto;", # Dynamically adjusts to content width
+      uiOutput(ns("card_title"))
+     ),
+     tooltip(
+      bsicons::bs_icon("info-circle"),
+      uiOutput(ns("i_btn")),
+      placement = "right"
+     ),
+     class = "d-flex align-items-center gap-1"
     ),
     card_body(
      plotlyOutput(ns("line"))
@@ -65,7 +75,7 @@ trendUI <- function(id){
   ))
 }
 
-trendServer <- function(id, df1, df2){
+trendServer <- function(id, df1, df2, df3){
  moduleServer(id, function(input, output, session){
   ## Setting id for session
   ns <- session$ns
@@ -151,15 +161,30 @@ trendServer <- function(id, df1, df2){
    lbl()
   })
 
+  # Get the list name to make the
+  # Tooltip (i button) dynamic
+
+  ibtn <- reactive({
+   metric <- input$metric
+   text <- unlist(unname(df3))[names(unlist(df3)) %in% metric]
+   return(HTML(text))
+  })
+
+  output$i_btn <- renderUI({
+   ibtn()
+  })
+
+
     # `selected_dta` is a reactive expression whose results will depend on ----
   # the t0, tn, metric
   selected_dta <- reactive({
    return(
     df2 %>%
-     select(BrthYear, !!sym(input$metric)) %>%
+     select(BrthYear, starts_with(sub("_.*", "", input$metric))) %>%
      filter(BrthYear >= as.numeric(input$t0),
             BrthYear <= as.numeric(input$tn)) %>%
      distinct() %>%
+     mutate(name = lbl()) %>%
      collect()
    )
   })
@@ -174,7 +199,7 @@ trendServer <- function(id, df1, df2){
 
    plot_line(selected_dta(),
              input$metric,
-             ylab = paste("Proportion of patients",lbl(),sep = "<br>")
+             ylab = paste("Proportion of patients with",lbl(),sep = "<br>")
              )
    })
  })

@@ -8,6 +8,7 @@ plot_line <- function(data, var, ylab){
 
  dta <- data
  var <- unlist(var)
+ delta <- unlist(names(dta)[endsWith(names(dta),"delta")])
 
  pal <- "#44ad99"
 
@@ -17,12 +18,28 @@ plot_line <- function(data, var, ylab){
   y = ~.data[[var]],
   type = "scatter",
   mode = "lines+markers",
-  hovertemplate = ~paste(
-   "<b>", BrthYear, "</b>",
-   "<br> Prevalence:",
-   scales::percent(.data[[var]],
-                 accuracy = 0.01),
-   "<extra></extra>"
+  hovertemplate = ~ifelse(
+   !is.na(.data[[delta]]),
+   paste(paste0(
+    "<b>",.data[["name"]]," in ",BrthYear,"</b>",
+    "<br><br>",
+    scales::percent(.data[[var]], accuracy = 0.01),
+    " (<span style='color:",
+    ifelse(.data[[delta]] < 0, "#D9715F",
+           ifelse(.data[[delta]] > 0, "#44AD99", "#F2C577")),
+    "'>",
+    ifelse(.data[[delta]] < 0, "\u2B07",
+           ifelse(.data[[delta]] > 0, "\u2B06", "-")),
+    " ",
+    scales::percent(.data[[delta]], accuracy = 0.01),"</span></b>",
+    ", year on year)"),
+    "<extra></extra>"),
+   paste(paste0(
+    "<b>",.data[["name"]]," in ",BrthYear,"</b>",
+    "<br><br>",
+    scales::percent(.data[[var]], accuracy = 0.01),
+    " (-, year on year)"),
+    "<extra></extra>")
   ),
   line = list(color = pal),
   marker = list(color = pal)) %>%
@@ -93,3 +110,28 @@ plot_line <- function(data, var, ylab){
                   "hoverCompareCartesian"
                  ))
  }
+
+## area plot for reactable ----
+
+plot_line_index <- function(data){
+ # Use 'import' from the 'modules' package.
+ # These listed imports are made available inside the module scope.
+ import("dplyr")
+ import("ggplot2")
+ import("ggiraph")
+
+ ggplot(
+  data = data,
+  aes(
+  x = BrthYear,
+  y = rate)) +
+  geom_area(
+   fill = "#44AD99",
+   color = "#44AD99",
+   alpha = 0.1) +
+  geom_point_interactive(
+   fill = "#44AD99",
+   color = "#44AD99",
+   size = 1.5) +
+  theme_void()
+}
