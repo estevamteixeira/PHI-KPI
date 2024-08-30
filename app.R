@@ -7,8 +7,8 @@ library(markdown)
 
 # tableTab <- use("modules/mod-table.R")
 # summTab <- use("modules/mod-summary.R")
-# mapTab <- use("modules/mod-map.R")
-trendTab <- use("modules/mod-trend.R")
+mapTab <- use("modules/mod-map.R")
+# trendTab <- use("modules/mod-trend.R")
 consts <- modules::use("modules/constants.R")
 
 # To download the map
@@ -42,14 +42,14 @@ ui <- page_navbar(
  #           summTab$summUI("summary"),
  #           icon = bsicons::bs_icon("list-ul")
  # ),
- # nav_panel("Map Tool",
- #           mapTab$mapUI("map"),
- #           icon = bsicons::bs_icon("geo-fill")
- # ),
- nav_panel("Trend",
-           trendTab$trendUI("trend"),
-           icon = bsicons::bs_icon("graph-up-arrow")
+ nav_panel("Map Tool",
+           mapTab$mapUI("map"),
+           icon = bsicons::bs_icon("geo-fill")
  )
+ # nav_panel("Trend",
+ #           trendTab$trendUI("trend"),
+ #           icon = bsicons::bs_icon("graph-up-arrow")
+ # ),
  # nav_menu("Help",
  #          icon = bsicons::bs_icon("question-circle-fill"),
  #          nav_panel("Summary",
@@ -90,22 +90,24 @@ server <- function(input, output, session) {
  #  df4 = consts$src_lbl)
 
  # Map tab server ----
- # session$userData$mapTab <- mapTab$mapServer(
- #  id = "map",
- #  df1 = consts$icd_lbl,
- #  df2 = consts$ano,
- #  df3 = consts$geo_lbl,
- #  df4 = consts$cd_shp,
- #  df5 = consts$cl_shp,
- #  df6 = consts$chn_shp,
- #  df7 = consts$hr_shp)
-
- # Lineplot tab server ----
- session$userData$trendTab <- trendTab$trendServer(
-  id = "trend",
+ session$userData$mapTab <- mapTab$mapServer(
+  id = "map",
   df1 = consts$metrics_lbl,
   df2 = consts$cyearly_stats,
-  df3 = consts$ttip)
+  df3 = consts$ttip
+  df4 = consts$geo_lbl,
+  df5 = consts$cd_shp,
+  df6 = consts$cl_shp,
+  df7 = consts$chn_shp,
+  df8 = consts$hr_shp,
+  df9 = consts$urb_shp)
+
+ # Lineplot tab server ----
+ # session$userData$trendTab <- trendTab$trendServer(
+ #  id = "trend",
+ #  df1 = consts$metrics_lbl,
+ #  df2 = consts$cyearly_stats,
+ #  df3 = consts$ttip)
 }
 
 

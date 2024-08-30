@@ -48,7 +48,7 @@ hr_shp <- sf::read_sf("./data/NSC_hr.shp") %>%
  select(ZoneID, Name, geometry) %>%
  rename(GeoUID = ZoneID)
 
-## Health Authority Zones (HR) ----
+## Urban x Rural (urb) ----
 
 urb_shp <- sf::read_sf("./data/NSC_urban.shp") %>%
  rename(GeoUID = FID) %>%
@@ -121,127 +121,127 @@ names(metrics_lbl) <- c("Hypertension during pregnancy",
 
 ttip <- list(
  prehyp_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with pre-existing hypertension.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with pre-existing hypertension.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with pre-existing hypertension during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  gesthyp_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with gestational hypertension.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with gestational hypertension.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with gestational hypertension during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  hyp_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with hypertension (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with hypertension (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with hypertension (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  prediab_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with pre-existing diabetes during pregnancy.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with pre-existing diabetes during pregnancy.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with pre-existing diabetes during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  gestdiab_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with gestational diabetes during pregnancy.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with gestational diabetes during pregnancy.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with gestational diabetes during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  diab_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  rbs1_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum primiparous patients (without other specified risk factors) who had spontaneous onset of labor and a Caesarean birth.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum primiparous patients (without other specified risk factors) who had spontaneous onset of labor and a Caesarean birth.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, nulliparous, spontaneous labor who had a Caesarean section.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients 37+ weeks, singleton, cephalic presentation, nulliparous, spontaneous labor.</li></ul>"
  ),
  rbs21_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum primiparous patients whose labor was induced and who had a Caesarean.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum primiparous patients whose labor was induced and who had a Caesarean.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, nulliparous, induced labor who had a Caesarean section.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients 37+ weeks, singleton, cephalic presentation, nulliparous, induced labor.</li></ul>"
  ),
  rbs51_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum multiparous patients who had a previous Caesarean delivery and experienced spontaneous onset of labor, with cesarean as the mode of delivery.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum multiparous patients who had a previous Caesarean delivery and experienced spontaneous onset of labor, with cesarean as the mode of delivery.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, multiparous, previous cesarean, spontaneous labor who have Caesarean.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, multiparous, previous cesarean, spontaneous labor.</li></ul>"
  ),
  ppreadm_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of patients who were readmitted to the hospital within the first 6 weeks postpartum.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of patients who were readmitted to the hospital within the first 6 weeks postpartum.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Patients readmitted to the hospital within the first 6 weeks postpartum, stratified by mode of delivery: vaginal, operative vaginal, and Caesarean.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
  sknskn_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin to skin with the birthing parent within five minutes of birth (excluding cases of Caesarean section with general anesthesia) for at least one hour or until the completion of the first feed.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin to skin with the birthing parent within five minutes of birth (excluding cases of Caesarean section with general anesthesia) for at least one hour or until the completion of the first feed.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Newborns coded with 'initial mother-baby contact' lasting 60+ minutes.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All liveborn babies.</li></ul>"
  ),
  sknsknvg_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin-to-skin with the birthing parent within five minutes of the recorded time of vaginal birth for at least one hour, or until completion of the first feed (as recorded in NSAPD as 'baby to breast').</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin-to-skin with the birthing parent within five minutes of the recorded time of vaginal birth for at least one hour, or until completion of the first feed (as recorded in NSAPD as 'baby to breast').</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Newborns for whom 'initial mother-baby contact' is coded for a duration 60+ minutes following vaginal birth.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All live babies born vaginally.</li></ul>"
  ),
  sknskncs_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin-to-skin with the birthing parent within five minutes of the recorded time of Caesarean birth (exception: Caesarean-section with general anesthesia) for at least one hour, or until completion of the first feed (as recorded in NSAPD as 'baby to breast').</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin-to-skin with the birthing parent within five minutes of the recorded time of Caesarean birth (exception: Caesarean-section with general anesthesia) for at least one hour, or until completion of the first feed (as recorded in NSAPD as 'baby to breast').</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Newborns for whom 'initial mother-baby contact' is coded following cesarean birth for a duration 60+ minutes.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All live babies born via Caesarean.</li></ul>"
  ),
  neoreadm_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of newborns who were readmitted to the hospital within 42 days after birth, following discharge from the birth admission.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of newborns who were readmitted to the hospital within 42 days after birth, following discharge from the birth admission.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Number of newborns readmitted to the hospital within 42 days after birth, following discharge from the birth admission.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All live newborns discharged from the hospital within 42 days after birth.</li></ul>"
  ),
  excbrst_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of infants born at a specified facility within a given time period who received human milk exclusively during the hospital stay (from birth to discharge), including those supplemented with expressed or donor human milk or who received medically indicated supplementation with human milk substitute.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of infants born at a specified facility within a given time period who received human milk exclusively during the hospital stay (from birth to discharge), including those supplemented with expressed or donor human milk or who received medically indicated supplementation with human milk substitute.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Infants who received human milk exclusively during the hospital stay (from birth to discharge), including those supplemented with expressed or donor human milk or who received medically indicated supplementation with human milk substitute.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All liveborn infants born at the specified facility within the given time frame.</li></ul>"
  ),
  nexcbrst_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of infants born at a specified facility within a given time period who received human milk (including expressed or donor milk) along with water, water-based drinks, fruit juice, ritual fluids, or any other liquid, including human milk substitutes or solids.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of infants born at a specified facility within a given time period who received human milk (including expressed or donor milk) along with water, water-based drinks, fruit juice, ritual fluids, or any other liquid, including human milk substitutes or solids.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Infants who received human milk (including expressed or donor milk) and water, water-based drinks, fruit juice, ritual fluids, or any other liquid, including human milk substitutes or solids.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All liveborn infants born at the specified facility within the given time frame.</li></ul>"
  ),
  nbrst_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum patients who delivered at least one liveborn infant, intended to breast/chestfeed (as recorded in the PNR or health record), but whose infant received no human milk. For multiple births, NSAPD refers to the last born.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum patients who delivered at least one liveborn infant, intended to breast/chestfeed (as recorded in the PNR or health record), but whose infant received no human milk. For multiple births, NSAPD refers to the last born.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients with at least one liveborn infant and a documented intention to breast/chestfeed, whose infant received no human milk.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients with at least one liveborn infant and a documented intention to breast/chestfeed.</li></ul>"
  ),
  brstinit_rate = paste0(
-  "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum patients who delivered at least one liveborn infant, where the infant received any human milk from birth to discharge.</li>",
-  "<br>",
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum patients who delivered at least one liveborn infant, where the infant received any human milk from birth to discharge.</li>",
+  # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients with at least one liveborn infant whose infant received any human milk from birth to discharge.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients with at least one liveborn infant.</li></ul>"
