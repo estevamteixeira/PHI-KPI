@@ -174,8 +174,7 @@ trendServer <- function(id, df1, df2, df3){
    ibtn()
   })
 
-
-    # `selected_dta` is a reactive expression whose results will depend on ----
+  # `selected_dta` is a reactive expression whose results will depend on ----
   # the t0, tn, metric
   selected_dta <- reactive({
    return(
@@ -184,7 +183,7 @@ trendServer <- function(id, df1, df2, df3){
      filter(BrthYear >= as.numeric(input$t0),
             BrthYear <= as.numeric(input$tn)) %>%
      distinct() %>%
-     mutate(name = lbl()) %>%
+     mutate(label = lbl()) %>%
      collect()
    )
   })

@@ -32,30 +32,44 @@ cd_shp <-  sf::read_sf("./data/NSC_cd.shp") %>%
 # sf::st_make_valid()
 # geoarrow_collect_sf()
 
+ccd_stats <- arrow::read_parquet("./data/ccd_stats.parquet", as_data_frame = FALSE)
+
 ## Community Clusters (CL) ----
 
 cl_shp <- sf::read_sf("./data/NSC_cl.shp") %>%
- rename(GeoUID = clusterid)
+ rename(c(GeoUID = clusterid,
+          name = cluster))
+
+ccl_stats <- arrow::read_parquet("./data/ccl_stats.parquet", as_data_frame = FALSE)
 
 ## Community Health Networks (CHN) ----
 
 chn_shp <- sf::read_sf("./data/NSC_chn.shp") %>%
- rename(GeoUID = network_id)
+ rename(c(GeoUID = network_id,
+          name = network)) %>%
+ mutate(name = gsub(" Comm H. Network","",name))
+
+cchn_stats <- arrow::read_parquet("./data/cchn_stats.parquet", as_data_frame = FALSE)
 
 ## Health Authority Zones (HR) ----
 
 hr_shp <- sf::read_sf("./data/NSC_hr.shp") %>%
  select(ZoneID, Name, geometry) %>%
- rename(GeoUID = ZoneID)
+ rename(c(GeoUID = ZoneID,
+          name = Name))
+
+chr_stats <- arrow::read_parquet("./data/chr_stats.parquet", as_data_frame = FALSE)
 
 ## Urban x Rural (urb) ----
 
-urb_shp <- sf::read_sf("./data/NSC_urban.shp") %>%
- rename(GeoUID = FID) %>%
- mutate(GeoUID = 1)
+# urb_shp <- sf::read_sf("./data/NSC_urban.shp") %>%
+#  rename(GeoUID = FID) %>%
+#  mutate(GeoUID = 1)
 # sf::st_make_valid() %>%
 # rmapshaper::ms_simplify() %>%
 # sf::st_make_valid()
+
+# curb_stats <- arrow::read_parquet("./data/curb_stats.parquet", as_data_frame = FALSE)
 
 # Import dashboard data ----
 
@@ -251,12 +265,12 @@ ttip <- list(
 ## Geographies for maps ----
 
 geo_lbl <- c(
- "cd", "cl", "chn", "hr", "urb"
+ "cd", "cl", "chn", "hr"#, "urb"
 )
 
 # The outermost names will be used as label in the dash
 
 names(geo_lbl) <- c(
- "Census Divisions", "Community Clusters", "Community Health Networks", "Health Authority Zones", "Urban x Rural"
+ "Census Divisions", "Community Clusters", "Community Health Networks", "Health Authority Zones"#, "Urban x Rural"
 )
 

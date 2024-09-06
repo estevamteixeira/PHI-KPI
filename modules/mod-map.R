@@ -27,30 +27,13 @@ mapUI <- function(id){
  layout_sidebar(
   shinyjs::useShinyjs(),
   sidebar = sidebar(
-   ## ICD-10 option to select ----
+   ## Indicator option to select ----
    # Options are categorized in groups
    selectInput(
     inputId = ns("metric"),
     label = "Indicator",
     choices = NULL,
     selected = NULL
-   ),
-   ## Put year options side-by-side ----
-   layout_column_wrap(
-    width = 1/2,
-    fill = FALSE,
-    selectInput(
-     inputId = ns("t0"),
-     label = "Initial year",
-     choices = NULL,
-     selected = NULL
-    ),
-    selectInput(
-     inputId = ns("tn"),
-     label = "Final year",
-     choices = NULL,
-     selected = NULL
-    )
    ),
    selectInput(
     inputId = ns("geo"),
@@ -63,6 +46,17 @@ mapUI <- function(id){
                     ),
     choices = NULL,
     selected = NULL
+   ),
+   ## Put year options side-by-side ----
+   layout_column_wrap(
+    width = 1/2,
+    fill = FALSE,
+    selectInput(
+     inputId = ns("t0"),
+     label = "Year",
+     choices = NULL,
+     selected = NULL
+    )
    ),
    ## conditionally show or hide UI elements based on a JavaScript expression
    ## checks if the geo_selected_data input exists and is not undefined
@@ -77,11 +71,16 @@ mapUI <- function(id){
    card(
     full_screen = TRUE,
     card_header(
-     tooltip(
-      span(uiOutput(ns("card_title")),
-           bsicons::bs_icon("info-circle")
-      ),
-      uiOutput(ns("i_btn"))
+     div(
+      style = "white-space: nowrap; width: auto;", # Dynamically adjusts to content width
+      uiOutput(ns("map_title"))
+     ),
+     div(
+      style = "display: inline; width: 100%; margin-left: 5px",  # Adjust margin as needed
+      tooltip(
+       bsicons::bs_icon("info-circle"),
+       uiOutput(ns("map_btn"))
+      )
      ),
      tooltip(
       downloadButton(ns("map_down"),
@@ -89,7 +88,8 @@ mapUI <- function(id){
                      inline = TRUE,
                      icon = shiny::icon("camera")
       ),
-      "Download map as png"
+      "Download map as png",
+      style = "margin-left: auto;"  # Move download button to the right
      ),
      class = "d-flex justify-content-between align-items-center"
     ),
@@ -100,16 +100,29 @@ mapUI <- function(id){
    card(
     full_screen = TRUE,
     card_header(
-     "Surveillance Table"
-    ),
+     div(
+      style = "white-space: nowrap; width: auto;", # Dynamically adjusts to content width
+      uiOutput(ns("tab_title"))
+     ),
+     div(
+      style = "display: inline; width: 100%; margin-left: 5px",  # Adjust margin as needed
+      tooltip(
+       bsicons::bs_icon("info-circle"),
+       uiOutput(ns("tab_btn"))
+       )
+      ),
+     class = "d-flex justify-content-between align-items-center"
+     ),
     card_body(
-     DT::dataTableOutput(ns("geotable")),
+     DT::dataTableOutput(ns("geotable"))
+     )
     )
-   ))
+   )
  )
 }
 
-mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
+mapServer <- function(id, df1, df2, df3, df4, df5,
+                      df6, df7, df8, df9 ,df10, df11){
  moduleServer(id, function(input, output, session){
   ## Setting id for session
   ns <- session$ns
@@ -118,76 +131,10 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
   # performance and efficiency (for large numbers of choices)
   updateSelectInput(
    session,
-   inputId = "icd10",
+   inputId = "metric",
    choices = df1,
-   selected = c("Q999")
+   selected = c("prehyp_rate")
   )
-
-  ## Update the options for the initial year selectInput
-  ## The values should reflect the data availability
-  observeEvent(input$icd10,{
-
-   updateSelectInput(
-    session,
-    inputId = "t0",
-    choices = sort(
-     unique(
-      df2 %>%
-       filter(Diag %in% input$icd10) %>%
-       select(Birth_Year) %>%
-       collect() %>%
-       pull()
-     )),
-    selected = c(
-     min(
-      df2 %>%
-       filter(Diag %in% input$icd10) %>%
-       select(Birth_Year) %>%
-       collect() %>%
-       pull(), na.rm = TRUE
-     )
-    )
-   )
-  })
-
-  ## Make the final year option greater than or equal the
-  ## initial year option
-  observeEvent(c(input$icd10, input$t0),{
-
-   updateSelectInput(
-    session,
-    inputId = "tn",
-    choices = c(
-     sort(
-      unique(
-       df2 %>%
-        filter(Diag %in% input$icd10) %>%
-        select(Birth_Year) %>%
-        collect() %>%
-        pull()
-      )))[
-       c(
-        sort(
-         unique(
-          df2 %>%
-           filter(Diag %in% input$icd10) %>%
-           select(Birth_Year) %>%
-           collect() %>%
-           pull()
-         )
-        )
-       ) >= input$t0],
-    selected = c(
-     max(
-      df2 %>%
-       filter(Diag %in% input$icd10) %>%
-       select(Birth_Year) %>%
-       collect() %>%
-       pull(), na.rm = TRUE
-     )
-    )
-   )
-  })
 
   # Using a "server-side selectize" option that massively improves
   # performance and efficiency (for large numbers of choices)
@@ -198,81 +145,119 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
    selected = c("cd")
   )
 
-  ## Get source options
-  # Should reflect data availability based on filter selection
-  observeEvent(c(input$icd10, input$t0, input$tn),{
-
-   # Choices
-   ch <- as.vector(
-    sort(
-     unique(
-      df2 %>%
-       filter(Diag %in% input$icd10,
-              Birth_Year >= as.numeric(input$t0),
-              Birth_Year <= as.numeric(input$tn)) %>%
-       select(SrceIDs) %>%
-       collect() %>%
-       pull()
-     )))
-
-   ## Name opts
-
-   nam <- c("FADB", "NSAPD", "CARDIO", "CIHI", "MSI", "NeoNatal", "Others")
-   names(ch) <- nam[as.numeric(ch)]
-
-   ch_filtered <- setdiff(ch, "5")
-
-   updateCheckboxGroupInput(
-    session,
-    inputId = "src",
-    choices = ch,
-    selected = ch_filtered
-   )
-  })
-
   # Select the shape file depending on the selected geographic unit ----
   shape <- reactive({
+   if(input$geo %in% "cd")  return(sf::st_make_valid(df8))
+   if(input$geo %in% "cl")  return(sf::st_make_valid(df9))
+   if(input$geo %in% "chn") return(sf::st_make_valid(df10))
+   if(input$geo %in% "hr")  return(sf::st_make_valid(df11))
+  })
+
+  # Select the stats file depending on the selected geographic unit ----
+  stats <- reactive({
+
+   # Ensure input$geo is available before proceeding
+   req(input$geo)
+
    if(input$geo %in% "cd")  return(df4)
    if(input$geo %in% "cl")  return(df5)
    if(input$geo %in% "chn") return(df6)
    if(input$geo %in% "hr")  return(df7)
   })
 
-  # Select field depending on the selected geographic unit ----
-  fields <- reactive({
-   if(input$geo %in% "cd")  return(c("CDuid","count_brth_cd"))
-   if(input$geo %in% "cl")  return(c("CLuid","count_brth_cl"))
-   if(input$geo %in% "chn") return(c("CHNuid","count_brth_chn"))
-   if(input$geo %in% "hr")  return(c("HRuid","count_brth_hr"))
+  ## Update the options for the initial year selectInput()
+  ## The values should reflect the data availability
+  observeEvent(input$geo,{
+
+   # Ensure stats() is not NULL
+   req(stats())
+
+   df <- stats()
+
+   updateSelectInput(
+    session,
+    inputId = "t0",
+    choices = sort(
+     unique(
+      df %>%
+       select(BrthYear) %>%
+       distinct() %>%
+       pull()
+      )
+     ),
+    selected = min(
+     sort(
+      unique(
+       df %>%
+        select(BrthYear) %>%
+        distinct() %>%
+        pull()
+      )
+     ),
+     na.rm = TRUE)
+   )
   })
 
-  # `Anom` is a reactive expression whose results will depend on ----
-  # the t0, tn, condition, and geo
-  anom <- reactive({
+  # Get the list name to make the
+  # Card header dynamic
+  lbl <- reactive({
+   metric <- input$metric
+   label <- names(unlist(unname(df1)))[unlist(df1) %in% metric]
+   return(label)
+  })
+
+  output$map_title <- renderUI({
+   lbl()
+  })
+
+  output$tab_title <- renderUI({
+   lbl()
+  })
+
+  # Get the list name to make the
+  # Tooltip (i button) dynamic
+
+  ibtn <- reactive({
+   metric <- input$metric
+   text <- unlist(unname(df2))[names(unlist(df2)) %in% metric]
+   return(HTML(text))
+  })
+
+  output$map_btn <- renderUI({
+   ibtn()
+  })
+
+  output$tab_btn <- renderUI({
+   ibtn()
+  })
+
+  # `selected_dta` is a reactive expression whose results will depend on ----
+  # the t0, indicator, and geo
+  selected_dta <- reactive({
    return(
-    getSubsetData(df2, c("CaseID","Birth_Year", "Diag", "SrceIDs", fields())) %>%
-     filter(Birth_Year >= as.numeric(input$t0),
-            Birth_Year <= as.numeric(input$tn),
-            Diag %in% input$icd10,
-            SrceIDs %in% input$src) %>%
-     select("CaseID","Birth_Year", "Diag", fields()) %>%
+    stats() %>%
+     select(contains("id"), BrthYear, input$metric) %>%
+     filter(BrthYear == as.numeric(input$t0)) %>%
      distinct() %>%
-     calcPrev(colsToSelect = fields()) %>%
+     mutate(label = lbl()) %>%
      collect()
    )
   })
 
-  # Create `geo` data: merge `Anom()` with the shape file to draw the map ----
+  # Create `geodta` data: merge `selected_dta()` with the shape file `shape()` to draw the map ----
 
   geodta <- reactive({
+
+   req(selected_dta())
+
    merge(
-    shape() ,
-    anom(),
-    by.x = names(shape())[which(grepl("id",tolower(names(shape()))))],
-    by.y = names(anom())[which(grepl("id",tolower(names(anom()))))],
+    shape(),
+    selected_dta(),
+    by.x = names(shape())[endsWith(tolower(names(shape())),"id")],
+    by.y = names(selected_dta())[endsWith(tolower(names(selected_dta())),"id")],
     all.x = TRUE
    ) %>%
-    arrange(desc(prev))
+    arrange(desc(across(ends_with("rate"))))
   })
 
   # Create an object for storing reactive values ----
@@ -285,14 +270,22 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
                  "Sorry, there is no data available for the selected options.
              \nPlease, choose different years and/or conditions."))
 
-   map$dat <- nsmap(geodta(), "prev")
+   map$dat <- nsmap(geodta(),
+                    input$metric)
   })
 
   # Map download ----
 
   output$map_down <- downloadHandler(
 
-   filename = "map.png",
+   filename = function(){
+
+    # Ensure inputs are available
+    req(input$metric, input$t0)
+
+    paste0(sub("_.*", "", input$metric),
+           "_", input$t0, ".png")
+   },
 
    content = function(file){
     # temporarily switch to the temp dir, in case you do not have write
@@ -314,8 +307,8 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
 
       # color palette
       pal <- leaflet::colorBin(
-       c("#CCE2E2", "#00706E", "#002423"), # RCP green colors - https://www.color-hex.com/
-       domain = geodta()[["prev"]]
+       c("#D8FFFB", "#44AD99", "#307972"), # https://colors.muz.li/
+       domain = dta[[input$metric]]
       )
 
       Sys.sleep(0.25)
@@ -323,24 +316,26 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
 
       # Popup label
       lab <- ifelse(
-       is.na(dta[["prev"]]) | dta[["prev"]] %in% 0,
+       is.na(dta[[input$metric]]) | dta[[input$metric]] %in% 0,
        paste(
-        "<b>",stringr::str_to_title(dta[[which(!grepl("id|geometry|prev",tolower(names(dta))))]]),"</b>",
-        "<br>No information provided"
+        "<b>",dta[["label"]],"</b>",
+        "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+        "<br>",
+        "No information provided"
        ),
        paste(
-        "<b>",stringr::str_to_title(dta[[which(!grepl("id|geometry|prev",tolower(names(dta))))]]),"</b>",
-        "<br>Prevalence:" , scales::comma(dta[["prev"]], accuracy = 0.01)
+        "<b>",dta[["label"]],"</b>",
+        "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+        "<br>",
+        scales::percent(dta[[input$metric]], accuracy = 0.01)
        )
-      ) |> lapply(htmltools::HTML)
+      )|> lapply(htmltools::HTML)
 
       # Map title
-      tlt_txt <- paste(getSubsetData(df2, c("Diag", "cat")) %>%
-                        filter(Diag %in% input$icd10) %>%
-                        collect() %>%
-                        distinct() %>%
-                        pull(),
-                       "<br>", input$t0,"-",input$tn) |>
+      tlt_txt <- paste(
+       lbl(),
+       "<br>",
+       input$t0) |>
        htmltools::HTML()
 
       tlt <- tags$div(
@@ -376,15 +371,14 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
         )
        ), foot_txt)
 
-
       Sys.sleep(0.25)
       incProgress(7/10)
 
       mapview::mapshot(
-       nsmap(geodta(), "prev") |>
+       nsmap(dta, input$metric) |>
         leaflet::addLegend(
          pal = pal,
-         values = ~dta[["prev"]],
+         values = ~dta[[input$metric]],
          opacity = 1,
          title = "",
          position = "bottomright",
@@ -422,17 +416,15 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
 
       # color palette
       pal <- leaflet::colorBin(
-       c("#CCE2E2", "#00706E", "#002423"), # RCP green colors - https://www.color-hex.com/
-       domain = geodta()[["prev"]]
+       c("#D8FFFB", "#44AD99", "#307972"), # RCP green colors - https://www.color-hex.com/
+       domain = geodta()[[input$metric]]
       )
 
       # Map title
-      tlt_txt <- paste(getSubsetData(df2, c("Diag", "cat")) %>%
-                        filter(Diag %in% input$icd10) %>%
-                        collect() %>%
-                        distinct() %>%
-                        pull(),
-                       "<br>", input$t0,"-",input$tn) |>
+      tlt_txt <- paste(
+       lbl(),
+       "<br>",
+       input$t0) |>
        htmltools::HTML()
 
       tlt <- tags$div(
@@ -476,7 +468,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
        map$dat |>
         leaflet::addLegend(
          pal = pal,
-         values = ~geodta()[["prev"]],
+         values = ~geodta()[[input$metric]],
          opacity = 1,
          title = "",
          position = "bottomright",
@@ -494,28 +486,46 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
 
   # This allows to add footer with totals
   # Here we need to make use of the isolate() function
-  # Othw, this object should be put inside the DT::renderDT() call
+  # Otherwise, this object should be put inside the DT::renderDT() call
 
-  sketch <- htmltools::withTags(table(
-   tableHeader(c("GeoUID", "Name", "Prevalence"),
-               escape = FALSE)
-  ))
+  field <- reactive({
+
+   # Ensure input$geo is available before proceeding
+   req(input$geo)
+
+   if(input$geo %in% "cd")  return("County")
+   if(input$geo %in% "cl")  return("Community <br> Cluster")
+   if(input$geo %in% "chn") return("Community <br> Health Network")
+   if(input$geo %in% "hr")  return("Health <br> Management Zone")
+  })
+
+  sketch <- reactive({
+
+   # Ensure field() is available before proceeding
+   req(field())
+
+   htmltools::withTags(table(
+    tableHeader(c("GeoUID", "BrthYear", field(), "Rate"),
+                escape = FALSE)
+   ))
+
+  })
 
   # DataTable object
   output$geotable <- DT::renderDT({
    req(geodta())
    validate(need(nrow(geodta()) > 0,
                  "Sorry, there is no data available for the selected options.
-            \nPlease, choose different years and/or conditions."))
+            \nPlease, choose different year and/or indicator."))
 
    DT::datatable(
-    geodta() %>% as_tibble() %>% select(-geometry) %>% arrange(desc(prev)),
-    container = sketch,
+    geodta() %>% as_tibble() %>% select(GeoUID, BrthYear, name, ends_with("rate")),
+    container = sketch(),
     rownames = FALSE,
     style = "auto",
     selection = 'single',
     extensions = "Buttons",
-    caption = "Prevalence is expressed as cases per 10,000 total births.",
+    caption = lbl(),
     options = list(
      dom = 'B<t>ftp',
      extensions = "Buttons",
@@ -525,11 +535,11 @@ mapServer <- function(id, df1, df2, df3, df4, df5, df6, df7, df8, df9){
      ordering = TRUE,
      stateSave = TRUE,
      columnDefs = list(list(visible = FALSE,
-                            targets = c(0)))
+                            targets = c(0,1)))
     )
    ) |>
-    DT::formatRound(
-     columns = c("prev"),
+    DT::formatPercentage(
+     columns = names(geodta())[endsWith(names(geodta()),"rate")],
      digits = 2,
      mark = ","
     )

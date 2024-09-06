@@ -49,6 +49,7 @@ tableServer <- function(id, df1){
      BrthYear = colDef(show = FALSE),
      icon_colors = colDef(show = FALSE),
      icon10_colors = colDef(show = FALSE),
+     icon10 = colDef(show = FALSE),
      delta = colDef(show = FALSE),
      name = colDef(
       name = "Indicator",
@@ -88,7 +89,14 @@ tableServer <- function(id, df1){
       #  locales = "en-CA",
       #  digits = 1
       # ),
-      cell = data_bars(
+      # cell = icon_sets(
+      #  data = df1,
+      #  icon_position = "left",
+      #  icon_ref = "icon10",
+      #  icon_color_ref = "icon_colors",
+      #  number_fmt = scales::percent_format(accuracy = 1)
+      # )
+      # cell = data_bars(
        data = df1,
        fill_color = c("#d9715f","#44ad99"),
        # fill_color_ref = "icon_colors",

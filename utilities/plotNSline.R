@@ -21,7 +21,7 @@ plot_line <- function(data, var, ylab){
   hovertemplate = ~ifelse(
    !is.na(.data[[delta]]),
    paste(paste0(
-    "<b>",.data[["name"]]," in ",BrthYear,"</b>",
+    "<b>",.data[["label"]]," in ",BrthYear,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (<span style='color:",
@@ -35,7 +35,7 @@ plot_line <- function(data, var, ylab){
     ", year on year)"),
     "<extra></extra>"),
    paste(paste0(
-    "<b>",.data[["name"]]," in ",BrthYear,"</b>",
+    "<b>",.data[["label"]]," in ",BrthYear,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (-, year on year)"),

@@ -16,12 +16,16 @@ nsmap <- function(df, var){
  lab <- ifelse(
   is.na(dta[[var]]) | dta[[var]] %in% 0,
   paste(
-   "<b>",stringr::str_to_title(dta[[which(!grepl("id|geometry|prev",tolower(names(dta))))]]),"</b>",
-   "<br>No information provided"
+   "<b>",dta[["label"]],"</b>",
+   "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+   "<br>",
+   "No information provided"
   ),
   paste(
-   "<b>",stringr::str_to_title(dta[[which(!grepl("id|geometry|prev",tolower(names(dta))))]]),"</b>",
-   "<br>Prevalence:" , scales::comma(dta[[var]], accuracy = 0.01)
+   "<b>",dta[["label"]],"</b>",
+   "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+   "<br>",
+   scales::percent(dta[[var]], accuracy = 0.01)
   )
   )|> lapply(htmltools::HTML)
 
@@ -48,8 +52,11 @@ nsmap <- function(df, var){
     bringToFront = TRUE),
    label = lab,
    labelOptions = labelOptions(
-    style = list("font-weight" = "normal",
-                 padding = "3px 8px"
+    style = list(
+     "font-weight" = "normal",
+     padding = "3px 8px",
+     "background-color" = "black",
+     "color" = "white"
     ),
     textsize = "15px",
     direction = "auto"))
