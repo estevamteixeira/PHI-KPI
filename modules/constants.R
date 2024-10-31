@@ -90,25 +90,22 @@ app_time_range <- paste(min(cyearly_stats %>% select(BrthYear) %>% collect(), na
 
 metrics_lbl <- list(
  ### Hypertension
- stats::setNames(
-  cyearly_stats %>% select(contains("hyp_rate")) %>% collect() %>% names(),
-  c("Pre-existing Hypertension","Gestational Hypertension", "Any Hypertension (Pre-existing/Gestational)")),
  ### Diabetes
  stats::setNames(
-  cyearly_stats %>% select(contains("diab_rate")) %>% collect() %>% names(),
-  c("Pre-existing Diabetes","Gestational Diabetes", "Any Diabetes (Pre-existing/Gestational)")),
+  cyearly_stats %>% select(contains("hyp_rate"),
+                           contains("diab_rate")) %>% collect() %>% names(),
+  c("Pre-existing Hypertension","Gestational Hypertension", "Any Hypertension (Pre-existing/Gestational)",
+  "Pre-existing Diabetes","Gestational Diabetes", "Any Diabetes (Pre-existing/Gestational)")),
  ### Robson
  stats::setNames(
   cyearly_stats %>% select(contains("rbs") & ends_with("rate")) %>% collect() %>% names(),
   c("Robson Group 1","Robson Group 2a", "Robson Group 5a")),
  ### Postpartum readmission
- stats::setNames(
-  cyearly_stats %>% select(contains("ppre") & ends_with("rate")) %>% collect() %>% names(),
-  c("Postpartum Readmission")),
  ### Skin to skin
  stats::setNames(
-  cyearly_stats %>% select(contains("skn") & ends_with("rate")) %>% collect() %>% names(),
-  c("Skin to Skin", "Skin to Skin: vaginal birth","Skin to Skin: C-section")),
+  cyearly_stats %>% select(contains("ppre") & ends_with("rate"),
+                           contains("skn") & ends_with("rate")) %>% collect() %>% names(),
+  c("Postpartum Readmission","Skin to Skin", "Skin to Skin: vaginal birth","Skin to Skin: C-section")),
  ### Neonatal readmission
  stats::setNames(
   cyearly_stats %>% select(contains("neo") & ends_with("rate")) %>% collect() %>% names(),
@@ -123,13 +120,11 @@ metrics_lbl <- list(
 # List name ----
 ## The outermost names will be used as the group labels
 
-names(metrics_lbl) <- c("Hypertension during pregnancy",
-                        "Diabetes during pregnancy",
-                        "Robson classification",
-                        "Maternal health",
-                        "Skin to Skin",
-                        "Fetal and Infant health",
-                        "Breastfeeding")
+names(metrics_lbl) <- c("Antenatal",
+                        "Intrapartum",
+                        "Postpartum",
+                        "Newborn",
+                        "Infant Feeding")
 
 # Tooltip text ----
 

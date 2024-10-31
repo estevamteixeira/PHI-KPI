@@ -10,7 +10,7 @@ plot_line <- function(data, var, ylab){
  var <- unlist(var)
  delta <- unlist(names(dta)[endsWith(names(dta),"delta")])
 
- pal <- "#44ad99"
+ pal <- "#44AD99"
 
  plotly::plot_ly(
   data = dta %>% arrange(BrthYear),
@@ -24,7 +24,7 @@ plot_line <- function(data, var, ylab){
     "<b>",.data[["label"]]," in ",BrthYear,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
-    " (<span style='color:",
+    " (<b><span style='color:",
     ifelse(.data[[delta]] < 0, "#D9715F",
            ifelse(.data[[delta]] > 0, "#44AD99", "#F2C577")),
     "'>",
@@ -48,7 +48,7 @@ plot_line <- function(data, var, ylab){
    bordercolor = "transparent",
    font = list(
     color = "white",
-    size = 12,
+    size = 14,
     face = "bold"
    )
   )) %>%
@@ -68,11 +68,11 @@ plot_line <- function(data, var, ylab){
     title = list(
      text = "Year",
      face = "bold",
-     size = 12
+     size = 14
     ),
     tickfont = list(
      face = "bold",
-     size = 12
+     size = 14
     ),
     tickformat = "%Y"
    ),
@@ -81,18 +81,18 @@ plot_line <- function(data, var, ylab){
     title = list(
      text = ylab,
      face = "bold",
-     size = 12,
+     size = 14,
      rangemode = "tozero"
     ),
     tickfont = list(
      face = "bold",
-     size = 12
+     size = 14
     ),
     tickformat = ".1%"
    ),
    font = list(
     family = "Montserrat",
-    size = 12,
+    size = 14,
     color = "#307972"
    )
   ) %>%

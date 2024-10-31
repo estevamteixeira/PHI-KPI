@@ -33,114 +33,120 @@ tableUI <- function(id){
  )
 }
 
-tableServer <- function(id, df1){
+tableServer <- function(id, df1, df2){
  moduleServer(id, function(input, output, session){
   ## Setting id for session
   ns <- session$ns
 
   # Table ----
 
+  ## group data
+
+  grp <- df1 %>%
+   group_by(Category) %>%
+   mutate(size = n(),
+          date = Sys.Date()) %>%
+   select(Category, size, date) %>%
+   distinct()
+
   output$tab_overview <- renderReactable({
    reactable(
-    data = df1,
-    highlight = TRUE,
-    compact = TRUE,
+    data = grp,
     columns = list(
-     BrthYear = colDef(show = FALSE),
-     icon_colors = colDef(show = FALSE),
-     icon10_colors = colDef(show = FALSE),
-     icon10 = colDef(show = FALSE),
-     delta = colDef(show = FALSE),
-     name = colDef(
-      name = "Indicator",
-      html = TRUE,
-      filterable = TRUE,
-      vAlign ="center",
-      style = list(fontWeight = "bold")
-     ),
-     rate = colDef(
-      name = paste0(
-       "Most recent value","<br>","(",
-       as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"),
-      html = TRUE,
+     size = colDef(show = FALSE),
+     date = colDef(show = FALSE),
+     Category = colDef(
+      name = "Category",
+      align = "left"
+     )
+    ),
+    details = function(index){
+     # input:
+     #   - index, the row index
+     #   - name, the column name (optional)
+     #
+     # output:
+     #   - content to render (e.g., an HTML tag or nested table), or NULL to hide details
+     dta <- filter(df1, Category %in% grp$Category[index])
+     reactable(
+      data = dta,
+     highlight = TRUE,
+     compact = TRUE,
+     defaultColDef = colDef(
       align = "center",
       vAlign = "center",
-      cell = data_bars(
-       data = df1,
-       fill_color = c("#44ad99"),
-       fill_opacity = 0.5,
-       text_position = "above",
-       round_edges = FALSE,
-       number_fmt = scales::percent_format(accuracy = 1),
-       box_shadow = FALSE,
-       bold_text = TRUE
-      )
+      headerVAlign = "center"
      ),
-     delta10 = colDef(
-      name = paste0(
-       "10-year % change","<br>","(",
-       as.numeric(format(as.Date(Sys.Date()),"%Y"))-10,"-",
-       as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"),
-      html = TRUE,
-      align = "center",
-      vAlign = "center",
-      # format = colFormat(
-      #  percent = TRUE,
-      #  locales = "en-CA",
-      #  digits = 1
-      # ),
-      # cell = icon_sets(
-      #  data = df1,
-      #  icon_position = "left",
-      #  icon_ref = "icon10",
-      #  icon_color_ref = "icon_colors",
-      #  number_fmt = scales::percent_format(accuracy = 1)
-      # )
-      # cell = data_bars(
-       data = df1,
-       fill_color = c("#d9715f","#44ad99"),
-       # fill_color_ref = "icon_colors",
-       fill_opacity = 0.5,
-       text_position = "above",
-       round_edges = FALSE,
-       number_fmt = scales::percent_format(accuracy = 1),
-       box_shadow = FALSE,
-       background = "transparent",
-       bold_text = TRUE
-      )
-     ),
-     index_rate = colDef(
-      show = FALSE
-      # name = "",
-      # align = "center",
-      # vAlign = "center",
-      # cell = function(value){
-       # input:
-       #   - value, the cell value
-       #   - index, the row index (optional)
-       #   - name, the column name (optional)
-      #  plot_line_index(data = df2 %>% filter(index_rate %in% value)) |>
-      #   girafe(code = print)
-      # }
-     ),
-     status = colDef(
-      name = paste0("Status <br>(",
-                    as.numeric(format(as.Date(Sys.Date()),"%Y"))-2,
-                    "\u2B62 \ufe0f",
-                    as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"),
-      align = "center",
-      vAlign = "center",
-      html = TRUE,
-      cell = pill_buttons(
-       data = df1,
-       color_ref = "icon_colors",
-       opacity = 0.2,
-       text_color_ref = "icon_colors",
-       bold_text = TRUE
+     columns = list(
+      BrthYear = colDef(show = FALSE),
+      icon_colors = colDef(show = FALSE),
+      icon10_colors = colDef(show = FALSE),
+      icon10 = colDef(show = FALSE),
+      index_rate = colDef(show = FALSE),
+      Category = colDef(show = FALSE),
+      delta = colDef(show = FALSE),
+      name = colDef(
+       name = "Indicator",
+       html = TRUE,
+       filterable = TRUE,
+       align = "left",
+       style = list(fontWeight = "bold")
+      ),
+      rate = colDef(
+       name = paste0(
+        "Most recent value","<br>","(",
+        as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"),
+       html = TRUE,
+       cell = data_bars(
+        data = df1,
+        fill_color = c("#44ad99"),
+        fill_opacity = 0.5,
+        text_position = "outside-end",
+        round_edges = FALSE,
+        number_fmt = scales::percent_format(accuracy = 1),
+        box_shadow = FALSE,
+        bold_text = TRUE
+       )
+      ),
+      delta10 = colDef(
+       name = paste0(
+        "10-year % change","<br>","(",
+        as.numeric(format(as.Date(Sys.Date()),"%Y"))-10,"-",
+        as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"),
+       html = TRUE,
+       cell = data_bars(
+        data = dta,
+        # fill_color = c("#d9715f","#44ad99"),
+        fill_color_ref = "icon10_colors",
+        fill_opacity = 0.5,
+        text_position = "above",
+        round_edges = FALSE,
+        number_fmt = scales::percent_format(accuracy = 1),
+        box_shadow = FALSE,
+        background = "transparent",
+        bold_text = TRUE
+       )
+      ),
+      status = colDef(
+       name = paste0(
+        "Status <br>(",
+        as.numeric(format(as.Date(Sys.Date()),"%Y"))-2,
+        "\u2B62 \ufe0f",
+        as.numeric(format(as.Date(Sys.Date()),"%Y"))-1,")"
+       ),
+       html = TRUE,
+       cell = pill_buttons(
+        data = dta,
+        color_ref = "icon_colors",
+        opacity = 0.2,
+        text_color_ref = "icon_colors",
+        bold_text = TRUE
+       ))
       )
      )
+     },
+    defaultExpanded = TRUE
     )
-   )
   })
  })
 }

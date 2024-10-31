@@ -29,10 +29,8 @@ ui <- page_navbar(
   secondary = "#AAAAAA",
   base_font = font_google("Montserrat", local = TRUE)
  ) %>%
-  bs_add_rules(
-   list(
-   "optgroup-header {font-size: 1rem !important; color: #AAAAAA !important;}"
-   )),
+  bs_add_rules(".optgroup-header {font-size: 1.125rem !important; color: #AAAAAA !important;}"
+   ),
  nav_panel("Home",
            tableTab$tableUI("table"),
            icon = bsicons::bs_icon("house-fill")

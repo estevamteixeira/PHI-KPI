@@ -47,8 +47,95 @@ myvec <- c(
  "NeoAdmit",# Number of neonatal transfers/readmissions
  ## Breastfeeding ----
  "BRSTFDIS",# Breastfeeding during Birth Admission
- "DLINTBFD"# Intend to Breastfeed
-)
+ "DLINTBFD",# Intend to Breastfeed
+ ## Anemia ----
+ "MANEM",# Indicator: Anemia
+ "R014_01500",# Anemia in pregnancy Anemia in pregnancy - Hgb < 100 g/l recorded on chart as BEFORE delivery
+ "MO990",# Anemia comp pregnancy/childbirth/puerperium
+ "MD50_D53",# Nutritional anaemias
+ "MD55_D59",# Haemolytic anaemias
+ "MD60_D64",# Aplastic and other anemias
+ ## 3rd degree laceration ----
+ "MO702",# Third degree perineal laceration during delivery
+ "MO70201",# Third degree perineal laceration del/delivery
+ "MO70204",# Third degree perineal laceration del/postpartum
+ "MO70211",# Third degree perineal laceration delivery type 3a/delivery
+ "MO70214",# Third degree perineal laceration delivery type 3a/postpartum
+ "MO70221",# Third degree perineal laceration delivery type 3b/delivery
+ "MO70231",# Third degree perineal laceration delivery type 3c/delivery
+ "MO70234",# Third degree perineal laceration delivery type 3c/postpartum
+ "MO70281",# Third degree perineal laceration delivery other type/delivery
+ "MO70291",# Third degree perineal laceration delivery type unspecified/delivery
+ ## 4th degree laceration ----
+ "MO703",# Fourth degree perineal laceration during delivery
+ "MO70301",# Fourth degree perineal laceration del/delivery
+ "MO70304",# Fourth degree perineal laceration del/postpartum
+ ## Episiotomy ----
+ "DMEPISIO",# Episiotomy (most serious)
+ ## Blood product ----
+ "RBC",# Red Blood Cell Transfusion
+ "Any_Blood_Product",# Any of 13 specified or unspecified components
+ ## Postpartum haemorrhage ----
+ "Postpartum_Haemorrhage",# Postpartum Haemorrhage (diagnoses, interventions)
+ ## Procedural intervention ----
+ "R029",# Procedures for postpartum hemhorrage
+ "R029_00100",# Uterine compression suture (eg.B-Lynch or Cho)
+ "R029_00200",# Tying (ligation) of uterine arteries
+ "R029_00300",# Embolization of uterine arteries
+ "R029_00400",# Uterine tamponade (use of Bakri balloon or uterine packing, not to be confused with vaginal packing
+ ## Uterine rupture ----
+ "Uterine_Rupture",# Ruptured Uterus: Chart Review
+ ## Hysterectomy ----
+ "M_5MD60RC",# Cesarean hysterectomy with forceps
+ "M_5MD60RD",# Cesarean hysterectomy with vacuum
+ "M_5MD60KE",# Cesarean hysterectomy
+ "M_5MD60CB",# Cesarean hysterectomy with vacuum and forceps
+ "M_1RM89",# Excise tot uterus
+ ## Mode of Delivery ----
+ "MODEDEL",# Mode of Delivery
+ ## IV iron therapy BEFORE delivery ----
+ "R003_02100",# IV iron therapy recorded on chart as before delivery
+ ## Gestational age ----
+ "GA_BEST",# Best overall estimate of gestational age
+ ## Corticosteroids ----
+ "M_5AC20ALJ2",# Antepartum med tx combo route corticosteroid
+ "I_1GD35BAJ2",# Pharm tx laryn cart EPO &system corticosteroid
+ "DLNumStrds",# Number of admissions in pregnancy where steroids administered
+ "DLSteroids",# Type of steroids administered
+ ## Delivery hospital ----
+ "DLHosp",# Delivery Hospital
+ ## NICU ----
+ "SCNAdm",# Number times Admitted to NICU - total
+ ## Respiratory distress ----
+ "R059",# Respiratory distress syndrome
+ "R059_00200",# Respiratory distress syndrome |  IRDS, mild
+ "R059_00300",# Respiratory distress syndrome |  IRDS, moderate
+ "R059_00400",# Respiratory distress syndrome |  IRDS, severe
+ "R059_00500",# Respiratory distress syndrome |  IRDS ,severity not stated
+ "R059_00600",# Respiratory distress syndrome |  Transient Tachypnea of the newborn
+ ## Delayed cord clamping ----
+ "DEL_CORD_CLAMP",# Delayed cord clamping
+ ## ICU admission ----
+ "ICU_ADMISSION",# ICU_ADMISSION
+ "DLNUMFET",# Number of Foetuses
+ "POSATDEL",# Position at Delivery
+ "DLPARA",# Number of Pregnancies, Excluding the Present, with >= 500g Birth
+ "LABOUR",# Initiation of Labour
+ "DLPRVCS",
+ ## Steroids ----
+ "R068_00200",# Maternal systemic steroid therapy |  Dexamethasone 24 to <=48 hours before delivery
+ "R068_00300",# Maternal systemic steroid therapy |  Dexamethasone > 48 hours but <= 7 days before delivery
+ "R068_00700",# Maternal systemic steroid therapy |  Betamethasone (Celestone)24 to <=48 hours before delivery
+ "R068_00800",# Maternal systemic steroid therapy |  Betamethasone (Celestone)> 48 hours but <= 7 days before delivery
+ "R068_01200",# Maternal systemic steroid therapy |  Unknown steroid 24 to <= 48 hours before delivery
+ "R068_01300",# Maternal systemic steroid therapy |  Unknown steroid > 48 hours but <= 7 days before delivery
+ ## Primary Indication for C-Section ----
+ "INDICCS1",# Primary Indication for C-Section
+ "CSstatus",# Type of C/S
+ ## Severe Maternal Morbidity ----
+ "JOGC_AnySMM",
+ "JOGC_ICU"
+ )
 
 # Load dataset ----
 dta <- haven::read_sas("H:/RCP/RCP_Data/TeixeiEC/Monster/Monster.sas7bdat"
@@ -73,11 +160,11 @@ dta <- haven::read_sas("H:/RCP/RCP_Data/TeixeiEC/Monster/Monster.sas7bdat"
    between(BTBrthDT, as.POSIXct("2021-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2022-03-31 23:59:59.0000", tz="UTC")) ~ "2021-2022",
    between(BTBrthDT, as.POSIXct("2022-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2023-03-31 23:59:59.0000", tz="UTC")) ~ "2022-2023",
    between(BTBrthDT, as.POSIXct("2023-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2024-03-31 23:59:59.0000", tz="UTC")) ~ "2023-2024",
-   between(BTBrthDT, as.POSIXct("2024-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2025-03-31 23:59:59.0000", tz="UTC")) ~ "2024-2025",
+   #between(BTBrthDT, as.POSIXct("2024-04-01 00:00:00.0000", tz="UTC"), as.POSIXct("2025-03-31 23:59:59.0000", tz="UTC")) ~ "2024-2025",
    TRUE ~ NA_character_
  ), levels = c(
   "2013-2014","2014-2015","2015-2016","2016-2017","2017-2018","2018-2019",
-  "2019-2020","2020-2021","2021-2022","2022-2023","2023-2024","2024-2025"
+  "2019-2020","2020-2021","2021-2022","2022-2023","2023-2024"
  )),
  # Maternal age group
  matagegrp = factor(case_when(
@@ -398,7 +485,11 @@ dta <- merge(
  )
 
 # Computing stats ----
+
+##-------------------------
 ## Calendar year stats ----
+##-------------------------
+
 ### Hypertension ----
 
 c1 <- dta %>%
@@ -418,7 +509,18 @@ c1 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
+  prehyp_deltap = case_when(
+   !is.na(lag(prehyp_rate, 9)) ~ (prehyp_rate - lag(prehyp_rate, 9)) / lag(prehyp_rate, 9),
+   !is.na(lag(prehyp_rate, 8)) ~ (prehyp_rate - lag(prehyp_rate, 8)) / lag(prehyp_rate, 8),
+   !is.na(lag(prehyp_rate, 7)) ~ (prehyp_rate - lag(prehyp_rate, 7)) / lag(prehyp_rate, 7),
+   !is.na(lag(prehyp_rate, 6)) ~ (prehyp_rate - lag(prehyp_rate, 6)) / lag(prehyp_rate, 6),
+   !is.na(lag(prehyp_rate, 5)) ~ (prehyp_rate - lag(prehyp_rate, 5)) / lag(prehyp_rate, 5),
+   !is.na(lag(prehyp_rate, 4)) ~ (prehyp_rate - lag(prehyp_rate, 4)) / lag(prehyp_rate, 4),
+   !is.na(lag(prehyp_rate, 3)) ~ (prehyp_rate - lag(prehyp_rate, 3)) / lag(prehyp_rate, 3),
+   !is.na(lag(prehyp_rate, 2)) ~ (prehyp_rate - lag(prehyp_rate, 2)) / lag(prehyp_rate, 2),
+   !is.na(lag(prehyp_rate, 1)) ~ (prehyp_rate - lag(prehyp_rate, 1)) / lag(prehyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 c2 <- dta %>%
@@ -429,7 +531,8 @@ c2 <- dta %>%
  group_by(BrthYear) %>%
  mutate(
   total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
+  gesthyp_rate = gesthyp_count/total_year,
+  gesthyp_prev = 1000*gesthyp_rate
  ) %>%
  ungroup() %>%
  filter(Gestational_Hypertension %in% 1) %>%
@@ -438,7 +541,18 @@ c2 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
+  gesthyp_deltap = case_when(
+   !is.na(lag(gesthyp_rate, 9)) ~ (gesthyp_rate - lag(gesthyp_rate, 9)) / lag(gesthyp_rate, 9),
+   !is.na(lag(gesthyp_rate, 8)) ~ (gesthyp_rate - lag(gesthyp_rate, 8)) / lag(gesthyp_rate, 8),
+   !is.na(lag(gesthyp_rate, 7)) ~ (gesthyp_rate - lag(gesthyp_rate, 7)) / lag(gesthyp_rate, 7),
+   !is.na(lag(gesthyp_rate, 6)) ~ (gesthyp_rate - lag(gesthyp_rate, 6)) / lag(gesthyp_rate, 6),
+   !is.na(lag(gesthyp_rate, 5)) ~ (gesthyp_rate - lag(gesthyp_rate, 5)) / lag(gesthyp_rate, 5),
+   !is.na(lag(gesthyp_rate, 4)) ~ (gesthyp_rate - lag(gesthyp_rate, 4)) / lag(gesthyp_rate, 4),
+   !is.na(lag(gesthyp_rate, 3)) ~ (gesthyp_rate - lag(gesthyp_rate, 3)) / lag(gesthyp_rate, 3),
+   !is.na(lag(gesthyp_rate, 2)) ~ (gesthyp_rate - lag(gesthyp_rate, 2)) / lag(gesthyp_rate, 2),
+   !is.na(lag(gesthyp_rate, 1)) ~ (gesthyp_rate - lag(gesthyp_rate, 1)) / lag(gesthyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 c3 <- dta %>%
@@ -458,12 +572,62 @@ c3 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
+  hyp_deltap = case_when(
+   !is.na(lag(hyp_rate, 9)) ~ (hyp_rate - lag(hyp_rate, 9)) / lag(hyp_rate, 9),
+   !is.na(lag(hyp_rate, 8)) ~ (hyp_rate - lag(hyp_rate, 8)) / lag(hyp_rate, 8),
+   !is.na(lag(hyp_rate, 7)) ~ (hyp_rate - lag(hyp_rate, 7)) / lag(hyp_rate, 7),
+   !is.na(lag(hyp_rate, 6)) ~ (hyp_rate - lag(hyp_rate, 6)) / lag(hyp_rate, 6),
+   !is.na(lag(hyp_rate, 5)) ~ (hyp_rate - lag(hyp_rate, 5)) / lag(hyp_rate, 5),
+   !is.na(lag(hyp_rate, 4)) ~ (hyp_rate - lag(hyp_rate, 4)) / lag(hyp_rate, 4),
+   !is.na(lag(hyp_rate, 3)) ~ (hyp_rate - lag(hyp_rate, 3)) / lag(hyp_rate, 3),
+   !is.na(lag(hyp_rate, 2)) ~ (hyp_rate - lag(hyp_rate, 2)) / lag(hyp_rate, 2),
+   !is.na(lag(hyp_rate, 1)) ~ (hyp_rate - lag(hyp_rate, 1)) / lag(hyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Anaemia ----
+
+c4 <- dta %>%
+ select(BrthYear, MANEM, R014_01500, MO990, MD50_D53, MD55_D59, MD60_D64) %>%
+ mutate(anemia = case_when(
+  MANEM > 0 | R014_01500 > 0 | MO990 > 0 | MD50_D53 > 0 |
+   MD55_D59 > 0 | MD60_D64 > 0 ~ 1,
+  TRUE ~ NA_integer_
+ )) %>%
+ group_by(BrthYear, anemia) %>%
+ mutate(
+  anemia_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  anemia_rate = anemia_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(anemia %in% 1) %>%
+ select(BrthYear, anemia, anemia_count, anemia_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  anemia_delta = (anemia_rate - lag(anemia_rate))/lag(anemia_rate),
+  anemia_deltap = case_when(
+   !is.na(lag(anemia_rate, 9)) ~ (anemia_rate - lag(anemia_rate, 9)) / lag(anemia_rate, 9),
+   !is.na(lag(anemia_rate, 8)) ~ (anemia_rate - lag(anemia_rate, 8)) / lag(anemia_rate, 8),
+   !is.na(lag(anemia_rate, 7)) ~ (anemia_rate - lag(anemia_rate, 7)) / lag(anemia_rate, 7),
+   !is.na(lag(anemia_rate, 6)) ~ (anemia_rate - lag(anemia_rate, 6)) / lag(anemia_rate, 6),
+   !is.na(lag(anemia_rate, 5)) ~ (anemia_rate - lag(anemia_rate, 5)) / lag(anemia_rate, 5),
+   !is.na(lag(anemia_rate, 4)) ~ (anemia_rate - lag(anemia_rate, 4)) / lag(anemia_rate, 4),
+   !is.na(lag(anemia_rate, 3)) ~ (anemia_rate - lag(anemia_rate, 3)) / lag(anemia_rate, 3),
+   !is.na(lag(anemia_rate, 2)) ~ (anemia_rate - lag(anemia_rate, 2)) / lag(anemia_rate, 2),
+   !is.na(lag(anemia_rate, 1)) ~ (anemia_rate - lag(anemia_rate, 1)) / lag(anemia_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 ### Diabetes ----
 
-c4 <- dta %>%
+c5 <- dta %>%
  group_by(BrthYear, PreExisting_Diabetes) %>%
  mutate(
   prediab_count = n()
@@ -480,10 +644,21 @@ c4 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
+  prediab_deltap = case_when(
+   !is.na(lag(prediab_rate, 9)) ~ (prediab_rate - lag(prediab_rate, 9)) / lag(prediab_rate, 9),
+   !is.na(lag(prediab_rate, 8)) ~ (prediab_rate - lag(prediab_rate, 8)) / lag(prediab_rate, 8),
+   !is.na(lag(prediab_rate, 7)) ~ (prediab_rate - lag(prediab_rate, 7)) / lag(prediab_rate, 7),
+   !is.na(lag(prediab_rate, 6)) ~ (prediab_rate - lag(prediab_rate, 6)) / lag(prediab_rate, 6),
+   !is.na(lag(prediab_rate, 5)) ~ (prediab_rate - lag(prediab_rate, 5)) / lag(prediab_rate, 5),
+   !is.na(lag(prediab_rate, 4)) ~ (prediab_rate - lag(prediab_rate, 4)) / lag(prediab_rate, 4),
+   !is.na(lag(prediab_rate, 3)) ~ (prediab_rate - lag(prediab_rate, 3)) / lag(prediab_rate, 3),
+   !is.na(lag(prediab_rate, 2)) ~ (prediab_rate - lag(prediab_rate, 2)) / lag(prediab_rate, 2),
+   !is.na(lag(prediab_rate, 1)) ~ (prediab_rate - lag(prediab_rate, 1)) / lag(prediab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c5 <- dta %>%
+c6 <- dta %>%
  group_by(BrthYear, GDM) %>%
  mutate(
   gestdiab_count = n()
@@ -500,10 +675,21 @@ c5 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
+  gestdiab_deltap = case_when(
+   !is.na(lag(gestdiab_rate, 9)) ~ (gestdiab_rate - lag(gestdiab_rate, 9)) / lag(gestdiab_rate, 9),
+   !is.na(lag(gestdiab_rate, 8)) ~ (gestdiab_rate - lag(gestdiab_rate, 8)) / lag(gestdiab_rate, 8),
+   !is.na(lag(gestdiab_rate, 7)) ~ (gestdiab_rate - lag(gestdiab_rate, 7)) / lag(gestdiab_rate, 7),
+   !is.na(lag(gestdiab_rate, 6)) ~ (gestdiab_rate - lag(gestdiab_rate, 6)) / lag(gestdiab_rate, 6),
+   !is.na(lag(gestdiab_rate, 5)) ~ (gestdiab_rate - lag(gestdiab_rate, 5)) / lag(gestdiab_rate, 5),
+   !is.na(lag(gestdiab_rate, 4)) ~ (gestdiab_rate - lag(gestdiab_rate, 4)) / lag(gestdiab_rate, 4),
+   !is.na(lag(gestdiab_rate, 3)) ~ (gestdiab_rate - lag(gestdiab_rate, 3)) / lag(gestdiab_rate, 3),
+   !is.na(lag(gestdiab_rate, 2)) ~ (gestdiab_rate - lag(gestdiab_rate, 2)) / lag(gestdiab_rate, 2),
+   !is.na(lag(gestdiab_rate, 1)) ~ (gestdiab_rate - lag(gestdiab_rate, 1)) / lag(gestdiab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c6 <- dta %>%
+c7 <- dta %>%
  group_by(BrthYear, Any_Diabetes) %>%
  mutate(
   diab_count = n()
@@ -520,12 +706,300 @@ c6 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
+  diab_deltap = case_when(
+   !is.na(lag(diab_rate, 9)) ~ (diab_rate - lag(diab_rate, 9)) / lag(diab_rate, 9),
+   !is.na(lag(diab_rate, 8)) ~ (diab_rate - lag(diab_rate, 8)) / lag(diab_rate, 8),
+   !is.na(lag(diab_rate, 7)) ~ (diab_rate - lag(diab_rate, 7)) / lag(diab_rate, 7),
+   !is.na(lag(diab_rate, 6)) ~ (diab_rate - lag(diab_rate, 6)) / lag(diab_rate, 6),
+   !is.na(lag(diab_rate, 5)) ~ (diab_rate - lag(diab_rate, 5)) / lag(diab_rate, 5),
+   !is.na(lag(diab_rate, 4)) ~ (diab_rate - lag(diab_rate, 4)) / lag(diab_rate, 4),
+   !is.na(lag(diab_rate, 3)) ~ (diab_rate - lag(diab_rate, 3)) / lag(diab_rate, 3),
+   !is.na(lag(diab_rate, 2)) ~ (diab_rate - lag(diab_rate, 2)) / lag(diab_rate, 2),
+   !is.na(lag(diab_rate, 1)) ~ (diab_rate - lag(diab_rate, 1)) / lag(diab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe Perineal Trauma with Spontaneous Vaginal Birth ----
+
+c8 <- dta %>%
+ select(BrthYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptvg = case_when(
+   toupper(DMMETHOD) %in% c("SPT", "BIV") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, trdfrth, sptvg) %>%
+ mutate(
+  spt_count = n()
+ ) %>%
+ group_by(BrthYear, sptvg) %>%
+ mutate(
+  total_year = n(),
+  spt_rate = spt_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(trdfrth %in% 1, sptvg %in% 1) %>%
+ select(BrthYear,sptvg,spt_count,spt_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  spt_delta = (spt_rate - lag(spt_rate))/lag(spt_rate),
+  spt_deltap = case_when(
+   !is.na(lag(spt_rate, 9)) ~ (spt_rate - lag(spt_rate, 9)) / lag(spt_rate, 9),
+   !is.na(lag(spt_rate, 8)) ~ (spt_rate - lag(spt_rate, 8)) / lag(spt_rate, 8),
+   !is.na(lag(spt_rate, 7)) ~ (spt_rate - lag(spt_rate, 7)) / lag(spt_rate, 7),
+   !is.na(lag(spt_rate, 6)) ~ (spt_rate - lag(spt_rate, 6)) / lag(spt_rate, 6),
+   !is.na(lag(spt_rate, 5)) ~ (spt_rate - lag(spt_rate, 5)) / lag(spt_rate, 5),
+   !is.na(lag(spt_rate, 4)) ~ (spt_rate - lag(spt_rate, 4)) / lag(spt_rate, 4),
+   !is.na(lag(spt_rate, 3)) ~ (spt_rate - lag(spt_rate, 3)) / lag(spt_rate, 3),
+   !is.na(lag(spt_rate, 2)) ~ (spt_rate - lag(spt_rate, 2)) / lag(spt_rate, 2),
+   !is.na(lag(spt_rate, 1)) ~ (spt_rate - lag(spt_rate, 1)) / lag(spt_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Mediolateral Episiotomy with Operative Vaginal Birth ----
+#### ND = Not Done
+#### MD = Midline
+#### ML = Mediolateral
+
+c9 <- dta %>%
+ select(BrthYear,
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  med = case_when(
+   DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, med, assvg) %>%
+ mutate(
+  med_count = n()
+ ) %>%
+ group_by(BrthYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  med_rate = med_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(med %in% 1, assvg %in% 1) %>%
+ select(BrthYear,med,med_count,med_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  med_delta = (med_rate - lag(med_rate))/lag(med_rate),
+  med_deltap = case_when(
+   !is.na(lag(med_rate, 9)) ~ (med_rate - lag(med_rate, 9)) / lag(med_rate, 9),
+   !is.na(lag(med_rate, 8)) ~ (med_rate - lag(med_rate, 8)) / lag(med_rate, 8),
+   !is.na(lag(med_rate, 7)) ~ (med_rate - lag(med_rate, 7)) / lag(med_rate, 7),
+   !is.na(lag(med_rate, 6)) ~ (med_rate - lag(med_rate, 6)) / lag(med_rate, 6),
+   !is.na(lag(med_rate, 5)) ~ (med_rate - lag(med_rate, 5)) / lag(med_rate, 5),
+   !is.na(lag(med_rate, 4)) ~ (med_rate - lag(med_rate, 4)) / lag(med_rate, 4),
+   !is.na(lag(med_rate, 3)) ~ (med_rate - lag(med_rate, 3)) / lag(med_rate, 3),
+   !is.na(lag(med_rate, 2)) ~ (med_rate - lag(med_rate, 2)) / lag(med_rate, 2),
+   !is.na(lag(med_rate, 1)) ~ (med_rate - lag(med_rate, 1)) / lag(med_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe perineal trauma with Operative Vaginal Birth and mediolateral episiotomy ----
+
+c10 <- dta %>%
+ select(BrthYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  med = case_when(
+   DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptassvgmed = case_when(
+   trdfrth > 0 & med > 0 & assvg > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, trdfrth, assvg, med) %>%
+ mutate(
+  sptassvgmed_count = n()
+ ) %>%
+ group_by(BrthYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  sptassvgmed_rate = sptassvgmed_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sptassvgmed %in% 1) %>%
+ select(BrthYear,sptassvgmed,sptassvgmed_count,sptassvgmed_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  sptassvgmed_delta = (sptassvgmed_rate - lag(sptassvgmed_rate))/lag(sptassvgmed_rate),
+  sptassvgmed_deltap = case_when(
+   !is.na(lag(sptassvgmed_rate, 9)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 9)) / lag(sptassvgmed_rate, 9),
+   !is.na(lag(sptassvgmed_rate, 8)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 8)) / lag(sptassvgmed_rate, 8),
+   !is.na(lag(sptassvgmed_rate, 7)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 7)) / lag(sptassvgmed_rate, 7),
+   !is.na(lag(sptassvgmed_rate, 6)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 6)) / lag(sptassvgmed_rate, 6),
+   !is.na(lag(sptassvgmed_rate, 5)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 5)) / lag(sptassvgmed_rate, 5),
+   !is.na(lag(sptassvgmed_rate, 4)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 4)) / lag(sptassvgmed_rate, 4),
+   !is.na(lag(sptassvgmed_rate, 3)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 3)) / lag(sptassvgmed_rate, 3),
+   !is.na(lag(sptassvgmed_rate, 2)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 2)) / lag(sptassvgmed_rate, 2),
+   !is.na(lag(sptassvgmed_rate, 1)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 1)) / lag(sptassvgmed_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe perineal trauma with Operative Vaginal Birth without mediolateral episiotomy ----
+
+c11 <- dta %>%
+ select(BrthYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  med = case_when(
+   !DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptassvgnmed = case_when(
+   trdfrth > 0 & med > 0 & assvg > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, trdfrth, assvg, med) %>%
+ mutate(
+  sptassvgnmed_count = n()
+ ) %>%
+ group_by(BrthYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  sptassvgnmed_rate = sptassvgnmed_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sptassvgnmed %in% 1) %>%
+ select(BrthYear,sptassvgnmed,sptassvgnmed_count,sptassvgnmed_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  sptassvgnmed_delta = (sptassvgnmed_rate - lag(sptassvgnmed_rate))/lag(sptassvgnmed_rate),
+  sptassvgnmed_deltap = case_when(
+   !is.na(lag(sptassvgnmed_rate, 9)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 9)) / lag(sptassvgnmed_rate, 9),
+   !is.na(lag(sptassvgnmed_rate, 8)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 8)) / lag(sptassvgnmed_rate, 8),
+   !is.na(lag(sptassvgnmed_rate, 7)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 7)) / lag(sptassvgnmed_rate, 7),
+   !is.na(lag(sptassvgnmed_rate, 6)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 6)) / lag(sptassvgnmed_rate, 6),
+   !is.na(lag(sptassvgnmed_rate, 5)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 5)) / lag(sptassvgnmed_rate, 5),
+   !is.na(lag(sptassvgnmed_rate, 4)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 4)) / lag(sptassvgnmed_rate, 4),
+   !is.na(lag(sptassvgnmed_rate, 3)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 3)) / lag(sptassvgnmed_rate, 3),
+   !is.na(lag(sptassvgnmed_rate, 2)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 2)) / lag(sptassvgnmed_rate, 2),
+   !is.na(lag(sptassvgnmed_rate, 1)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 1)) / lag(sptassvgnmed_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 ### Robson group ----
 
-c7 <- dta %>%
+c12 <- dta %>%
  group_by(BrthYear, rbs1) %>%
  mutate(
   rbs1_count = n()
@@ -542,10 +1016,21 @@ c7 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
+  rbs1_deltap = case_when(
+   !is.na(lag(rbs1_rate, 9)) ~ (rbs1_rate - lag(rbs1_rate, 9)) / lag(rbs1_rate, 9),
+   !is.na(lag(rbs1_rate, 8)) ~ (rbs1_rate - lag(rbs1_rate, 8)) / lag(rbs1_rate, 8),
+   !is.na(lag(rbs1_rate, 7)) ~ (rbs1_rate - lag(rbs1_rate, 7)) / lag(rbs1_rate, 7),
+   !is.na(lag(rbs1_rate, 6)) ~ (rbs1_rate - lag(rbs1_rate, 6)) / lag(rbs1_rate, 6),
+   !is.na(lag(rbs1_rate, 5)) ~ (rbs1_rate - lag(rbs1_rate, 5)) / lag(rbs1_rate, 5),
+   !is.na(lag(rbs1_rate, 4)) ~ (rbs1_rate - lag(rbs1_rate, 4)) / lag(rbs1_rate, 4),
+   !is.na(lag(rbs1_rate, 3)) ~ (rbs1_rate - lag(rbs1_rate, 3)) / lag(rbs1_rate, 3),
+   !is.na(lag(rbs1_rate, 2)) ~ (rbs1_rate - lag(rbs1_rate, 2)) / lag(rbs1_rate, 2),
+   !is.na(lag(rbs1_rate, 1)) ~ (rbs1_rate - lag(rbs1_rate, 1)) / lag(rbs1_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c8 <- dta %>%
+c13 <- dta %>%
  group_by(BrthYear, rbs21) %>%
  mutate(
   rbs21_count = n()
@@ -562,10 +1047,21 @@ c8 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
+  rbs21_deltap = case_when(
+   !is.na(lag(rbs21_rate, 9)) ~ (rbs21_rate - lag(rbs21_rate, 9)) / lag(rbs21_rate, 9),
+   !is.na(lag(rbs21_rate, 8)) ~ (rbs21_rate - lag(rbs21_rate, 8)) / lag(rbs21_rate, 8),
+   !is.na(lag(rbs21_rate, 7)) ~ (rbs21_rate - lag(rbs21_rate, 7)) / lag(rbs21_rate, 7),
+   !is.na(lag(rbs21_rate, 6)) ~ (rbs21_rate - lag(rbs21_rate, 6)) / lag(rbs21_rate, 6),
+   !is.na(lag(rbs21_rate, 5)) ~ (rbs21_rate - lag(rbs21_rate, 5)) / lag(rbs21_rate, 5),
+   !is.na(lag(rbs21_rate, 4)) ~ (rbs21_rate - lag(rbs21_rate, 4)) / lag(rbs21_rate, 4),
+   !is.na(lag(rbs21_rate, 3)) ~ (rbs21_rate - lag(rbs21_rate, 3)) / lag(rbs21_rate, 3),
+   !is.na(lag(rbs21_rate, 2)) ~ (rbs21_rate - lag(rbs21_rate, 2)) / lag(rbs21_rate, 2),
+   !is.na(lag(rbs21_rate, 1)) ~ (rbs21_rate - lag(rbs21_rate, 1)) / lag(rbs21_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c9 <- dta %>%
+c14 <- dta %>%
  group_by(BrthYear, rbs51) %>%
  mutate(
   rbs51_count = n()
@@ -582,12 +1078,136 @@ c9 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
+  rbs51_deltap = case_when(
+   !is.na(lag(rbs51_rate, 9)) ~ (rbs51_rate - lag(rbs51_rate, 9)) / lag(rbs51_rate, 9),
+   !is.na(lag(rbs51_rate, 8)) ~ (rbs51_rate - lag(rbs51_rate, 8)) / lag(rbs51_rate, 8),
+   !is.na(lag(rbs51_rate, 7)) ~ (rbs51_rate - lag(rbs51_rate, 7)) / lag(rbs51_rate, 7),
+   !is.na(lag(rbs51_rate, 6)) ~ (rbs51_rate - lag(rbs51_rate, 6)) / lag(rbs51_rate, 6),
+   !is.na(lag(rbs51_rate, 5)) ~ (rbs51_rate - lag(rbs51_rate, 5)) / lag(rbs51_rate, 5),
+   !is.na(lag(rbs51_rate, 4)) ~ (rbs51_rate - lag(rbs51_rate, 4)) / lag(rbs51_rate, 4),
+   !is.na(lag(rbs51_rate, 3)) ~ (rbs51_rate - lag(rbs51_rate, 3)) / lag(rbs51_rate, 3),
+   !is.na(lag(rbs51_rate, 2)) ~ (rbs51_rate - lag(rbs51_rate, 2)) / lag(rbs51_rate, 2),
+   !is.na(lag(rbs51_rate, 1)) ~ (rbs51_rate - lag(rbs51_rate, 1)) / lag(rbs51_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Postpartum readmission ----
+### Postpartum hemorrhage treated with a blood transfusion ----
 
-c10 <- dta %>%
+c15 <- dta %>%
+ select(BrthYear, Any_Blood_Product, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphbl = case_when(
+   Any_Blood_Product > 0 & Postpartum_Haemorrhage > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, Any_Blood_Product, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphbl_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  pphbl_rate = pphbl_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Blood_Product %in% 1, Postpartum_Haemorrhage %in% 1) %>%
+ select(BrthYear,pphbl, pphbl_count, pphbl_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  pphbl_delta = (pphbl_rate - lag(pphbl_rate))/lag(pphbl_rate),
+  pphbl_deltap = case_when(
+   !is.na(lag(pphbl_rate, 9)) ~ (pphbl_rate - lag(pphbl_rate, 9)) / lag(pphbl_rate, 9),
+   !is.na(lag(pphbl_rate, 8)) ~ (pphbl_rate - lag(pphbl_rate, 8)) / lag(pphbl_rate, 8),
+   !is.na(lag(pphbl_rate, 7)) ~ (pphbl_rate - lag(pphbl_rate, 7)) / lag(pphbl_rate, 7),
+   !is.na(lag(pphbl_rate, 6)) ~ (pphbl_rate - lag(pphbl_rate, 6)) / lag(pphbl_rate, 6),
+   !is.na(lag(pphbl_rate, 5)) ~ (pphbl_rate - lag(pphbl_rate, 5)) / lag(pphbl_rate, 5),
+   !is.na(lag(pphbl_rate, 4)) ~ (pphbl_rate - lag(pphbl_rate, 4)) / lag(pphbl_rate, 4),
+   !is.na(lag(pphbl_rate, 3)) ~ (pphbl_rate - lag(pphbl_rate, 3)) / lag(pphbl_rate, 3),
+   !is.na(lag(pphbl_rate, 2)) ~ (pphbl_rate - lag(pphbl_rate, 2)) / lag(pphbl_rate, 2),
+   !is.na(lag(pphbl_rate, 1)) ~ (pphbl_rate - lag(pphbl_rate, 1)) / lag(pphbl_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Postpartum hemorrhage resulting in procedural intervention ----
+
+c16 <- dta %>%
+ select(BrthYear, Postpartum_Haemorrhage,
+        #### Procedural intervention
+        R029,# Procedures for postpartum hemorrhage
+        R029_00100,# Uterine compression suture (eg.B-Lynch or Cho)
+        R029_00200,# Tying (ligation) of uterine arteries
+        R029_00300,# Embolization of uterine arteries
+        R029_00400,# Uterine tamponade (use of Bakri balloon or uterine packing, not to be confused with vaginal packing
+        #### Hysterectomy
+        M_5MD60RC,# Cesarean hysterectomy with forceps
+        M_5MD60RD,# Cesarean hysterectomy with vacuum
+        M_5MD60KE,# Cesarean hysterectomy
+        M_5MD60CB,# Cesarean hysterectomy with vacuum and forceps
+        M_1RM89,# Excise tot uterus
+        MODEDEL) %>%
+ mutate(
+  # Procedural intervention
+  prcint = case_when(
+   R029 > 0 | R029_00100 > 0 |
+    R029_00200 > 0 | R029_00300 > 0 |
+    R029_00400 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  # Hysterectomy
+  hyst = case_when(
+   M_5MD60RC > 0 | M_5MD60RD > 0 |
+    M_5MD60KE > 0 | M_5MD60CB > 0 |
+    M_1RM89 > 0 | toupper(MODEDEL) %in% "CSH" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  pphpi = case_when(
+   prcint > 0 | hyst > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, pphpi, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphpi_count = n()
+ ) %>%
+ group_by(BrthYear, Postpartum_Haemorrhage) %>%
+ mutate(
+  total_year = n(),
+  pphpi_rate = pphpi_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pphpi %in% 1, Postpartum_Haemorrhage %in% 1) %>%
+ select(BrthYear,pphpi, pphpi_count, pphpi_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(pphpi),
+                 fill = list(
+                  pphpi_count = 0,
+                  pphpi_rate = NA
+                 )) %>%
+ mutate(
+  pphpi_delta = (pphpi_rate - lag(pphpi_rate))/lag(pphpi_rate),
+  pphpi_deltap = case_when(
+   !is.na(lag(pphpi_rate, 9)) ~ (pphpi_rate - lag(pphpi_rate, 9)) / lag(pphpi_rate, 9),
+   !is.na(lag(pphpi_rate, 8)) ~ (pphpi_rate - lag(pphpi_rate, 8)) / lag(pphpi_rate, 8),
+   !is.na(lag(pphpi_rate, 7)) ~ (pphpi_rate - lag(pphpi_rate, 7)) / lag(pphpi_rate, 7),
+   !is.na(lag(pphpi_rate, 6)) ~ (pphpi_rate - lag(pphpi_rate, 6)) / lag(pphpi_rate, 6),
+   !is.na(lag(pphpi_rate, 5)) ~ (pphpi_rate - lag(pphpi_rate, 5)) / lag(pphpi_rate, 5),
+   !is.na(lag(pphpi_rate, 4)) ~ (pphpi_rate - lag(pphpi_rate, 4)) / lag(pphpi_rate, 4),
+   !is.na(lag(pphpi_rate, 3)) ~ (pphpi_rate - lag(pphpi_rate, 3)) / lag(pphpi_rate, 3),
+   !is.na(lag(pphpi_rate, 2)) ~ (pphpi_rate - lag(pphpi_rate, 2)) / lag(pphpi_rate, 2),
+   !is.na(lag(pphpi_rate, 1)) ~ (pphpi_rate - lag(pphpi_rate, 1)) / lag(pphpi_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Postpartum readmission rate ----
+
+c17 <- dta %>%
  group_by(BrthYear, ppreadm) %>%
  mutate(
   ppreadm_count = n()
@@ -604,12 +1224,27 @@ c10 <- dta %>%
  arrange(BrthYear) %>%
  mutate(
   ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
+  ppreadm_deltap = case_when(
+   !is.na(lag(ppreadm_rate, 9)) ~ (ppreadm_rate - lag(ppreadm_rate, 9)) / lag(ppreadm_rate, 9),
+   !is.na(lag(ppreadm_rate, 8)) ~ (ppreadm_rate - lag(ppreadm_rate, 8)) / lag(ppreadm_rate, 8),
+   !is.na(lag(ppreadm_rate, 7)) ~ (ppreadm_rate - lag(ppreadm_rate, 7)) / lag(ppreadm_rate, 7),
+   !is.na(lag(ppreadm_rate, 6)) ~ (ppreadm_rate - lag(ppreadm_rate, 6)) / lag(ppreadm_rate, 6),
+   !is.na(lag(ppreadm_rate, 5)) ~ (ppreadm_rate - lag(ppreadm_rate, 5)) / lag(ppreadm_rate, 5),
+   !is.na(lag(ppreadm_rate, 4)) ~ (ppreadm_rate - lag(ppreadm_rate, 4)) / lag(ppreadm_rate, 4),
+   !is.na(lag(ppreadm_rate, 3)) ~ (ppreadm_rate - lag(ppreadm_rate, 3)) / lag(ppreadm_rate, 3),
+   !is.na(lag(ppreadm_rate, 2)) ~ (ppreadm_rate - lag(ppreadm_rate, 2)) / lag(ppreadm_rate, 2),
+   !is.na(lag(ppreadm_rate, 1)) ~ (ppreadm_rate - lag(ppreadm_rate, 1)) / lag(ppreadm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
+
+### Postpartum patients who received medical anticoagulation prophylaxis when indicated ----
+
+#c18
 
 ### Skin to skin ----
 
-c11 <- dta %>%
+c19 <- dta %>%
  group_by(BrthYear, sknskn) %>%
  mutate(
   sknskn_count = n()
@@ -620,16 +1255,27 @@ c11 <- dta %>%
   sknskn_rate = sknskn_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknskn %in% 1) %>%
+ filter(sknskn %in% 1, lvb %in% 1) %>%
  select(BrthYear, sknskn, sknskn_count,sknskn_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
+  sknskn_deltap = case_when(
+   !is.na(lag(sknskn_rate, 9)) ~ (sknskn_rate - lag(sknskn_rate, 9)) / lag(sknskn_rate, 9),
+   !is.na(lag(sknskn_rate, 8)) ~ (sknskn_rate - lag(sknskn_rate, 8)) / lag(sknskn_rate, 8),
+   !is.na(lag(sknskn_rate, 7)) ~ (sknskn_rate - lag(sknskn_rate, 7)) / lag(sknskn_rate, 7),
+   !is.na(lag(sknskn_rate, 6)) ~ (sknskn_rate - lag(sknskn_rate, 6)) / lag(sknskn_rate, 6),
+   !is.na(lag(sknskn_rate, 5)) ~ (sknskn_rate - lag(sknskn_rate, 5)) / lag(sknskn_rate, 5),
+   !is.na(lag(sknskn_rate, 4)) ~ (sknskn_rate - lag(sknskn_rate, 4)) / lag(sknskn_rate, 4),
+   !is.na(lag(sknskn_rate, 3)) ~ (sknskn_rate - lag(sknskn_rate, 3)) / lag(sknskn_rate, 3),
+   !is.na(lag(sknskn_rate, 2)) ~ (sknskn_rate - lag(sknskn_rate, 2)) / lag(sknskn_rate, 2),
+   !is.na(lag(sknskn_rate, 1)) ~ (sknskn_rate - lag(sknskn_rate, 1)) / lag(sknskn_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c12 <- dta %>%
+c20 <- dta %>%
  group_by(BrthYear, sknsknvg) %>%
  mutate(
   sknsknvg_count = n()
@@ -640,16 +1286,27 @@ c12 <- dta %>%
   sknsknvg_rate = sknsknvg_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknsknvg %in% 1) %>%
+ filter(sknsknvg %in% 1, lvb %in% 1) %>%
  select(BrthYear, sknsknvg, sknsknvg_count,sknsknvg_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
+  sknsknvg_deltap = case_when(
+   !is.na(lag(sknsknvg_rate, 9)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 9)) / lag(sknsknvg_rate, 9),
+   !is.na(lag(sknsknvg_rate, 8)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 8)) / lag(sknsknvg_rate, 8),
+   !is.na(lag(sknsknvg_rate, 7)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 7)) / lag(sknsknvg_rate, 7),
+   !is.na(lag(sknsknvg_rate, 6)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 6)) / lag(sknsknvg_rate, 6),
+   !is.na(lag(sknsknvg_rate, 5)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 5)) / lag(sknsknvg_rate, 5),
+   !is.na(lag(sknsknvg_rate, 4)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 4)) / lag(sknsknvg_rate, 4),
+   !is.na(lag(sknsknvg_rate, 3)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 3)) / lag(sknsknvg_rate, 3),
+   !is.na(lag(sknsknvg_rate, 2)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 2)) / lag(sknsknvg_rate, 2),
+   !is.na(lag(sknsknvg_rate, 1)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 1)) / lag(sknsknvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c13 <- dta %>%
+c21 <- dta %>%
  group_by(BrthYear, sknskncs) %>%
  mutate(
   sknskncs_count = n()
@@ -660,18 +1317,74 @@ c13 <- dta %>%
   sknskncs_rate = sknskncs_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknskncs %in% 1) %>%
+ filter(sknskncs %in% 1, lvb %in% 1) %>%
  select(BrthYear, sknskncs, sknskncs_count,sknskncs_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
+  sknskncs_deltap = case_when(
+   !is.na(lag(sknskncs_rate, 9)) ~ (sknskncs_rate - lag(sknskncs_rate, 9)) / lag(sknskncs_rate, 9),
+   !is.na(lag(sknskncs_rate, 8)) ~ (sknskncs_rate - lag(sknskncs_rate, 8)) / lag(sknskncs_rate, 8),
+   !is.na(lag(sknskncs_rate, 7)) ~ (sknskncs_rate - lag(sknskncs_rate, 7)) / lag(sknskncs_rate, 7),
+   !is.na(lag(sknskncs_rate, 6)) ~ (sknskncs_rate - lag(sknskncs_rate, 6)) / lag(sknskncs_rate, 6),
+   !is.na(lag(sknskncs_rate, 5)) ~ (sknskncs_rate - lag(sknskncs_rate, 5)) / lag(sknskncs_rate, 5),
+   !is.na(lag(sknskncs_rate, 4)) ~ (sknskncs_rate - lag(sknskncs_rate, 4)) / lag(sknskncs_rate, 4),
+   !is.na(lag(sknskncs_rate, 3)) ~ (sknskncs_rate - lag(sknskncs_rate, 3)) / lag(sknskncs_rate, 3),
+   !is.na(lag(sknskncs_rate, 2)) ~ (sknskncs_rate - lag(sknskncs_rate, 2)) / lag(sknskncs_rate, 2),
+   !is.na(lag(sknskncs_rate, 1)) ~ (sknskncs_rate - lag(sknskncs_rate, 1)) / lag(sknskncs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Neonatal readmission ----
+### Postpartum blood products amongst those who received antenatal iron therapy ----
 
-c14 <- dta %>%
+c22 <- dta %>%
+ mutate(
+  pphiv = case_when(
+   Any_Blood_Product > 0 & R003_02100 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, Any_Blood_Product, R003_02100) %>%
+ mutate(
+  pphiv_count = n()
+ ) %>%
+ group_by(BrthYear, Any_Blood_Product) %>%
+ mutate(
+  total_year = n(),
+  pphiv_rate = pphiv_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Blood_Product %in% 1, R003_02100 %in% 1) %>%
+ select(BrthYear, pphiv, pphiv_count, pphiv_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(pphiv),
+                 fill = list(
+                  pphiv_count = 0,
+                  pphiv_rate = NA
+                 )) %>%
+ mutate(
+  pphiv_delta = (pphiv_rate - lag(pphiv_rate))/lag(pphiv_rate),
+  pphiv_deltap = case_when(
+   !is.na(lag(pphiv_rate, 9)) ~ (pphiv_rate - lag(pphiv_rate, 9)) / lag(pphiv_rate, 9),
+   !is.na(lag(pphiv_rate, 8)) ~ (pphiv_rate - lag(pphiv_rate, 8)) / lag(pphiv_rate, 8),
+   !is.na(lag(pphiv_rate, 7)) ~ (pphiv_rate - lag(pphiv_rate, 7)) / lag(pphiv_rate, 7),
+   !is.na(lag(pphiv_rate, 6)) ~ (pphiv_rate - lag(pphiv_rate, 6)) / lag(pphiv_rate, 6),
+   !is.na(lag(pphiv_rate, 5)) ~ (pphiv_rate - lag(pphiv_rate, 5)) / lag(pphiv_rate, 5),
+   !is.na(lag(pphiv_rate, 4)) ~ (pphiv_rate - lag(pphiv_rate, 4)) / lag(pphiv_rate, 4),
+   !is.na(lag(pphiv_rate, 3)) ~ (pphiv_rate - lag(pphiv_rate, 3)) / lag(pphiv_rate, 3),
+   !is.na(lag(pphiv_rate, 2)) ~ (pphiv_rate - lag(pphiv_rate, 2)) / lag(pphiv_rate, 2),
+   !is.na(lag(pphiv_rate, 1)) ~ (pphiv_rate - lag(pphiv_rate, 1)) / lag(pphiv_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Neonatal readmission rate ----
+
+c23 <- dta %>%
  group_by(BrthYear, neoreadm) %>%
  mutate(
   neoreadm_count = n()
@@ -682,18 +1395,553 @@ c14 <- dta %>%
   neoreadm_rate = neoreadm_count/total_year
  ) %>%
  ungroup() %>%
- filter(neoreadm %in% 1) %>%
+ filter(neoreadm %in% 1, lvb %in% 1) %>%
  select(BrthYear, neoreadm, neoreadm_count,neoreadm_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
+  neoreadm_deltap = case_when(
+   !is.na(lag(neoreadm_rate, 9)) ~ (neoreadm_rate - lag(neoreadm_rate, 9)) / lag(neoreadm_rate, 9),
+   !is.na(lag(neoreadm_rate, 8)) ~ (neoreadm_rate - lag(neoreadm_rate, 8)) / lag(neoreadm_rate, 8),
+   !is.na(lag(neoreadm_rate, 7)) ~ (neoreadm_rate - lag(neoreadm_rate, 7)) / lag(neoreadm_rate, 7),
+   !is.na(lag(neoreadm_rate, 6)) ~ (neoreadm_rate - lag(neoreadm_rate, 6)) / lag(neoreadm_rate, 6),
+   !is.na(lag(neoreadm_rate, 5)) ~ (neoreadm_rate - lag(neoreadm_rate, 5)) / lag(neoreadm_rate, 5),
+   !is.na(lag(neoreadm_rate, 4)) ~ (neoreadm_rate - lag(neoreadm_rate, 4)) / lag(neoreadm_rate, 4),
+   !is.na(lag(neoreadm_rate, 3)) ~ (neoreadm_rate - lag(neoreadm_rate, 3)) / lag(neoreadm_rate, 3),
+   !is.na(lag(neoreadm_rate, 2)) ~ (neoreadm_rate - lag(neoreadm_rate, 2)) / lag(neoreadm_rate, 2),
+   !is.na(lag(neoreadm_rate, 1)) ~ (neoreadm_rate - lag(neoreadm_rate, 1)) / lag(neoreadm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Milk feeding ----
+### Preterm infants who received complete course of steroids > 24h and < 7 days prior to birth ----
 
-c15 <- dta %>%
+c24 <- dta %>%
+ mutate(
+pretster = case_when(
+ (GA_BEST < 35 & GA_BEST >=24) &
+  (R068_00200 > 0 | R068_00300 > 0 | R068_00700 > 0 |
+    R068_00800 > 0 | R068_01200 > 0 | R068_01300 > 0 ) ~ 1,
+ TRUE ~ NA_integer_
+),
+den = case_when(
+ (GA_BEST < 35 & GA_BEST >=24) ~ 1,
+ TRUE ~ NA_integer_
+)
+ ) %>%
+ group_by(BrthYear, pretster) %>%
+ mutate(
+  pretster_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  pretster_rate = pretster_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pretster %in% 1) %>%
+ select(BrthYear, pretster, pretster_count,pretster_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(pretster),
+                 fill = list(
+                  pretster_count = 0,
+                  pretster_rate = NA
+                 )) %>%
+ mutate(
+  pretster_delta = (pretster_rate - lag(pretster_rate))/lag(pretster_rate),
+  pretster_deltap = case_when(
+   !is.na(lag(pretster_rate, 9)) ~ (pretster_rate - lag(pretster_rate, 9)) / lag(pretster_rate, 9),
+   !is.na(lag(pretster_rate, 8)) ~ (pretster_rate - lag(pretster_rate, 8)) / lag(pretster_rate, 8),
+   !is.na(lag(pretster_rate, 7)) ~ (pretster_rate - lag(pretster_rate, 7)) / lag(pretster_rate, 7),
+   !is.na(lag(pretster_rate, 6)) ~ (pretster_rate - lag(pretster_rate, 6)) / lag(pretster_rate, 6),
+   !is.na(lag(pretster_rate, 5)) ~ (pretster_rate - lag(pretster_rate, 5)) / lag(pretster_rate, 5),
+   !is.na(lag(pretster_rate, 4)) ~ (pretster_rate - lag(pretster_rate, 4)) / lag(pretster_rate, 4),
+   !is.na(lag(pretster_rate, 3)) ~ (pretster_rate - lag(pretster_rate, 3)) / lag(pretster_rate, 3),
+   !is.na(lag(pretster_rate, 2)) ~ (pretster_rate - lag(pretster_rate, 2)) / lag(pretster_rate, 2),
+   !is.na(lag(pretster_rate, 1)) ~ (pretster_rate - lag(pretster_rate, 1)) / lag(pretster_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Preterm babies born in facility without NICU ----
+
+c25 <- dta %>%
+ mutate(
+  pretnnicu = case_when(
+   (GA_BEST < 34) &
+    (!DLHosp %in% c(86,87,-12)) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (GA_BEST < 34) &
+    (!DLHosp %in% c(-12)) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, pretnnicu) %>%
+ mutate(
+  pretnnicu_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  pretnnicu_rate = pretnnicu_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pretnnicu %in% 1) %>%
+ select(BrthYear, pretnnicu, pretnnicu_count,pretnnicu_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(pretnnicu),
+                 fill = list(
+                  pretnnicu_count = 0,
+                  pretnnicu_rate = NA
+                 )) %>%
+ mutate(
+  pretnnicu_delta = (pretnnicu_rate - lag(pretnnicu_rate))/lag(pretnnicu_rate),
+  pretnnicu_deltap = case_when(
+   !is.na(lag(pretnnicu_rate, 9)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 9)) / lag(pretnnicu_rate, 9),
+   !is.na(lag(pretnnicu_rate, 8)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 8)) / lag(pretnnicu_rate, 8),
+   !is.na(lag(pretnnicu_rate, 7)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 7)) / lag(pretnnicu_rate, 7),
+   !is.na(lag(pretnnicu_rate, 6)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 6)) / lag(pretnnicu_rate, 6),
+   !is.na(lag(pretnnicu_rate, 5)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 5)) / lag(pretnnicu_rate, 5),
+   !is.na(lag(pretnnicu_rate, 4)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 4)) / lag(pretnnicu_rate, 4),
+   !is.na(lag(pretnnicu_rate, 3)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 3)) / lag(pretnnicu_rate, 3),
+   !is.na(lag(pretnnicu_rate, 2)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 2)) / lag(pretnnicu_rate, 2),
+   !is.na(lag(pretnnicu_rate, 1)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 1)) / lag(pretnnicu_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Newborn respiratory distress associated with low-risk repeat cesarean at term gestation (≥ 37 weeks < 39 weeks) ----
+
+c26 <- dta %>%
+ mutate(
+  newlwcs = case_when(
+   (GA_BEST < 39 & GA_BEST >= 37) &
+    (DLPRVCS > 0) &
+    (toupper(DMMETHOD) %in% "CST") &
+    (!toupper(BTOUTCOM) %in% "FTD") &
+    (R059_00200 > 0 | R059_00300 > 0 | R059_00400 > 0 | R059_00500 > 0 | R059_00600 > 0) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (GA_BEST < 39 & GA_BEST >= 37) &
+    (DLPRVCS > 0) &
+    (toupper(DMMETHOD) %in% "CST") &
+    (!toupper(BTOUTCOM) %in% "FTD") ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, newlwcs) %>%
+ mutate(
+  newlwcs_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  newlwcs_rate = newlwcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(newlwcs %in% 1) %>%
+ select(BrthYear, newlwcs, newlwcs_count,newlwcs_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(newlwcs),
+                 fill = list(
+                  newlwcs_count = 0,
+                  newlwcs_rate = NA
+                 )) %>%
+ mutate(
+  newlwcs_delta = (newlwcs_rate - lag(newlwcs_rate))/lag(newlwcs_rate),
+  newlwcs_deltap = case_when(
+   !is.na(lag(newlwcs_rate, 9)) ~ (newlwcs_rate - lag(newlwcs_rate, 9)) / lag(newlwcs_rate, 9),
+   !is.na(lag(newlwcs_rate, 8)) ~ (newlwcs_rate - lag(newlwcs_rate, 8)) / lag(newlwcs_rate, 8),
+   !is.na(lag(newlwcs_rate, 7)) ~ (newlwcs_rate - lag(newlwcs_rate, 7)) / lag(newlwcs_rate, 7),
+   !is.na(lag(newlwcs_rate, 6)) ~ (newlwcs_rate - lag(newlwcs_rate, 6)) / lag(newlwcs_rate, 6),
+   !is.na(lag(newlwcs_rate, 5)) ~ (newlwcs_rate - lag(newlwcs_rate, 5)) / lag(newlwcs_rate, 5),
+   !is.na(lag(newlwcs_rate, 4)) ~ (newlwcs_rate - lag(newlwcs_rate, 4)) / lag(newlwcs_rate, 4),
+   !is.na(lag(newlwcs_rate, 3)) ~ (newlwcs_rate - lag(newlwcs_rate, 3)) / lag(newlwcs_rate, 3),
+   !is.na(lag(newlwcs_rate, 2)) ~ (newlwcs_rate - lag(newlwcs_rate, 2)) / lag(newlwcs_rate, 2),
+   !is.na(lag(newlwcs_rate, 1)) ~ (newlwcs_rate - lag(newlwcs_rate, 1)) / lag(newlwcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping  ----
+
+c27 <- dta %>%
+ mutate(
+  delcord = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcord) %>%
+ mutate(
+  delcord_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  delcord_rate = delcord_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcord %in% 1, lvb %in% 1) %>%
+ select(BrthYear, delcord, delcord_count,delcord_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcord),
+                 fill = list(
+                  delcord_count = 0,
+                  delcord_rate = NA
+                 )) %>%
+ mutate(
+  delcord_delta = (delcord_rate - lag(delcord_rate))/lag(delcord_rate),
+  delcord_deltap = case_when(
+   !is.na(lag(delcord_rate, 9)) ~ (delcord_rate - lag(delcord_rate, 9)) / lag(delcord_rate, 9),
+   !is.na(lag(delcord_rate, 8)) ~ (delcord_rate - lag(delcord_rate, 8)) / lag(delcord_rate, 8),
+   !is.na(lag(delcord_rate, 7)) ~ (delcord_rate - lag(delcord_rate, 7)) / lag(delcord_rate, 7),
+   !is.na(lag(delcord_rate, 6)) ~ (delcord_rate - lag(delcord_rate, 6)) / lag(delcord_rate, 6),
+   !is.na(lag(delcord_rate, 5)) ~ (delcord_rate - lag(delcord_rate, 5)) / lag(delcord_rate, 5),
+   !is.na(lag(delcord_rate, 4)) ~ (delcord_rate - lag(delcord_rate, 4)) / lag(delcord_rate, 4),
+   !is.na(lag(delcord_rate, 3)) ~ (delcord_rate - lag(delcord_rate, 3)) / lag(delcord_rate, 3),
+   !is.na(lag(delcord_rate, 2)) ~ (delcord_rate - lag(delcord_rate, 2)) / lag(delcord_rate, 2),
+   !is.na(lag(delcord_rate, 1)) ~ (delcord_rate - lag(delcord_rate, 1)) / lag(delcord_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns ----
+
+c28 <- dta %>%
+ mutate(
+  delcordterm = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordterm) %>%
+ mutate(
+  delcordterm_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordterm_rate = delcordterm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordterm %in% 1) %>%
+ select(BrthYear, delcordterm, delcordterm_count,delcordterm_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordterm),
+                 fill = list(
+                  delcordterm_count = 0,
+                  delcordterm_rate = NA
+                 )) %>%
+ mutate(
+  delcordterm_delta = (delcordterm_rate - lag(delcordterm_rate))/lag(delcordterm_rate),
+  delcordterm_deltap = case_when(
+   !is.na(lag(delcordterm_rate, 9)) ~ (delcordterm_rate - lag(delcordterm_rate, 9)) / lag(delcordterm_rate, 9),
+   !is.na(lag(delcordterm_rate, 8)) ~ (delcordterm_rate - lag(delcordterm_rate, 8)) / lag(delcordterm_rate, 8),
+   !is.na(lag(delcordterm_rate, 7)) ~ (delcordterm_rate - lag(delcordterm_rate, 7)) / lag(delcordterm_rate, 7),
+   !is.na(lag(delcordterm_rate, 6)) ~ (delcordterm_rate - lag(delcordterm_rate, 6)) / lag(delcordterm_rate, 6),
+   !is.na(lag(delcordterm_rate, 5)) ~ (delcordterm_rate - lag(delcordterm_rate, 5)) / lag(delcordterm_rate, 5),
+   !is.na(lag(delcordterm_rate, 4)) ~ (delcordterm_rate - lag(delcordterm_rate, 4)) / lag(delcordterm_rate, 4),
+   !is.na(lag(delcordterm_rate, 3)) ~ (delcordterm_rate - lag(delcordterm_rate, 3)) / lag(delcordterm_rate, 3),
+   !is.na(lag(delcordterm_rate, 2)) ~ (delcordterm_rate - lag(delcordterm_rate, 2)) / lag(delcordterm_rate, 2),
+   !is.na(lag(delcordterm_rate, 1)) ~ (delcordterm_rate - lag(delcordterm_rate, 1)) / lag(delcordterm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns following spontaneous vaginal birth ----
+
+c29 <- dta %>%
+ mutate(
+  delcordtermvg = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordtermvg) %>%
+ mutate(
+  delcordtermvg_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordtermvg_rate = delcordtermvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordtermvg %in% 1) %>%
+ select(BrthYear, delcordtermvg, delcordtermvg_count,delcordtermvg_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordtermvg),
+                 fill = list(
+                  delcordtermvg_count = 0,
+                  delcordtermvg_rate = NA
+                 )) %>%
+ mutate(
+  delcordtermvg_delta = (delcordtermvg_rate - lag(delcordtermvg_rate))/lag(delcordtermvg_rate),
+  delcordtermvg_deltap = case_when(
+   !is.na(lag(delcordtermvg_rate, 9)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 9)) / lag(delcordtermvg_rate, 9),
+   !is.na(lag(delcordtermvg_rate, 8)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 8)) / lag(delcordtermvg_rate, 8),
+   !is.na(lag(delcordtermvg_rate, 7)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 7)) / lag(delcordtermvg_rate, 7),
+   !is.na(lag(delcordtermvg_rate, 6)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 6)) / lag(delcordtermvg_rate, 6),
+   !is.na(lag(delcordtermvg_rate, 5)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 5)) / lag(delcordtermvg_rate, 5),
+   !is.na(lag(delcordtermvg_rate, 4)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 4)) / lag(delcordtermvg_rate, 4),
+   !is.na(lag(delcordtermvg_rate, 3)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 3)) / lag(delcordtermvg_rate, 3),
+   !is.na(lag(delcordtermvg_rate, 2)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 2)) / lag(delcordtermvg_rate, 2),
+   !is.na(lag(delcordtermvg_rate, 1)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 1)) / lag(delcordtermvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns following caesarean birth ----
+
+c30 <- dta %>%
+ mutate(
+  delcordtermcs = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordtermcs) %>%
+ mutate(
+  delcordtermcs_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordtermcs_rate = delcordtermcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordtermcs %in% 1) %>%
+ select(BrthYear, delcordtermcs, delcordtermcs_count,delcordtermcs_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordtermcs),
+                 fill = list(
+                  delcordtermcs_count = 0,
+                  delcordtermcs_rate = NA
+                 )) %>%
+ mutate(
+  delcordtermcs_delta = (delcordtermcs_rate - lag(delcordtermcs_rate))/lag(delcordtermcs_rate),
+  delcordtermcs_deltap = case_when(
+   !is.na(lag(delcordtermcs_rate, 9)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 9)) / lag(delcordtermcs_rate, 9),
+   !is.na(lag(delcordtermcs_rate, 8)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 8)) / lag(delcordtermcs_rate, 8),
+   !is.na(lag(delcordtermcs_rate, 7)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 7)) / lag(delcordtermcs_rate, 7),
+   !is.na(lag(delcordtermcs_rate, 6)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 6)) / lag(delcordtermcs_rate, 6),
+   !is.na(lag(delcordtermcs_rate, 5)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 5)) / lag(delcordtermcs_rate, 5),
+   !is.na(lag(delcordtermcs_rate, 4)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 4)) / lag(delcordtermcs_rate, 4),
+   !is.na(lag(delcordtermcs_rate, 3)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 3)) / lag(delcordtermcs_rate, 3),
+   !is.na(lag(delcordtermcs_rate, 2)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 2)) / lag(delcordtermcs_rate, 2),
+   !is.na(lag(delcordtermcs_rate, 1)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 1)) / lag(delcordtermcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns ----
+
+c31 <- dta %>%
+ mutate(
+  delcordpreterm = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordpreterm) %>%
+ mutate(
+  delcordpreterm_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpreterm_rate = delcordpreterm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpreterm %in% 1) %>%
+ select(BrthYear, delcordpreterm, delcordpreterm_count,delcordpreterm_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordpreterm),
+                 fill = list(
+                  delcordpreterm_count = 0,
+                  delcordpreterm_rate = NA
+                 )) %>%
+ mutate(
+  delcordpreterm_delta = (delcordpreterm_rate - lag(delcordpreterm_rate))/lag(delcordpreterm_rate),
+  delcordpreterm_deltap = case_when(
+   !is.na(lag(delcordpreterm_rate, 9)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 9)) / lag(delcordpreterm_rate, 9),
+   !is.na(lag(delcordpreterm_rate, 8)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 8)) / lag(delcordpreterm_rate, 8),
+   !is.na(lag(delcordpreterm_rate, 7)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 7)) / lag(delcordpreterm_rate, 7),
+   !is.na(lag(delcordpreterm_rate, 6)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 6)) / lag(delcordpreterm_rate, 6),
+   !is.na(lag(delcordpreterm_rate, 5)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 5)) / lag(delcordpreterm_rate, 5),
+   !is.na(lag(delcordpreterm_rate, 4)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 4)) / lag(delcordpreterm_rate, 4),
+   !is.na(lag(delcordpreterm_rate, 3)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 3)) / lag(delcordpreterm_rate, 3),
+   !is.na(lag(delcordpreterm_rate, 2)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 2)) / lag(delcordpreterm_rate, 2),
+   !is.na(lag(delcordpreterm_rate, 1)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 1)) / lag(delcordpreterm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns following spontaneous vaginal birth ----
+
+c32 <- dta %>%
+ mutate(
+  delcordpretermvg = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordpretermvg) %>%
+ mutate(
+  delcordpretermvg_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpretermvg_rate = delcordpretermvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpretermvg %in% 1) %>%
+ select(BrthYear, delcordpretermvg, delcordpretermvg_count,delcordpretermvg_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordpretermvg),
+                 fill = list(
+                  delcordpretermvg_count = 0,
+                  delcordpretermvg_rate = NA
+                 )) %>%
+ mutate(
+  delcordpretermvg_delta = (delcordpretermvg_rate - lag(delcordpretermvg_rate))/lag(delcordpretermvg_rate),
+  delcordpretermvg_deltap = case_when(
+   !is.na(lag(delcordpretermvg_rate, 9)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 9)) / lag(delcordpretermvg_rate, 9),
+   !is.na(lag(delcordpretermvg_rate, 8)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 8)) / lag(delcordpretermvg_rate, 8),
+   !is.na(lag(delcordpretermvg_rate, 7)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 7)) / lag(delcordpretermvg_rate, 7),
+   !is.na(lag(delcordpretermvg_rate, 6)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 6)) / lag(delcordpretermvg_rate, 6),
+   !is.na(lag(delcordpretermvg_rate, 5)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 5)) / lag(delcordpretermvg_rate, 5),
+   !is.na(lag(delcordpretermvg_rate, 4)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 4)) / lag(delcordpretermvg_rate, 4),
+   !is.na(lag(delcordpretermvg_rate, 3)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 3)) / lag(delcordpretermvg_rate, 3),
+   !is.na(lag(delcordpretermvg_rate, 2)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 2)) / lag(delcordpretermvg_rate, 2),
+   !is.na(lag(delcordpretermvg_rate, 1)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 1)) / lag(delcordpretermvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns following caesarean birth ----
+
+c33 <- dta %>%
+ mutate(
+  delcordpretermcs = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, delcordpretermcs) %>%
+ mutate(
+  delcordpretermcs_count = n()
+ ) %>%
+ group_by(BrthYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpretermcs_rate = delcordpretermcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpretermcs %in% 1) %>%
+ select(BrthYear, delcordpretermcs, delcordpretermcs_count,delcordpretermcs_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ tidyr::complete(BrthYear = min(dta$BrthYear):max(dta$BrthYear),
+                 tidyr::nesting(delcordpretermcs),
+                 fill = list(
+                  delcordpretermcs_count = 0,
+                  delcordpretermcs_rate = NA
+                 )) %>%
+ mutate(
+  delcordpretermcs_delta = (delcordpretermcs_rate - lag(delcordpretermcs_rate))/lag(delcordpretermcs_rate),
+  delcordpretermcs_deltap = case_when(
+   !is.na(lag(delcordpretermcs_rate, 9)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 9)) / lag(delcordpretermcs_rate, 9),
+   !is.na(lag(delcordpretermcs_rate, 8)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 8)) / lag(delcordpretermcs_rate, 8),
+   !is.na(lag(delcordpretermcs_rate, 7)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 7)) / lag(delcordpretermcs_rate, 7),
+   !is.na(lag(delcordpretermcs_rate, 6)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 6)) / lag(delcordpretermcs_rate, 6),
+   !is.na(lag(delcordpretermcs_rate, 5)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 5)) / lag(delcordpretermcs_rate, 5),
+   !is.na(lag(delcordpretermcs_rate, 4)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 4)) / lag(delcordpretermcs_rate, 4),
+   !is.na(lag(delcordpretermcs_rate, 3)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 3)) / lag(delcordpretermcs_rate, 3),
+   !is.na(lag(delcordpretermcs_rate, 2)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 2)) / lag(delcordpretermcs_rate, 2),
+   !is.na(lag(delcordpretermcs_rate, 1)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 1)) / lag(delcordpretermcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Exclusive Human milk feeding ----
+
+c34 <- dta %>%
  group_by(BrthYear, excbrst) %>%
  mutate(
   excbrst_count = n()
@@ -704,16 +1952,29 @@ c15 <- dta %>%
   excbrst_rate = excbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(excbrst %in% 1) %>%
+ filter(excbrst %in% 1, lvb %in% 1) %>%
  select(BrthYear, excbrst, excbrst_count,excbrst_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
+  excbrst_deltap = case_when(
+   !is.na(lag(excbrst_rate, 9)) ~ (excbrst_rate - lag(excbrst_rate, 9)) / lag(excbrst_rate, 9),
+   !is.na(lag(excbrst_rate, 8)) ~ (excbrst_rate - lag(excbrst_rate, 8)) / lag(excbrst_rate, 8),
+   !is.na(lag(excbrst_rate, 7)) ~ (excbrst_rate - lag(excbrst_rate, 7)) / lag(excbrst_rate, 7),
+   !is.na(lag(excbrst_rate, 6)) ~ (excbrst_rate - lag(excbrst_rate, 6)) / lag(excbrst_rate, 6),
+   !is.na(lag(excbrst_rate, 5)) ~ (excbrst_rate - lag(excbrst_rate, 5)) / lag(excbrst_rate, 5),
+   !is.na(lag(excbrst_rate, 4)) ~ (excbrst_rate - lag(excbrst_rate, 4)) / lag(excbrst_rate, 4),
+   !is.na(lag(excbrst_rate, 3)) ~ (excbrst_rate - lag(excbrst_rate, 3)) / lag(excbrst_rate, 3),
+   !is.na(lag(excbrst_rate, 2)) ~ (excbrst_rate - lag(excbrst_rate, 2)) / lag(excbrst_rate, 2),
+   !is.na(lag(excbrst_rate, 1)) ~ (excbrst_rate - lag(excbrst_rate, 1)) / lag(excbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c16 <- dta %>%
+### Non-exclusive (any) human milk feeding ----
+
+c35 <- dta %>%
  group_by(BrthYear, nexcbrst) %>%
  mutate(
   nexcbrst_count = n()
@@ -724,16 +1985,29 @@ c16 <- dta %>%
   nexcbrst_rate = nexcbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(nexcbrst %in% 1) %>%
+ filter(nexcbrst %in% 1, lvb %in% 1) %>%
  select(BrthYear, nexcbrst, nexcbrst_count,nexcbrst_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
+  nexcbrst_deltap = case_when(
+   !is.na(lag(nexcbrst_rate, 9)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 9)) / lag(nexcbrst_rate, 9),
+   !is.na(lag(nexcbrst_rate, 8)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 8)) / lag(nexcbrst_rate, 8),
+   !is.na(lag(nexcbrst_rate, 7)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 7)) / lag(nexcbrst_rate, 7),
+   !is.na(lag(nexcbrst_rate, 6)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 6)) / lag(nexcbrst_rate, 6),
+   !is.na(lag(nexcbrst_rate, 5)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 5)) / lag(nexcbrst_rate, 5),
+   !is.na(lag(nexcbrst_rate, 4)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 4)) / lag(nexcbrst_rate, 4),
+   !is.na(lag(nexcbrst_rate, 3)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 3)) / lag(nexcbrst_rate, 3),
+   !is.na(lag(nexcbrst_rate, 2)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 2)) / lag(nexcbrst_rate, 2),
+   !is.na(lag(nexcbrst_rate, 1)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 1)) / lag(nexcbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c17 <- dta %>%
+### No breast/chest feeding among those who intended to breast/chest feed ----
+
+c36 <- dta %>%
  group_by(BrthYear, nbrst) %>%
  mutate(
   nbrst_count = n()
@@ -744,16 +2018,29 @@ c17 <- dta %>%
   nbrst_rate = nbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(nbrst %in% 1) %>%
+ filter(nbrst %in% 1, lvb %in% 1) %>%
  select(BrthYear, nbrst, nbrst_count,nbrst_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
+  nbrst_deltap = case_when(
+   !is.na(lag(nbrst_rate, 9)) ~ (nbrst_rate - lag(nbrst_rate, 9)) / lag(nbrst_rate, 9),
+   !is.na(lag(nbrst_rate, 8)) ~ (nbrst_rate - lag(nbrst_rate, 8)) / lag(nbrst_rate, 8),
+   !is.na(lag(nbrst_rate, 7)) ~ (nbrst_rate - lag(nbrst_rate, 7)) / lag(nbrst_rate, 7),
+   !is.na(lag(nbrst_rate, 6)) ~ (nbrst_rate - lag(nbrst_rate, 6)) / lag(nbrst_rate, 6),
+   !is.na(lag(nbrst_rate, 5)) ~ (nbrst_rate - lag(nbrst_rate, 5)) / lag(nbrst_rate, 5),
+   !is.na(lag(nbrst_rate, 4)) ~ (nbrst_rate - lag(nbrst_rate, 4)) / lag(nbrst_rate, 4),
+   !is.na(lag(nbrst_rate, 3)) ~ (nbrst_rate - lag(nbrst_rate, 3)) / lag(nbrst_rate, 3),
+   !is.na(lag(nbrst_rate, 2)) ~ (nbrst_rate - lag(nbrst_rate, 2)) / lag(nbrst_rate, 2),
+   !is.na(lag(nbrst_rate, 1)) ~ (nbrst_rate - lag(nbrst_rate, 1)) / lag(nbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c18 <- dta %>%
+### The breast/chest feeding initiation rate ----
+
+c37 <- dta %>%
  group_by(BrthYear, brstinit) %>%
  mutate(
   brstinit_count = n()
@@ -764,37 +2051,150 @@ c18 <- dta %>%
   brstinit_rate = brstinit_count/total_year
  ) %>%
  ungroup() %>%
- filter(brstinit %in% 1) %>%
+ filter(brstinit %in% 1, lvb %in% 1) %>%
  select(BrthYear, brstinit, brstinit_count,brstinit_rate) %>%
  distinct() %>%
  arrange(BrthYear) %>%
  mutate(
   brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
+  brstinit_deltap = case_when(
+   !is.na(lag(brstinit_rate, 9)) ~ (brstinit_rate - lag(brstinit_rate, 9)) / lag(brstinit_rate, 9),
+   !is.na(lag(brstinit_rate, 8)) ~ (brstinit_rate - lag(brstinit_rate, 8)) / lag(brstinit_rate, 8),
+   !is.na(lag(brstinit_rate, 7)) ~ (brstinit_rate - lag(brstinit_rate, 7)) / lag(brstinit_rate, 7),
+   !is.na(lag(brstinit_rate, 6)) ~ (brstinit_rate - lag(brstinit_rate, 6)) / lag(brstinit_rate, 6),
+   !is.na(lag(brstinit_rate, 5)) ~ (brstinit_rate - lag(brstinit_rate, 5)) / lag(brstinit_rate, 5),
+   !is.na(lag(brstinit_rate, 4)) ~ (brstinit_rate - lag(brstinit_rate, 4)) / lag(brstinit_rate, 4),
+   !is.na(lag(brstinit_rate, 3)) ~ (brstinit_rate - lag(brstinit_rate, 3)) / lag(brstinit_rate, 3),
+   !is.na(lag(brstinit_rate, 2)) ~ (brstinit_rate - lag(brstinit_rate, 2)) / lag(brstinit_rate, 2),
+   !is.na(lag(brstinit_rate, 1)) ~ (brstinit_rate - lag(brstinit_rate, 1)) / lag(brstinit_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### ICU Admission during Pregnancy or Postpartum ----
+
+c38 <- dta %>%
+ mutate(
+  icu = case_when(
+   JOGC_ICU > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, JOGC_ICU) %>%
+ mutate(
+  icu_count = n()
+ ) %>%
+ group_by(BrthYear) %>%
+ mutate(
+  total_year = n(),
+  icu_rate = icu_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(JOGC_ICU %in% 1) %>%
+ select(BrthYear, icu, icu_count,icu_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  icu_delta = (icu_rate - lag(icu_rate))/lag(icu_rate),
+  icu_deltap = case_when(
+   !is.na(lag(icu_rate, 9)) ~ (icu_rate - lag(icu_rate, 9)) / lag(icu_rate, 9),
+   !is.na(lag(icu_rate, 8)) ~ (icu_rate - lag(icu_rate, 8)) / lag(icu_rate, 8),
+   !is.na(lag(icu_rate, 7)) ~ (icu_rate - lag(icu_rate, 7)) / lag(icu_rate, 7),
+   !is.na(lag(icu_rate, 6)) ~ (icu_rate - lag(icu_rate, 6)) / lag(icu_rate, 6),
+   !is.na(lag(icu_rate, 5)) ~ (icu_rate - lag(icu_rate, 5)) / lag(icu_rate, 5),
+   !is.na(lag(icu_rate, 4)) ~ (icu_rate - lag(icu_rate, 4)) / lag(icu_rate, 4),
+   !is.na(lag(icu_rate, 3)) ~ (icu_rate - lag(icu_rate, 3)) / lag(icu_rate, 3),
+   !is.na(lag(icu_rate, 2)) ~ (icu_rate - lag(icu_rate, 2)) / lag(icu_rate, 2),
+   !is.na(lag(icu_rate, 1)) ~ (icu_rate - lag(icu_rate, 1)) / lag(icu_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Rate of Severe Morbidity in Pregnancy or Postpartum ----
+
+c39 <- dta %>%
+ mutate(
+  smm = case_when(
+   JOGC_AnySMM > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(BrthYear, JOGC_AnySMM) %>%
+ mutate(
+  smm_count = n()
+ ) %>%
+ group_by(BrthYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  smm_rate = smm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(JOGC_AnySMM %in% 1, lvb %in% 1) %>%
+ select(BrthYear, smm, smm_count,smm_rate) %>%
+ distinct() %>%
+ arrange(BrthYear) %>%
+ mutate(
+  smm_delta = (smm_rate - lag(smm_rate))/lag(smm_rate),
+  smm_deltap = case_when(
+   !is.na(lag(smm_rate, 9)) ~ (smm_rate - lag(smm_rate, 9)) / lag(smm_rate, 9),
+   !is.na(lag(smm_rate, 8)) ~ (smm_rate - lag(smm_rate, 8)) / lag(smm_rate, 8),
+   !is.na(lag(smm_rate, 7)) ~ (smm_rate - lag(smm_rate, 7)) / lag(smm_rate, 7),
+   !is.na(lag(smm_rate, 6)) ~ (smm_rate - lag(smm_rate, 6)) / lag(smm_rate, 6),
+   !is.na(lag(smm_rate, 5)) ~ (smm_rate - lag(smm_rate, 5)) / lag(smm_rate, 5),
+   !is.na(lag(smm_rate, 4)) ~ (smm_rate - lag(smm_rate, 4)) / lag(smm_rate, 4),
+   !is.na(lag(smm_rate, 3)) ~ (smm_rate - lag(smm_rate, 3)) / lag(smm_rate, 3),
+   !is.na(lag(smm_rate, 2)) ~ (smm_rate - lag(smm_rate, 2)) / lag(smm_rate, 2),
+   !is.na(lag(smm_rate, 1)) ~ (smm_rate - lag(smm_rate, 1)) / lag(smm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 cyearly_stats <- cbind(
  c1 %>% select(-PreExisting_Hypertension),
  c2 %>% select(-Gestational_Hypertension,-BrthYear),
  c3 %>% select(-Any_Hypertension,-BrthYear),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear),
- c5 %>% select(-GDM,-BrthYear),
- c6 %>% select(-Any_Diabetes,-BrthYear),
- c7 %>% select(-RobsnGrp,-BrthYear),
- c8 %>% select(-RobsnGrp,-BrthYear),
- c9 %>% select(-RobsnGrp,-BrthYear),
- c10 %>% select(-ppreadm,-BrthYear),
- c11 %>% select(-sknskn,-BrthYear),
- c12 %>% select(-sknsknvg,-BrthYear),
- c13 %>% select(-sknskncs,-BrthYear),
- c14 %>% select(-neoreadm,-BrthYear),
- c15 %>% select(-excbrst,-BrthYear),
- c16 %>% select(-nexcbrst,-BrthYear),
- c17 %>% select(-nbrst,-BrthYear),
- c18 %>% select(-brstinit,-BrthYear)
+ c4 %>% select(-anemia,-BrthYear),
+ c5 %>% select(-PreExisting_Diabetes,-BrthYear),
+ c6 %>% select(-GDM,-BrthYear),
+ c7 %>% select(-Any_Diabetes,-BrthYear),
+ c8 %>% select(-sptvg,-BrthYear),
+ c9 %>% select(-med,-BrthYear),
+ c10 %>% select(-sptassvgmed,-BrthYear),
+ c11 %>% select(-sptassvgnmed,-BrthYear),
+ c12 %>% select(-RobsnGrp,-BrthYear),
+ c13 %>% select(-RobsnGrp,-BrthYear),
+ c14 %>% select(-RobsnGrp,-BrthYear),
+ c15 %>% select(-pphbl,-BrthYear),
+ c16 %>% select(-pphpi,-BrthYear),
+ c17 %>% select(-ppreadm,-BrthYear),
+ #c18 %>% select(-brstinit,-BrthYear),
+ c19 %>% select(-sknskn,-BrthYear),
+ c20 %>% select(-sknsknvg,-BrthYear),
+ c21 %>% select(-sknskncs,-BrthYear),
+ c22 %>% select(-pphiv,-BrthYear),
+ c23 %>% select(-neoreadm,-BrthYear),
+ c24 %>% select(-pretster,-BrthYear),
+ c25 %>% select(-pretnnicu,-BrthYear),
+ c26 %>% select(-newlwcs,-BrthYear),
+ c27 %>% select(-delcord,-BrthYear),
+ c28 %>% select(-delcordterm,-BrthYear),
+ c29 %>% select(-delcordtermvg,-BrthYear),
+ c30 %>% select(-delcordtermcs,-BrthYear),
+ c31 %>% select(-delcordpreterm,-BrthYear),
+ c32 %>% select(-delcordpretermvg,-BrthYear),
+ c33 %>% select(-delcordpretermcs,-BrthYear),
+ c34 %>% select(-excbrst,-BrthYear),
+ c35 %>% select(-nexcbrst,-BrthYear),
+ c36 %>% select(-nbrst,-BrthYear),
+ c37 %>% select(-brstinit,-BrthYear),
+ c38 %>% select(-icu,-BrthYear),
+ c39 %>% select(-smm,-BrthYear)
 )
 
+##-----------------------
 ## Fiscal year stats ----
+##-----------------------
+
 ### Hypertension ----
 
 c1 <- dta %>%
@@ -814,7 +2214,18 @@ c1 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
+  prehyp_deltap = case_when(
+   !is.na(lag(prehyp_rate, 9)) ~ (prehyp_rate - lag(prehyp_rate, 9)) / lag(prehyp_rate, 9),
+   !is.na(lag(prehyp_rate, 8)) ~ (prehyp_rate - lag(prehyp_rate, 8)) / lag(prehyp_rate, 8),
+   !is.na(lag(prehyp_rate, 7)) ~ (prehyp_rate - lag(prehyp_rate, 7)) / lag(prehyp_rate, 7),
+   !is.na(lag(prehyp_rate, 6)) ~ (prehyp_rate - lag(prehyp_rate, 6)) / lag(prehyp_rate, 6),
+   !is.na(lag(prehyp_rate, 5)) ~ (prehyp_rate - lag(prehyp_rate, 5)) / lag(prehyp_rate, 5),
+   !is.na(lag(prehyp_rate, 4)) ~ (prehyp_rate - lag(prehyp_rate, 4)) / lag(prehyp_rate, 4),
+   !is.na(lag(prehyp_rate, 3)) ~ (prehyp_rate - lag(prehyp_rate, 3)) / lag(prehyp_rate, 3),
+   !is.na(lag(prehyp_rate, 2)) ~ (prehyp_rate - lag(prehyp_rate, 2)) / lag(prehyp_rate, 2),
+   !is.na(lag(prehyp_rate, 1)) ~ (prehyp_rate - lag(prehyp_rate, 1)) / lag(prehyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 c2 <- dta %>%
@@ -825,7 +2236,8 @@ c2 <- dta %>%
  group_by(FiscalYear) %>%
  mutate(
   total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
+  gesthyp_rate = gesthyp_count/total_year,
+  gesthyp_prev = 1000*gesthyp_rate
  ) %>%
  ungroup() %>%
  filter(Gestational_Hypertension %in% 1) %>%
@@ -834,7 +2246,18 @@ c2 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
+  gesthyp_deltap = case_when(
+   !is.na(lag(gesthyp_rate, 9)) ~ (gesthyp_rate - lag(gesthyp_rate, 9)) / lag(gesthyp_rate, 9),
+   !is.na(lag(gesthyp_rate, 8)) ~ (gesthyp_rate - lag(gesthyp_rate, 8)) / lag(gesthyp_rate, 8),
+   !is.na(lag(gesthyp_rate, 7)) ~ (gesthyp_rate - lag(gesthyp_rate, 7)) / lag(gesthyp_rate, 7),
+   !is.na(lag(gesthyp_rate, 6)) ~ (gesthyp_rate - lag(gesthyp_rate, 6)) / lag(gesthyp_rate, 6),
+   !is.na(lag(gesthyp_rate, 5)) ~ (gesthyp_rate - lag(gesthyp_rate, 5)) / lag(gesthyp_rate, 5),
+   !is.na(lag(gesthyp_rate, 4)) ~ (gesthyp_rate - lag(gesthyp_rate, 4)) / lag(gesthyp_rate, 4),
+   !is.na(lag(gesthyp_rate, 3)) ~ (gesthyp_rate - lag(gesthyp_rate, 3)) / lag(gesthyp_rate, 3),
+   !is.na(lag(gesthyp_rate, 2)) ~ (gesthyp_rate - lag(gesthyp_rate, 2)) / lag(gesthyp_rate, 2),
+   !is.na(lag(gesthyp_rate, 1)) ~ (gesthyp_rate - lag(gesthyp_rate, 1)) / lag(gesthyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 c3 <- dta %>%
@@ -854,12 +2277,62 @@ c3 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
+  hyp_deltap = case_when(
+   !is.na(lag(hyp_rate, 9)) ~ (hyp_rate - lag(hyp_rate, 9)) / lag(hyp_rate, 9),
+   !is.na(lag(hyp_rate, 8)) ~ (hyp_rate - lag(hyp_rate, 8)) / lag(hyp_rate, 8),
+   !is.na(lag(hyp_rate, 7)) ~ (hyp_rate - lag(hyp_rate, 7)) / lag(hyp_rate, 7),
+   !is.na(lag(hyp_rate, 6)) ~ (hyp_rate - lag(hyp_rate, 6)) / lag(hyp_rate, 6),
+   !is.na(lag(hyp_rate, 5)) ~ (hyp_rate - lag(hyp_rate, 5)) / lag(hyp_rate, 5),
+   !is.na(lag(hyp_rate, 4)) ~ (hyp_rate - lag(hyp_rate, 4)) / lag(hyp_rate, 4),
+   !is.na(lag(hyp_rate, 3)) ~ (hyp_rate - lag(hyp_rate, 3)) / lag(hyp_rate, 3),
+   !is.na(lag(hyp_rate, 2)) ~ (hyp_rate - lag(hyp_rate, 2)) / lag(hyp_rate, 2),
+   !is.na(lag(hyp_rate, 1)) ~ (hyp_rate - lag(hyp_rate, 1)) / lag(hyp_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Anaemia ----
+
+c4 <- dta %>%
+ select(FiscalYear, MANEM, R014_01500, MO990, MD50_D53, MD55_D59, MD60_D64) %>%
+ mutate(anemia = case_when(
+  MANEM > 0 | R014_01500 > 0 | MO990 > 0 | MD50_D53 > 0 |
+   MD55_D59 > 0 | MD60_D64 > 0 ~ 1,
+  TRUE ~ NA_integer_
+ )) %>%
+ group_by(FiscalYear, anemia) %>%
+ mutate(
+  anemia_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  anemia_rate = anemia_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(anemia %in% 1) %>%
+ select(FiscalYear, anemia, anemia_count, anemia_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  anemia_delta = (anemia_rate - lag(anemia_rate))/lag(anemia_rate),
+  anemia_deltap = case_when(
+   !is.na(lag(anemia_rate, 9)) ~ (anemia_rate - lag(anemia_rate, 9)) / lag(anemia_rate, 9),
+   !is.na(lag(anemia_rate, 8)) ~ (anemia_rate - lag(anemia_rate, 8)) / lag(anemia_rate, 8),
+   !is.na(lag(anemia_rate, 7)) ~ (anemia_rate - lag(anemia_rate, 7)) / lag(anemia_rate, 7),
+   !is.na(lag(anemia_rate, 6)) ~ (anemia_rate - lag(anemia_rate, 6)) / lag(anemia_rate, 6),
+   !is.na(lag(anemia_rate, 5)) ~ (anemia_rate - lag(anemia_rate, 5)) / lag(anemia_rate, 5),
+   !is.na(lag(anemia_rate, 4)) ~ (anemia_rate - lag(anemia_rate, 4)) / lag(anemia_rate, 4),
+   !is.na(lag(anemia_rate, 3)) ~ (anemia_rate - lag(anemia_rate, 3)) / lag(anemia_rate, 3),
+   !is.na(lag(anemia_rate, 2)) ~ (anemia_rate - lag(anemia_rate, 2)) / lag(anemia_rate, 2),
+   !is.na(lag(anemia_rate, 1)) ~ (anemia_rate - lag(anemia_rate, 1)) / lag(anemia_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 ### Diabetes ----
 
-c4 <- dta %>%
+c5 <- dta %>%
  group_by(FiscalYear, PreExisting_Diabetes) %>%
  mutate(
   prediab_count = n()
@@ -876,10 +2349,21 @@ c4 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
+  prediab_deltap = case_when(
+   !is.na(lag(prediab_rate, 9)) ~ (prediab_rate - lag(prediab_rate, 9)) / lag(prediab_rate, 9),
+   !is.na(lag(prediab_rate, 8)) ~ (prediab_rate - lag(prediab_rate, 8)) / lag(prediab_rate, 8),
+   !is.na(lag(prediab_rate, 7)) ~ (prediab_rate - lag(prediab_rate, 7)) / lag(prediab_rate, 7),
+   !is.na(lag(prediab_rate, 6)) ~ (prediab_rate - lag(prediab_rate, 6)) / lag(prediab_rate, 6),
+   !is.na(lag(prediab_rate, 5)) ~ (prediab_rate - lag(prediab_rate, 5)) / lag(prediab_rate, 5),
+   !is.na(lag(prediab_rate, 4)) ~ (prediab_rate - lag(prediab_rate, 4)) / lag(prediab_rate, 4),
+   !is.na(lag(prediab_rate, 3)) ~ (prediab_rate - lag(prediab_rate, 3)) / lag(prediab_rate, 3),
+   !is.na(lag(prediab_rate, 2)) ~ (prediab_rate - lag(prediab_rate, 2)) / lag(prediab_rate, 2),
+   !is.na(lag(prediab_rate, 1)) ~ (prediab_rate - lag(prediab_rate, 1)) / lag(prediab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c5 <- dta %>%
+c6 <- dta %>%
  group_by(FiscalYear, GDM) %>%
  mutate(
   gestdiab_count = n()
@@ -896,10 +2380,21 @@ c5 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
+  gestdiab_deltap = case_when(
+   !is.na(lag(gestdiab_rate, 9)) ~ (gestdiab_rate - lag(gestdiab_rate, 9)) / lag(gestdiab_rate, 9),
+   !is.na(lag(gestdiab_rate, 8)) ~ (gestdiab_rate - lag(gestdiab_rate, 8)) / lag(gestdiab_rate, 8),
+   !is.na(lag(gestdiab_rate, 7)) ~ (gestdiab_rate - lag(gestdiab_rate, 7)) / lag(gestdiab_rate, 7),
+   !is.na(lag(gestdiab_rate, 6)) ~ (gestdiab_rate - lag(gestdiab_rate, 6)) / lag(gestdiab_rate, 6),
+   !is.na(lag(gestdiab_rate, 5)) ~ (gestdiab_rate - lag(gestdiab_rate, 5)) / lag(gestdiab_rate, 5),
+   !is.na(lag(gestdiab_rate, 4)) ~ (gestdiab_rate - lag(gestdiab_rate, 4)) / lag(gestdiab_rate, 4),
+   !is.na(lag(gestdiab_rate, 3)) ~ (gestdiab_rate - lag(gestdiab_rate, 3)) / lag(gestdiab_rate, 3),
+   !is.na(lag(gestdiab_rate, 2)) ~ (gestdiab_rate - lag(gestdiab_rate, 2)) / lag(gestdiab_rate, 2),
+   !is.na(lag(gestdiab_rate, 1)) ~ (gestdiab_rate - lag(gestdiab_rate, 1)) / lag(gestdiab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c6 <- dta %>%
+c7 <- dta %>%
  group_by(FiscalYear, Any_Diabetes) %>%
  mutate(
   diab_count = n()
@@ -916,12 +2411,300 @@ c6 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
+  diab_deltap = case_when(
+   !is.na(lag(diab_rate, 9)) ~ (diab_rate - lag(diab_rate, 9)) / lag(diab_rate, 9),
+   !is.na(lag(diab_rate, 8)) ~ (diab_rate - lag(diab_rate, 8)) / lag(diab_rate, 8),
+   !is.na(lag(diab_rate, 7)) ~ (diab_rate - lag(diab_rate, 7)) / lag(diab_rate, 7),
+   !is.na(lag(diab_rate, 6)) ~ (diab_rate - lag(diab_rate, 6)) / lag(diab_rate, 6),
+   !is.na(lag(diab_rate, 5)) ~ (diab_rate - lag(diab_rate, 5)) / lag(diab_rate, 5),
+   !is.na(lag(diab_rate, 4)) ~ (diab_rate - lag(diab_rate, 4)) / lag(diab_rate, 4),
+   !is.na(lag(diab_rate, 3)) ~ (diab_rate - lag(diab_rate, 3)) / lag(diab_rate, 3),
+   !is.na(lag(diab_rate, 2)) ~ (diab_rate - lag(diab_rate, 2)) / lag(diab_rate, 2),
+   !is.na(lag(diab_rate, 1)) ~ (diab_rate - lag(diab_rate, 1)) / lag(diab_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe Perineal Trauma with Spontaneous Vaginal Birth ----
+
+c8 <- dta %>%
+ select(FiscalYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptvg = case_when(
+   toupper(DMMETHOD) %in% c("SPT", "BIV") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, trdfrth, sptvg) %>%
+ mutate(
+  spt_count = n()
+ ) %>%
+ group_by(FiscalYear, sptvg) %>%
+ mutate(
+  total_year = n(),
+  spt_rate = spt_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(trdfrth %in% 1, sptvg %in% 1) %>%
+ select(FiscalYear,sptvg,spt_count,spt_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  spt_delta = (spt_rate - lag(spt_rate))/lag(spt_rate),
+  spt_deltap = case_when(
+   !is.na(lag(spt_rate, 9)) ~ (spt_rate - lag(spt_rate, 9)) / lag(spt_rate, 9),
+   !is.na(lag(spt_rate, 8)) ~ (spt_rate - lag(spt_rate, 8)) / lag(spt_rate, 8),
+   !is.na(lag(spt_rate, 7)) ~ (spt_rate - lag(spt_rate, 7)) / lag(spt_rate, 7),
+   !is.na(lag(spt_rate, 6)) ~ (spt_rate - lag(spt_rate, 6)) / lag(spt_rate, 6),
+   !is.na(lag(spt_rate, 5)) ~ (spt_rate - lag(spt_rate, 5)) / lag(spt_rate, 5),
+   !is.na(lag(spt_rate, 4)) ~ (spt_rate - lag(spt_rate, 4)) / lag(spt_rate, 4),
+   !is.na(lag(spt_rate, 3)) ~ (spt_rate - lag(spt_rate, 3)) / lag(spt_rate, 3),
+   !is.na(lag(spt_rate, 2)) ~ (spt_rate - lag(spt_rate, 2)) / lag(spt_rate, 2),
+   !is.na(lag(spt_rate, 1)) ~ (spt_rate - lag(spt_rate, 1)) / lag(spt_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Mediolateral Episiotomy with Operative Vaginal Birth ----
+#### ND = Not Done
+#### MD = Midline
+#### ML = Mediolateral
+
+c9 <- dta %>%
+ select(FiscalYear,
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  med = case_when(
+   DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, med, assvg) %>%
+ mutate(
+  med_count = n()
+ ) %>%
+ group_by(FiscalYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  med_rate = med_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(med %in% 1, assvg %in% 1) %>%
+ select(FiscalYear,med,med_count,med_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  med_delta = (med_rate - lag(med_rate))/lag(med_rate),
+  med_deltap = case_when(
+   !is.na(lag(med_rate, 9)) ~ (med_rate - lag(med_rate, 9)) / lag(med_rate, 9),
+   !is.na(lag(med_rate, 8)) ~ (med_rate - lag(med_rate, 8)) / lag(med_rate, 8),
+   !is.na(lag(med_rate, 7)) ~ (med_rate - lag(med_rate, 7)) / lag(med_rate, 7),
+   !is.na(lag(med_rate, 6)) ~ (med_rate - lag(med_rate, 6)) / lag(med_rate, 6),
+   !is.na(lag(med_rate, 5)) ~ (med_rate - lag(med_rate, 5)) / lag(med_rate, 5),
+   !is.na(lag(med_rate, 4)) ~ (med_rate - lag(med_rate, 4)) / lag(med_rate, 4),
+   !is.na(lag(med_rate, 3)) ~ (med_rate - lag(med_rate, 3)) / lag(med_rate, 3),
+   !is.na(lag(med_rate, 2)) ~ (med_rate - lag(med_rate, 2)) / lag(med_rate, 2),
+   !is.na(lag(med_rate, 1)) ~ (med_rate - lag(med_rate, 1)) / lag(med_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe perineal trauma with Operative Vaginal Birth and mediolateral episiotomy ----
+
+c10 <- dta %>%
+ select(FiscalYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  med = case_when(
+   DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptassvgmed = case_when(
+   trdfrth > 0 & med > 0 & assvg > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, trdfrth, assvg, med) %>%
+ mutate(
+  sptassvgmed_count = n()
+ ) %>%
+ group_by(FiscalYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  sptassvgmed_rate = sptassvgmed_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sptassvgmed %in% 1) %>%
+ select(FiscalYear,sptassvgmed,sptassvgmed_count,sptassvgmed_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  sptassvgmed_delta = (sptassvgmed_rate - lag(sptassvgmed_rate))/lag(sptassvgmed_rate),
+  sptassvgmed_deltap = case_when(
+   !is.na(lag(sptassvgmed_rate, 9)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 9)) / lag(sptassvgmed_rate, 9),
+   !is.na(lag(sptassvgmed_rate, 8)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 8)) / lag(sptassvgmed_rate, 8),
+   !is.na(lag(sptassvgmed_rate, 7)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 7)) / lag(sptassvgmed_rate, 7),
+   !is.na(lag(sptassvgmed_rate, 6)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 6)) / lag(sptassvgmed_rate, 6),
+   !is.na(lag(sptassvgmed_rate, 5)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 5)) / lag(sptassvgmed_rate, 5),
+   !is.na(lag(sptassvgmed_rate, 4)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 4)) / lag(sptassvgmed_rate, 4),
+   !is.na(lag(sptassvgmed_rate, 3)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 3)) / lag(sptassvgmed_rate, 3),
+   !is.na(lag(sptassvgmed_rate, 2)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 2)) / lag(sptassvgmed_rate, 2),
+   !is.na(lag(sptassvgmed_rate, 1)) ~ (sptassvgmed_rate - lag(sptassvgmed_rate, 1)) / lag(sptassvgmed_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Severe perineal trauma with Operative Vaginal Birth without mediolateral episiotomy ----
+
+c11 <- dta %>%
+ select(FiscalYear,
+        ## 3rd degree laceration
+        MO702,# Third degree perineal laceration during delivery
+        MO70201,# Third degree perineal laceration del/delivery
+        MO70204,# Third degree perineal laceration del/postpartum
+        MO70211,# Third degree perineal laceration delivery type 3a/delivery
+        MO70214,# Third degree perineal laceration delivery type 3a/postpartum
+        MO70221,# Third degree perineal laceration delivery type 3b/delivery
+        MO70231,# Third degree perineal laceration delivery type 3c/delivery
+        MO70234,# Third degree perineal laceration delivery type 3c/postpartum
+        MO70281,# Third degree perineal laceration delivery other type/delivery
+        MO70291,# Third degree perineal laceration delivery type unspecified/delivery
+        ## 4th degree laceration
+        MO703,# Fourth degree perineal laceration during delivery
+        MO70301,# Fourth degree perineal laceration del/delivery
+        MO70304,# Fourth degree perineal laceration del/postpart
+        DMMETHOD,
+        DMEPISIO) %>%
+ mutate(
+  trd = case_when(
+   MO702 > 0 | MO70201 > 0 | MO70204 > 0 |
+    MO70211 > 0 | MO70214 > 0 | MO70221 > 0 |
+    MO70231 > 0 | MO70234 > 0 | MO70281 > 0 | MO70291 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  frth = case_when(
+   MO703 > 0 | MO70301 > 0 | MO70304 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  assvg = case_when(
+   toupper(DMMETHOD) %in% c("VAC", "LOW", "MID") ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  trdfrth = case_when(
+   trd > 0 | frth > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  med = case_when(
+   !DMEPISIO %in% "ML" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  sptassvgnmed = case_when(
+   trdfrth > 0 & med > 0 & assvg > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, trdfrth, assvg, med) %>%
+ mutate(
+  sptassvgnmed_count = n()
+ ) %>%
+ group_by(FiscalYear, assvg) %>%
+ mutate(
+  total_year = n(),
+  sptassvgnmed_rate = sptassvgnmed_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(sptassvgnmed %in% 1) %>%
+ select(FiscalYear,sptassvgnmed,sptassvgnmed_count,sptassvgnmed_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  sptassvgnmed_delta = (sptassvgnmed_rate - lag(sptassvgnmed_rate))/lag(sptassvgnmed_rate),
+  sptassvgnmed_deltap = case_when(
+   !is.na(lag(sptassvgnmed_rate, 9)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 9)) / lag(sptassvgnmed_rate, 9),
+   !is.na(lag(sptassvgnmed_rate, 8)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 8)) / lag(sptassvgnmed_rate, 8),
+   !is.na(lag(sptassvgnmed_rate, 7)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 7)) / lag(sptassvgnmed_rate, 7),
+   !is.na(lag(sptassvgnmed_rate, 6)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 6)) / lag(sptassvgnmed_rate, 6),
+   !is.na(lag(sptassvgnmed_rate, 5)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 5)) / lag(sptassvgnmed_rate, 5),
+   !is.na(lag(sptassvgnmed_rate, 4)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 4)) / lag(sptassvgnmed_rate, 4),
+   !is.na(lag(sptassvgnmed_rate, 3)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 3)) / lag(sptassvgnmed_rate, 3),
+   !is.na(lag(sptassvgnmed_rate, 2)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 2)) / lag(sptassvgnmed_rate, 2),
+   !is.na(lag(sptassvgnmed_rate, 1)) ~ (sptassvgnmed_rate - lag(sptassvgnmed_rate, 1)) / lag(sptassvgnmed_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 ### Robson group ----
 
-c7 <- dta %>%
+c12 <- dta %>%
  group_by(FiscalYear, rbs1) %>%
  mutate(
   rbs1_count = n()
@@ -938,10 +2721,21 @@ c7 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
+  rbs1_deltap = case_when(
+   !is.na(lag(rbs1_rate, 9)) ~ (rbs1_rate - lag(rbs1_rate, 9)) / lag(rbs1_rate, 9),
+   !is.na(lag(rbs1_rate, 8)) ~ (rbs1_rate - lag(rbs1_rate, 8)) / lag(rbs1_rate, 8),
+   !is.na(lag(rbs1_rate, 7)) ~ (rbs1_rate - lag(rbs1_rate, 7)) / lag(rbs1_rate, 7),
+   !is.na(lag(rbs1_rate, 6)) ~ (rbs1_rate - lag(rbs1_rate, 6)) / lag(rbs1_rate, 6),
+   !is.na(lag(rbs1_rate, 5)) ~ (rbs1_rate - lag(rbs1_rate, 5)) / lag(rbs1_rate, 5),
+   !is.na(lag(rbs1_rate, 4)) ~ (rbs1_rate - lag(rbs1_rate, 4)) / lag(rbs1_rate, 4),
+   !is.na(lag(rbs1_rate, 3)) ~ (rbs1_rate - lag(rbs1_rate, 3)) / lag(rbs1_rate, 3),
+   !is.na(lag(rbs1_rate, 2)) ~ (rbs1_rate - lag(rbs1_rate, 2)) / lag(rbs1_rate, 2),
+   !is.na(lag(rbs1_rate, 1)) ~ (rbs1_rate - lag(rbs1_rate, 1)) / lag(rbs1_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c8 <- dta %>%
+c13 <- dta %>%
  group_by(FiscalYear, rbs21) %>%
  mutate(
   rbs21_count = n()
@@ -958,10 +2752,21 @@ c8 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
+  rbs21_deltap = case_when(
+   !is.na(lag(rbs21_rate, 9)) ~ (rbs21_rate - lag(rbs21_rate, 9)) / lag(rbs21_rate, 9),
+   !is.na(lag(rbs21_rate, 8)) ~ (rbs21_rate - lag(rbs21_rate, 8)) / lag(rbs21_rate, 8),
+   !is.na(lag(rbs21_rate, 7)) ~ (rbs21_rate - lag(rbs21_rate, 7)) / lag(rbs21_rate, 7),
+   !is.na(lag(rbs21_rate, 6)) ~ (rbs21_rate - lag(rbs21_rate, 6)) / lag(rbs21_rate, 6),
+   !is.na(lag(rbs21_rate, 5)) ~ (rbs21_rate - lag(rbs21_rate, 5)) / lag(rbs21_rate, 5),
+   !is.na(lag(rbs21_rate, 4)) ~ (rbs21_rate - lag(rbs21_rate, 4)) / lag(rbs21_rate, 4),
+   !is.na(lag(rbs21_rate, 3)) ~ (rbs21_rate - lag(rbs21_rate, 3)) / lag(rbs21_rate, 3),
+   !is.na(lag(rbs21_rate, 2)) ~ (rbs21_rate - lag(rbs21_rate, 2)) / lag(rbs21_rate, 2),
+   !is.na(lag(rbs21_rate, 1)) ~ (rbs21_rate - lag(rbs21_rate, 1)) / lag(rbs21_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c9 <- dta %>%
+c14 <- dta %>%
  group_by(FiscalYear, rbs51) %>%
  mutate(
   rbs51_count = n()
@@ -978,12 +2783,136 @@ c9 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
+  rbs51_deltap = case_when(
+   !is.na(lag(rbs51_rate, 9)) ~ (rbs51_rate - lag(rbs51_rate, 9)) / lag(rbs51_rate, 9),
+   !is.na(lag(rbs51_rate, 8)) ~ (rbs51_rate - lag(rbs51_rate, 8)) / lag(rbs51_rate, 8),
+   !is.na(lag(rbs51_rate, 7)) ~ (rbs51_rate - lag(rbs51_rate, 7)) / lag(rbs51_rate, 7),
+   !is.na(lag(rbs51_rate, 6)) ~ (rbs51_rate - lag(rbs51_rate, 6)) / lag(rbs51_rate, 6),
+   !is.na(lag(rbs51_rate, 5)) ~ (rbs51_rate - lag(rbs51_rate, 5)) / lag(rbs51_rate, 5),
+   !is.na(lag(rbs51_rate, 4)) ~ (rbs51_rate - lag(rbs51_rate, 4)) / lag(rbs51_rate, 4),
+   !is.na(lag(rbs51_rate, 3)) ~ (rbs51_rate - lag(rbs51_rate, 3)) / lag(rbs51_rate, 3),
+   !is.na(lag(rbs51_rate, 2)) ~ (rbs51_rate - lag(rbs51_rate, 2)) / lag(rbs51_rate, 2),
+   !is.na(lag(rbs51_rate, 1)) ~ (rbs51_rate - lag(rbs51_rate, 1)) / lag(rbs51_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Postpartum readmission ----
+### Postpartum hemorrhage treated with a blood transfusion ----
 
-c10 <- dta %>%
+c15 <- dta %>%
+ select(FiscalYear, Any_Blood_Product, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphbl = case_when(
+   Any_Blood_Product > 0 & Postpartum_Haemorrhage > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, Any_Blood_Product, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphbl_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  pphbl_rate = pphbl_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Blood_Product %in% 1, Postpartum_Haemorrhage %in% 1) %>%
+ select(FiscalYear,pphbl, pphbl_count, pphbl_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  pphbl_delta = (pphbl_rate - lag(pphbl_rate))/lag(pphbl_rate),
+  pphbl_deltap = case_when(
+   !is.na(lag(pphbl_rate, 9)) ~ (pphbl_rate - lag(pphbl_rate, 9)) / lag(pphbl_rate, 9),
+   !is.na(lag(pphbl_rate, 8)) ~ (pphbl_rate - lag(pphbl_rate, 8)) / lag(pphbl_rate, 8),
+   !is.na(lag(pphbl_rate, 7)) ~ (pphbl_rate - lag(pphbl_rate, 7)) / lag(pphbl_rate, 7),
+   !is.na(lag(pphbl_rate, 6)) ~ (pphbl_rate - lag(pphbl_rate, 6)) / lag(pphbl_rate, 6),
+   !is.na(lag(pphbl_rate, 5)) ~ (pphbl_rate - lag(pphbl_rate, 5)) / lag(pphbl_rate, 5),
+   !is.na(lag(pphbl_rate, 4)) ~ (pphbl_rate - lag(pphbl_rate, 4)) / lag(pphbl_rate, 4),
+   !is.na(lag(pphbl_rate, 3)) ~ (pphbl_rate - lag(pphbl_rate, 3)) / lag(pphbl_rate, 3),
+   !is.na(lag(pphbl_rate, 2)) ~ (pphbl_rate - lag(pphbl_rate, 2)) / lag(pphbl_rate, 2),
+   !is.na(lag(pphbl_rate, 1)) ~ (pphbl_rate - lag(pphbl_rate, 1)) / lag(pphbl_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Postpartum hemorrhage resulting in procedural intervention ----
+
+c16 <- dta %>%
+ select(FiscalYear, Postpartum_Haemorrhage,
+        #### Procedural intervention
+        R029,# Procedures for postpartum hemorrhage
+        R029_00100,# Uterine compression suture (eg.B-Lynch or Cho)
+        R029_00200,# Tying (ligation) of uterine arteries
+        R029_00300,# Embolization of uterine arteries
+        R029_00400,# Uterine tamponade (use of Bakri balloon or uterine packing, not to be confused with vaginal packing
+        #### Hysterectomy
+        M_5MD60RC,# Cesarean hysterectomy with forceps
+        M_5MD60RD,# Cesarean hysterectomy with vacuum
+        M_5MD60KE,# Cesarean hysterectomy
+        M_5MD60CB,# Cesarean hysterectomy with vacuum and forceps
+        M_1RM89,# Excise tot uterus
+        MODEDEL) %>%
+ mutate(
+  # Procedural intervention
+  prcint = case_when(
+   R029 > 0 | R029_00100 > 0 |
+    R029_00200 > 0 | R029_00300 > 0 |
+    R029_00400 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  # Hysterectomy
+  hyst = case_when(
+   M_5MD60RC > 0 | M_5MD60RD > 0 |
+    M_5MD60KE > 0 | M_5MD60CB > 0 |
+    M_1RM89 > 0 | toupper(MODEDEL) %in% "CSH" ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  pphpi = case_when(
+   prcint > 0 | hyst > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, pphpi, Postpartum_Haemorrhage) %>%
+ mutate(
+  pphpi_count = n()
+ ) %>%
+ group_by(FiscalYear, Postpartum_Haemorrhage) %>%
+ mutate(
+  total_year = n(),
+  pphpi_rate = pphpi_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pphpi %in% 1, Postpartum_Haemorrhage %in% 1) %>%
+ select(FiscalYear,pphpi, pphpi_count, pphpi_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(pphpi),
+                 fill = list(
+                  pphpi_count = 0,
+                  pphpi_rate = NA
+                 )) %>%
+ mutate(
+  pphpi_delta = (pphpi_rate - lag(pphpi_rate))/lag(pphpi_rate),
+  pphpi_deltap = case_when(
+   !is.na(lag(pphpi_rate, 9)) ~ (pphpi_rate - lag(pphpi_rate, 9)) / lag(pphpi_rate, 9),
+   !is.na(lag(pphpi_rate, 8)) ~ (pphpi_rate - lag(pphpi_rate, 8)) / lag(pphpi_rate, 8),
+   !is.na(lag(pphpi_rate, 7)) ~ (pphpi_rate - lag(pphpi_rate, 7)) / lag(pphpi_rate, 7),
+   !is.na(lag(pphpi_rate, 6)) ~ (pphpi_rate - lag(pphpi_rate, 6)) / lag(pphpi_rate, 6),
+   !is.na(lag(pphpi_rate, 5)) ~ (pphpi_rate - lag(pphpi_rate, 5)) / lag(pphpi_rate, 5),
+   !is.na(lag(pphpi_rate, 4)) ~ (pphpi_rate - lag(pphpi_rate, 4)) / lag(pphpi_rate, 4),
+   !is.na(lag(pphpi_rate, 3)) ~ (pphpi_rate - lag(pphpi_rate, 3)) / lag(pphpi_rate, 3),
+   !is.na(lag(pphpi_rate, 2)) ~ (pphpi_rate - lag(pphpi_rate, 2)) / lag(pphpi_rate, 2),
+   !is.na(lag(pphpi_rate, 1)) ~ (pphpi_rate - lag(pphpi_rate, 1)) / lag(pphpi_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Postpartum readmission rate ----
+
+c17 <- dta %>%
  group_by(FiscalYear, ppreadm) %>%
  mutate(
   ppreadm_count = n()
@@ -1000,12 +2929,27 @@ c10 <- dta %>%
  arrange(FiscalYear) %>%
  mutate(
   ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
+  ppreadm_deltap = case_when(
+   !is.na(lag(ppreadm_rate, 9)) ~ (ppreadm_rate - lag(ppreadm_rate, 9)) / lag(ppreadm_rate, 9),
+   !is.na(lag(ppreadm_rate, 8)) ~ (ppreadm_rate - lag(ppreadm_rate, 8)) / lag(ppreadm_rate, 8),
+   !is.na(lag(ppreadm_rate, 7)) ~ (ppreadm_rate - lag(ppreadm_rate, 7)) / lag(ppreadm_rate, 7),
+   !is.na(lag(ppreadm_rate, 6)) ~ (ppreadm_rate - lag(ppreadm_rate, 6)) / lag(ppreadm_rate, 6),
+   !is.na(lag(ppreadm_rate, 5)) ~ (ppreadm_rate - lag(ppreadm_rate, 5)) / lag(ppreadm_rate, 5),
+   !is.na(lag(ppreadm_rate, 4)) ~ (ppreadm_rate - lag(ppreadm_rate, 4)) / lag(ppreadm_rate, 4),
+   !is.na(lag(ppreadm_rate, 3)) ~ (ppreadm_rate - lag(ppreadm_rate, 3)) / lag(ppreadm_rate, 3),
+   !is.na(lag(ppreadm_rate, 2)) ~ (ppreadm_rate - lag(ppreadm_rate, 2)) / lag(ppreadm_rate, 2),
+   !is.na(lag(ppreadm_rate, 1)) ~ (ppreadm_rate - lag(ppreadm_rate, 1)) / lag(ppreadm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
+
+### Postpartum patients who received medical anticoagulation prophylaxis when indicated ----
+
+c18
 
 ### Skin to skin ----
 
-c11 <- dta %>%
+c19 <- dta %>%
  group_by(FiscalYear, sknskn) %>%
  mutate(
   sknskn_count = n()
@@ -1016,16 +2960,27 @@ c11 <- dta %>%
   sknskn_rate = sknskn_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknskn %in% 1) %>%
+ filter(sknskn %in% 1, lvb %in% 1) %>%
  select(FiscalYear, sknskn, sknskn_count,sknskn_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
+  sknskn_deltap = case_when(
+   !is.na(lag(sknskn_rate, 9)) ~ (sknskn_rate - lag(sknskn_rate, 9)) / lag(sknskn_rate, 9),
+   !is.na(lag(sknskn_rate, 8)) ~ (sknskn_rate - lag(sknskn_rate, 8)) / lag(sknskn_rate, 8),
+   !is.na(lag(sknskn_rate, 7)) ~ (sknskn_rate - lag(sknskn_rate, 7)) / lag(sknskn_rate, 7),
+   !is.na(lag(sknskn_rate, 6)) ~ (sknskn_rate - lag(sknskn_rate, 6)) / lag(sknskn_rate, 6),
+   !is.na(lag(sknskn_rate, 5)) ~ (sknskn_rate - lag(sknskn_rate, 5)) / lag(sknskn_rate, 5),
+   !is.na(lag(sknskn_rate, 4)) ~ (sknskn_rate - lag(sknskn_rate, 4)) / lag(sknskn_rate, 4),
+   !is.na(lag(sknskn_rate, 3)) ~ (sknskn_rate - lag(sknskn_rate, 3)) / lag(sknskn_rate, 3),
+   !is.na(lag(sknskn_rate, 2)) ~ (sknskn_rate - lag(sknskn_rate, 2)) / lag(sknskn_rate, 2),
+   !is.na(lag(sknskn_rate, 1)) ~ (sknskn_rate - lag(sknskn_rate, 1)) / lag(sknskn_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c12 <- dta %>%
+c20 <- dta %>%
  group_by(FiscalYear, sknsknvg) %>%
  mutate(
   sknsknvg_count = n()
@@ -1036,16 +2991,27 @@ c12 <- dta %>%
   sknsknvg_rate = sknsknvg_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknsknvg %in% 1) %>%
+ filter(sknsknvg %in% 1, lvb %in% 1) %>%
  select(FiscalYear, sknsknvg, sknsknvg_count,sknsknvg_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
+  sknsknvg_deltap = case_when(
+   !is.na(lag(sknsknvg_rate, 9)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 9)) / lag(sknsknvg_rate, 9),
+   !is.na(lag(sknsknvg_rate, 8)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 8)) / lag(sknsknvg_rate, 8),
+   !is.na(lag(sknsknvg_rate, 7)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 7)) / lag(sknsknvg_rate, 7),
+   !is.na(lag(sknsknvg_rate, 6)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 6)) / lag(sknsknvg_rate, 6),
+   !is.na(lag(sknsknvg_rate, 5)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 5)) / lag(sknsknvg_rate, 5),
+   !is.na(lag(sknsknvg_rate, 4)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 4)) / lag(sknsknvg_rate, 4),
+   !is.na(lag(sknsknvg_rate, 3)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 3)) / lag(sknsknvg_rate, 3),
+   !is.na(lag(sknsknvg_rate, 2)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 2)) / lag(sknsknvg_rate, 2),
+   !is.na(lag(sknsknvg_rate, 1)) ~ (sknsknvg_rate - lag(sknsknvg_rate, 1)) / lag(sknsknvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c13 <- dta %>%
+c21 <- dta %>%
  group_by(FiscalYear, sknskncs) %>%
  mutate(
   sknskncs_count = n()
@@ -1056,18 +3022,74 @@ c13 <- dta %>%
   sknskncs_rate = sknskncs_count/total_year
  ) %>%
  ungroup() %>%
- filter(sknskncs %in% 1) %>%
+ filter(sknskncs %in% 1, lvb %in% 1) %>%
  select(FiscalYear, sknskncs, sknskncs_count,sknskncs_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
+  sknskncs_deltap = case_when(
+   !is.na(lag(sknskncs_rate, 9)) ~ (sknskncs_rate - lag(sknskncs_rate, 9)) / lag(sknskncs_rate, 9),
+   !is.na(lag(sknskncs_rate, 8)) ~ (sknskncs_rate - lag(sknskncs_rate, 8)) / lag(sknskncs_rate, 8),
+   !is.na(lag(sknskncs_rate, 7)) ~ (sknskncs_rate - lag(sknskncs_rate, 7)) / lag(sknskncs_rate, 7),
+   !is.na(lag(sknskncs_rate, 6)) ~ (sknskncs_rate - lag(sknskncs_rate, 6)) / lag(sknskncs_rate, 6),
+   !is.na(lag(sknskncs_rate, 5)) ~ (sknskncs_rate - lag(sknskncs_rate, 5)) / lag(sknskncs_rate, 5),
+   !is.na(lag(sknskncs_rate, 4)) ~ (sknskncs_rate - lag(sknskncs_rate, 4)) / lag(sknskncs_rate, 4),
+   !is.na(lag(sknskncs_rate, 3)) ~ (sknskncs_rate - lag(sknskncs_rate, 3)) / lag(sknskncs_rate, 3),
+   !is.na(lag(sknskncs_rate, 2)) ~ (sknskncs_rate - lag(sknskncs_rate, 2)) / lag(sknskncs_rate, 2),
+   !is.na(lag(sknskncs_rate, 1)) ~ (sknskncs_rate - lag(sknskncs_rate, 1)) / lag(sknskncs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Neonatal readmission ----
+### Postpartum blood products amongst those who received antenatal iron therapy ----
 
-c14 <- dta %>%
+c22 <- dta %>%
+ mutate(
+  pphiv = case_when(
+   Any_Blood_Product > 0 & R003_02100 > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, Any_Blood_Product, R003_02100) %>%
+ mutate(
+  pphiv_count = n()
+ ) %>%
+ group_by(FiscalYear, Any_Blood_Product) %>%
+ mutate(
+  total_year = n(),
+  pphiv_rate = pphiv_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(Any_Blood_Product %in% 1, R003_02100 %in% 1) %>%
+ select(FiscalYear, pphiv, pphiv_count, pphiv_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(pphiv),
+                 fill = list(
+                  pphiv_count = 0,
+                  pphiv_rate = NA
+                 )) %>%
+ mutate(
+  pphiv_delta = (pphiv_rate - lag(pphiv_rate))/lag(pphiv_rate),
+  pphiv_deltap = case_when(
+   !is.na(lag(pphiv_rate, 9)) ~ (pphiv_rate - lag(pphiv_rate, 9)) / lag(pphiv_rate, 9),
+   !is.na(lag(pphiv_rate, 8)) ~ (pphiv_rate - lag(pphiv_rate, 8)) / lag(pphiv_rate, 8),
+   !is.na(lag(pphiv_rate, 7)) ~ (pphiv_rate - lag(pphiv_rate, 7)) / lag(pphiv_rate, 7),
+   !is.na(lag(pphiv_rate, 6)) ~ (pphiv_rate - lag(pphiv_rate, 6)) / lag(pphiv_rate, 6),
+   !is.na(lag(pphiv_rate, 5)) ~ (pphiv_rate - lag(pphiv_rate, 5)) / lag(pphiv_rate, 5),
+   !is.na(lag(pphiv_rate, 4)) ~ (pphiv_rate - lag(pphiv_rate, 4)) / lag(pphiv_rate, 4),
+   !is.na(lag(pphiv_rate, 3)) ~ (pphiv_rate - lag(pphiv_rate, 3)) / lag(pphiv_rate, 3),
+   !is.na(lag(pphiv_rate, 2)) ~ (pphiv_rate - lag(pphiv_rate, 2)) / lag(pphiv_rate, 2),
+   !is.na(lag(pphiv_rate, 1)) ~ (pphiv_rate - lag(pphiv_rate, 1)) / lag(pphiv_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Neonatal readmission rate ----
+
+c23 <- dta %>%
  group_by(FiscalYear, neoreadm) %>%
  mutate(
   neoreadm_count = n()
@@ -1078,18 +3100,553 @@ c14 <- dta %>%
   neoreadm_rate = neoreadm_count/total_year
  ) %>%
  ungroup() %>%
- filter(neoreadm %in% 1) %>%
+ filter(neoreadm %in% 1, lvb %in% 1) %>%
  select(FiscalYear, neoreadm, neoreadm_count,neoreadm_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
+  neoreadm_deltap = case_when(
+   !is.na(lag(neoreadm_rate, 9)) ~ (neoreadm_rate - lag(neoreadm_rate, 9)) / lag(neoreadm_rate, 9),
+   !is.na(lag(neoreadm_rate, 8)) ~ (neoreadm_rate - lag(neoreadm_rate, 8)) / lag(neoreadm_rate, 8),
+   !is.na(lag(neoreadm_rate, 7)) ~ (neoreadm_rate - lag(neoreadm_rate, 7)) / lag(neoreadm_rate, 7),
+   !is.na(lag(neoreadm_rate, 6)) ~ (neoreadm_rate - lag(neoreadm_rate, 6)) / lag(neoreadm_rate, 6),
+   !is.na(lag(neoreadm_rate, 5)) ~ (neoreadm_rate - lag(neoreadm_rate, 5)) / lag(neoreadm_rate, 5),
+   !is.na(lag(neoreadm_rate, 4)) ~ (neoreadm_rate - lag(neoreadm_rate, 4)) / lag(neoreadm_rate, 4),
+   !is.na(lag(neoreadm_rate, 3)) ~ (neoreadm_rate - lag(neoreadm_rate, 3)) / lag(neoreadm_rate, 3),
+   !is.na(lag(neoreadm_rate, 2)) ~ (neoreadm_rate - lag(neoreadm_rate, 2)) / lag(neoreadm_rate, 2),
+   !is.na(lag(neoreadm_rate, 1)) ~ (neoreadm_rate - lag(neoreadm_rate, 1)) / lag(neoreadm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-### Milk feeding ----
+### Preterm infants who received complete course of steroids > 24h and < 7 days prior to birth ----
 
-c15 <- dta %>%
+c24 <- dta %>%
+ mutate(
+  pretster = case_when(
+   (GA_BEST < 35 & GA_BEST >=24) &
+    (R068_00200 > 0 | R068_00300 > 0 | R068_00700 > 0 |
+      R068_00800 > 0 | R068_01200 > 0 | R068_01300 > 0 ) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (GA_BEST < 35 & GA_BEST >=24) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, pretster) %>%
+ mutate(
+  pretster_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  pretster_rate = pretster_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pretster %in% 1) %>%
+ select(FiscalYear, pretster, pretster_count,pretster_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(pretster),
+                 fill = list(
+                  pretster_count = 0,
+                  pretster_rate = NA
+                 )) %>%
+ mutate(
+  pretster_delta = (pretster_rate - lag(pretster_rate))/lag(pretster_rate),
+  pretster_deltap = case_when(
+   !is.na(lag(pretster_rate, 9)) ~ (pretster_rate - lag(pretster_rate, 9)) / lag(pretster_rate, 9),
+   !is.na(lag(pretster_rate, 8)) ~ (pretster_rate - lag(pretster_rate, 8)) / lag(pretster_rate, 8),
+   !is.na(lag(pretster_rate, 7)) ~ (pretster_rate - lag(pretster_rate, 7)) / lag(pretster_rate, 7),
+   !is.na(lag(pretster_rate, 6)) ~ (pretster_rate - lag(pretster_rate, 6)) / lag(pretster_rate, 6),
+   !is.na(lag(pretster_rate, 5)) ~ (pretster_rate - lag(pretster_rate, 5)) / lag(pretster_rate, 5),
+   !is.na(lag(pretster_rate, 4)) ~ (pretster_rate - lag(pretster_rate, 4)) / lag(pretster_rate, 4),
+   !is.na(lag(pretster_rate, 3)) ~ (pretster_rate - lag(pretster_rate, 3)) / lag(pretster_rate, 3),
+   !is.na(lag(pretster_rate, 2)) ~ (pretster_rate - lag(pretster_rate, 2)) / lag(pretster_rate, 2),
+   !is.na(lag(pretster_rate, 1)) ~ (pretster_rate - lag(pretster_rate, 1)) / lag(pretster_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Preterm babies born in facility without NICU ----
+
+c25 <- dta %>%
+ mutate(
+  pretnnicu = case_when(
+   (GA_BEST < 34) &
+    (!DLHosp %in% c(86,87,-12)) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (GA_BEST < 34) &
+    (!DLHosp %in% c(-12)) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, pretnnicu) %>%
+ mutate(
+  pretnnicu_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  pretnnicu_rate = pretnnicu_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(pretnnicu %in% 1) %>%
+ select(FiscalYear, pretnnicu, pretnnicu_count,pretnnicu_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(pretnnicu),
+                 fill = list(
+                  pretnnicu_count = 0,
+                  pretnnicu_rate = NA
+                 )) %>%
+ mutate(
+  pretnnicu_delta = (pretnnicu_rate - lag(pretnnicu_rate))/lag(pretnnicu_rate),
+  pretnnicu_deltap = case_when(
+   !is.na(lag(pretnnicu_rate, 9)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 9)) / lag(pretnnicu_rate, 9),
+   !is.na(lag(pretnnicu_rate, 8)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 8)) / lag(pretnnicu_rate, 8),
+   !is.na(lag(pretnnicu_rate, 7)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 7)) / lag(pretnnicu_rate, 7),
+   !is.na(lag(pretnnicu_rate, 6)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 6)) / lag(pretnnicu_rate, 6),
+   !is.na(lag(pretnnicu_rate, 5)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 5)) / lag(pretnnicu_rate, 5),
+   !is.na(lag(pretnnicu_rate, 4)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 4)) / lag(pretnnicu_rate, 4),
+   !is.na(lag(pretnnicu_rate, 3)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 3)) / lag(pretnnicu_rate, 3),
+   !is.na(lag(pretnnicu_rate, 2)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 2)) / lag(pretnnicu_rate, 2),
+   !is.na(lag(pretnnicu_rate, 1)) ~ (pretnnicu_rate - lag(pretnnicu_rate, 1)) / lag(pretnnicu_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Newborn respiratory distress associated with low-risk repeat cesarean at term gestation (≥ 37 weeks < 39 weeks) ----
+
+c26 <- dta %>%
+ mutate(
+  newlwcs = case_when(
+   (GA_BEST < 39 & GA_BEST >= 37) &
+    (DLPRVCS > 0) &
+    (toupper(DMMETHOD) %in% "CST") &
+    (!toupper(BTOUTCOM) %in% "FTD") &
+    (R059_00200 > 0 | R059_00300 > 0 | R059_00400 > 0 | R059_00500 > 0 | R059_00600 > 0) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (GA_BEST < 39 & GA_BEST >= 37) &
+    (DLPRVCS > 0) &
+    (toupper(DMMETHOD) %in% "CST") &
+    (!toupper(BTOUTCOM) %in% "FTD") ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, newlwcs) %>%
+ mutate(
+  newlwcs_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  newlwcs_rate = newlwcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(newlwcs %in% 1) %>%
+ select(FiscalYear, newlwcs, newlwcs_count,newlwcs_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(newlwcs),
+                 fill = list(
+                  newlwcs_count = 0,
+                  newlwcs_rate = NA
+                 )) %>%
+ mutate(
+  newlwcs_delta = (newlwcs_rate - lag(newlwcs_rate))/lag(newlwcs_rate),
+  newlwcs_deltap = case_when(
+   !is.na(lag(newlwcs_rate, 9)) ~ (newlwcs_rate - lag(newlwcs_rate, 9)) / lag(newlwcs_rate, 9),
+   !is.na(lag(newlwcs_rate, 8)) ~ (newlwcs_rate - lag(newlwcs_rate, 8)) / lag(newlwcs_rate, 8),
+   !is.na(lag(newlwcs_rate, 7)) ~ (newlwcs_rate - lag(newlwcs_rate, 7)) / lag(newlwcs_rate, 7),
+   !is.na(lag(newlwcs_rate, 6)) ~ (newlwcs_rate - lag(newlwcs_rate, 6)) / lag(newlwcs_rate, 6),
+   !is.na(lag(newlwcs_rate, 5)) ~ (newlwcs_rate - lag(newlwcs_rate, 5)) / lag(newlwcs_rate, 5),
+   !is.na(lag(newlwcs_rate, 4)) ~ (newlwcs_rate - lag(newlwcs_rate, 4)) / lag(newlwcs_rate, 4),
+   !is.na(lag(newlwcs_rate, 3)) ~ (newlwcs_rate - lag(newlwcs_rate, 3)) / lag(newlwcs_rate, 3),
+   !is.na(lag(newlwcs_rate, 2)) ~ (newlwcs_rate - lag(newlwcs_rate, 2)) / lag(newlwcs_rate, 2),
+   !is.na(lag(newlwcs_rate, 1)) ~ (newlwcs_rate - lag(newlwcs_rate, 1)) / lag(newlwcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping  ----
+
+c27 <- dta %>%
+ mutate(
+  delcord = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcord) %>%
+ mutate(
+  delcord_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  delcord_rate = delcord_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcord %in% 1, lvb %in% 1) %>%
+ select(FiscalYear, delcord, delcord_count,delcord_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcord),
+                 fill = list(
+                  delcord_count = 0,
+                  delcord_rate = NA
+                 )) %>%
+ mutate(
+  delcord_delta = (delcord_rate - lag(delcord_rate))/lag(delcord_rate),
+  delcord_deltap = case_when(
+   !is.na(lag(delcord_rate, 9)) ~ (delcord_rate - lag(delcord_rate, 9)) / lag(delcord_rate, 9),
+   !is.na(lag(delcord_rate, 8)) ~ (delcord_rate - lag(delcord_rate, 8)) / lag(delcord_rate, 8),
+   !is.na(lag(delcord_rate, 7)) ~ (delcord_rate - lag(delcord_rate, 7)) / lag(delcord_rate, 7),
+   !is.na(lag(delcord_rate, 6)) ~ (delcord_rate - lag(delcord_rate, 6)) / lag(delcord_rate, 6),
+   !is.na(lag(delcord_rate, 5)) ~ (delcord_rate - lag(delcord_rate, 5)) / lag(delcord_rate, 5),
+   !is.na(lag(delcord_rate, 4)) ~ (delcord_rate - lag(delcord_rate, 4)) / lag(delcord_rate, 4),
+   !is.na(lag(delcord_rate, 3)) ~ (delcord_rate - lag(delcord_rate, 3)) / lag(delcord_rate, 3),
+   !is.na(lag(delcord_rate, 2)) ~ (delcord_rate - lag(delcord_rate, 2)) / lag(delcord_rate, 2),
+   !is.na(lag(delcord_rate, 1)) ~ (delcord_rate - lag(delcord_rate, 1)) / lag(delcord_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns ----
+
+c28 <- dta %>%
+ mutate(
+  delcordterm = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordterm) %>%
+ mutate(
+  delcordterm_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordterm_rate = delcordterm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordterm %in% 1) %>%
+ select(FiscalYear, delcordterm, delcordterm_count,delcordterm_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordterm),
+                 fill = list(
+                  delcordterm_count = 0,
+                  delcordterm_rate = NA
+                 )) %>%
+ mutate(
+  delcordterm_delta = (delcordterm_rate - lag(delcordterm_rate))/lag(delcordterm_rate),
+  delcordterm_deltap = case_when(
+   !is.na(lag(delcordterm_rate, 9)) ~ (delcordterm_rate - lag(delcordterm_rate, 9)) / lag(delcordterm_rate, 9),
+   !is.na(lag(delcordterm_rate, 8)) ~ (delcordterm_rate - lag(delcordterm_rate, 8)) / lag(delcordterm_rate, 8),
+   !is.na(lag(delcordterm_rate, 7)) ~ (delcordterm_rate - lag(delcordterm_rate, 7)) / lag(delcordterm_rate, 7),
+   !is.na(lag(delcordterm_rate, 6)) ~ (delcordterm_rate - lag(delcordterm_rate, 6)) / lag(delcordterm_rate, 6),
+   !is.na(lag(delcordterm_rate, 5)) ~ (delcordterm_rate - lag(delcordterm_rate, 5)) / lag(delcordterm_rate, 5),
+   !is.na(lag(delcordterm_rate, 4)) ~ (delcordterm_rate - lag(delcordterm_rate, 4)) / lag(delcordterm_rate, 4),
+   !is.na(lag(delcordterm_rate, 3)) ~ (delcordterm_rate - lag(delcordterm_rate, 3)) / lag(delcordterm_rate, 3),
+   !is.na(lag(delcordterm_rate, 2)) ~ (delcordterm_rate - lag(delcordterm_rate, 2)) / lag(delcordterm_rate, 2),
+   !is.na(lag(delcordterm_rate, 1)) ~ (delcordterm_rate - lag(delcordterm_rate, 1)) / lag(delcordterm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns following spontaneous vaginal birth ----
+
+c29 <- dta %>%
+ mutate(
+  delcordtermvg = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordtermvg) %>%
+ mutate(
+  delcordtermvg_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordtermvg_rate = delcordtermvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordtermvg %in% 1) %>%
+ select(FiscalYear, delcordtermvg, delcordtermvg_count,delcordtermvg_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordtermvg),
+                 fill = list(
+                  delcordtermvg_count = 0,
+                  delcordtermvg_rate = NA
+                 )) %>%
+ mutate(
+  delcordtermvg_delta = (delcordtermvg_rate - lag(delcordtermvg_rate))/lag(delcordtermvg_rate),
+  delcordtermvg_deltap = case_when(
+   !is.na(lag(delcordtermvg_rate, 9)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 9)) / lag(delcordtermvg_rate, 9),
+   !is.na(lag(delcordtermvg_rate, 8)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 8)) / lag(delcordtermvg_rate, 8),
+   !is.na(lag(delcordtermvg_rate, 7)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 7)) / lag(delcordtermvg_rate, 7),
+   !is.na(lag(delcordtermvg_rate, 6)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 6)) / lag(delcordtermvg_rate, 6),
+   !is.na(lag(delcordtermvg_rate, 5)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 5)) / lag(delcordtermvg_rate, 5),
+   !is.na(lag(delcordtermvg_rate, 4)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 4)) / lag(delcordtermvg_rate, 4),
+   !is.na(lag(delcordtermvg_rate, 3)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 3)) / lag(delcordtermvg_rate, 3),
+   !is.na(lag(delcordtermvg_rate, 2)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 2)) / lag(delcordtermvg_rate, 2),
+   !is.na(lag(delcordtermvg_rate, 1)) ~ (delcordtermvg_rate - lag(delcordtermvg_rate, 1)) / lag(delcordtermvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst Term Newborns following caesarean birth ----
+
+c30 <- dta %>%
+ mutate(
+  delcordtermcs = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST >= 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordtermcs) %>%
+ mutate(
+  delcordtermcs_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordtermcs_rate = delcordtermcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordtermcs %in% 1) %>%
+ select(FiscalYear, delcordtermcs, delcordtermcs_count,delcordtermcs_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordtermcs),
+                 fill = list(
+                  delcordtermcs_count = 0,
+                  delcordtermcs_rate = NA
+                 )) %>%
+ mutate(
+  delcordtermcs_delta = (delcordtermcs_rate - lag(delcordtermcs_rate))/lag(delcordtermcs_rate),
+  delcordtermcs_deltap = case_when(
+   !is.na(lag(delcordtermcs_rate, 9)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 9)) / lag(delcordtermcs_rate, 9),
+   !is.na(lag(delcordtermcs_rate, 8)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 8)) / lag(delcordtermcs_rate, 8),
+   !is.na(lag(delcordtermcs_rate, 7)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 7)) / lag(delcordtermcs_rate, 7),
+   !is.na(lag(delcordtermcs_rate, 6)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 6)) / lag(delcordtermcs_rate, 6),
+   !is.na(lag(delcordtermcs_rate, 5)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 5)) / lag(delcordtermcs_rate, 5),
+   !is.na(lag(delcordtermcs_rate, 4)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 4)) / lag(delcordtermcs_rate, 4),
+   !is.na(lag(delcordtermcs_rate, 3)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 3)) / lag(delcordtermcs_rate, 3),
+   !is.na(lag(delcordtermcs_rate, 2)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 2)) / lag(delcordtermcs_rate, 2),
+   !is.na(lag(delcordtermcs_rate, 1)) ~ (delcordtermcs_rate - lag(delcordtermcs_rate, 1)) / lag(delcordtermcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns ----
+
+c31 <- dta %>%
+ mutate(
+  delcordpreterm = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordpreterm) %>%
+ mutate(
+  delcordpreterm_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpreterm_rate = delcordpreterm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpreterm %in% 1) %>%
+ select(FiscalYear, delcordpreterm, delcordpreterm_count,delcordpreterm_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordpreterm),
+                 fill = list(
+                  delcordpreterm_count = 0,
+                  delcordpreterm_rate = NA
+                 )) %>%
+ mutate(
+  delcordpreterm_delta = (delcordpreterm_rate - lag(delcordpreterm_rate))/lag(delcordpreterm_rate),
+  delcordpreterm_deltap = case_when(
+   !is.na(lag(delcordpreterm_rate, 9)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 9)) / lag(delcordpreterm_rate, 9),
+   !is.na(lag(delcordpreterm_rate, 8)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 8)) / lag(delcordpreterm_rate, 8),
+   !is.na(lag(delcordpreterm_rate, 7)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 7)) / lag(delcordpreterm_rate, 7),
+   !is.na(lag(delcordpreterm_rate, 6)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 6)) / lag(delcordpreterm_rate, 6),
+   !is.na(lag(delcordpreterm_rate, 5)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 5)) / lag(delcordpreterm_rate, 5),
+   !is.na(lag(delcordpreterm_rate, 4)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 4)) / lag(delcordpreterm_rate, 4),
+   !is.na(lag(delcordpreterm_rate, 3)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 3)) / lag(delcordpreterm_rate, 3),
+   !is.na(lag(delcordpreterm_rate, 2)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 2)) / lag(delcordpreterm_rate, 2),
+   !is.na(lag(delcordpreterm_rate, 1)) ~ (delcordpreterm_rate - lag(delcordpreterm_rate, 1)) / lag(delcordpreterm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns following spontaneous vaginal birth ----
+
+c32 <- dta %>%
+ mutate(
+  delcordpretermvg = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("SPT","BIV")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordpretermvg) %>%
+ mutate(
+  delcordpretermvg_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpretermvg_rate = delcordpretermvg_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpretermvg %in% 1) %>%
+ select(FiscalYear, delcordpretermvg, delcordpretermvg_count,delcordpretermvg_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordpretermvg),
+                 fill = list(
+                  delcordpretermvg_count = 0,
+                  delcordpretermvg_rate = NA
+                 )) %>%
+ mutate(
+  delcordpretermvg_delta = (delcordpretermvg_rate - lag(delcordpretermvg_rate))/lag(delcordpretermvg_rate),
+  delcordpretermvg_deltap = case_when(
+   !is.na(lag(delcordpretermvg_rate, 9)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 9)) / lag(delcordpretermvg_rate, 9),
+   !is.na(lag(delcordpretermvg_rate, 8)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 8)) / lag(delcordpretermvg_rate, 8),
+   !is.na(lag(delcordpretermvg_rate, 7)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 7)) / lag(delcordpretermvg_rate, 7),
+   !is.na(lag(delcordpretermvg_rate, 6)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 6)) / lag(delcordpretermvg_rate, 6),
+   !is.na(lag(delcordpretermvg_rate, 5)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 5)) / lag(delcordpretermvg_rate, 5),
+   !is.na(lag(delcordpretermvg_rate, 4)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 4)) / lag(delcordpretermvg_rate, 4),
+   !is.na(lag(delcordpretermvg_rate, 3)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 3)) / lag(delcordpretermvg_rate, 3),
+   !is.na(lag(delcordpretermvg_rate, 2)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 2)) / lag(delcordpretermvg_rate, 2),
+   !is.na(lag(delcordpretermvg_rate, 1)) ~ (delcordpretermvg_rate - lag(delcordpretermvg_rate, 1)) / lag(delcordpretermvg_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Delayed Cord Clamping amongst preterm Newborns following caesarean birth ----
+
+c33 <- dta %>%
+ mutate(
+  delcordpretermcs = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (DEL_CORD_CLAMP %in% 3) &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  ),
+  den = case_when(
+   (!toupper(BTOUTCOM) %in% "FTD") &
+    (GA_BEST < 37) &
+    (toupper(DMMETHOD) %in% c("CST")) ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, delcordpretermcs) %>%
+ mutate(
+  delcordpretermcs_count = n()
+ ) %>%
+ group_by(FiscalYear, den) %>%
+ mutate(
+  total_year = n(),
+  delcordpretermcs_rate = delcordpretermcs_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(delcordpretermcs %in% 1) %>%
+ select(FiscalYear, delcordpretermcs, delcordpretermcs_count,delcordpretermcs_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ tidyr::complete(FiscalYear = levels(dta$FiscalYear),
+                 tidyr::nesting(delcordpretermcs),
+                 fill = list(
+                  delcordpretermcs_count = 0,
+                  delcordpretermcs_rate = NA
+                 )) %>%
+ mutate(
+  delcordpretermcs_delta = (delcordpretermcs_rate - lag(delcordpretermcs_rate))/lag(delcordpretermcs_rate),
+  delcordpretermcs_deltap = case_when(
+   !is.na(lag(delcordpretermcs_rate, 9)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 9)) / lag(delcordpretermcs_rate, 9),
+   !is.na(lag(delcordpretermcs_rate, 8)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 8)) / lag(delcordpretermcs_rate, 8),
+   !is.na(lag(delcordpretermcs_rate, 7)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 7)) / lag(delcordpretermcs_rate, 7),
+   !is.na(lag(delcordpretermcs_rate, 6)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 6)) / lag(delcordpretermcs_rate, 6),
+   !is.na(lag(delcordpretermcs_rate, 5)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 5)) / lag(delcordpretermcs_rate, 5),
+   !is.na(lag(delcordpretermcs_rate, 4)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 4)) / lag(delcordpretermcs_rate, 4),
+   !is.na(lag(delcordpretermcs_rate, 3)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 3)) / lag(delcordpretermcs_rate, 3),
+   !is.na(lag(delcordpretermcs_rate, 2)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 2)) / lag(delcordpretermcs_rate, 2),
+   !is.na(lag(delcordpretermcs_rate, 1)) ~ (delcordpretermcs_rate - lag(delcordpretermcs_rate, 1)) / lag(delcordpretermcs_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Exclusive Human milk feeding ----
+
+c34 <- dta %>%
  group_by(FiscalYear, excbrst) %>%
  mutate(
   excbrst_count = n()
@@ -1100,16 +3657,29 @@ c15 <- dta %>%
   excbrst_rate = excbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(excbrst %in% 1) %>%
+ filter(excbrst %in% 1, lvb %in% 1) %>%
  select(FiscalYear, excbrst, excbrst_count,excbrst_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
+  excbrst_deltap = case_when(
+   !is.na(lag(excbrst_rate, 9)) ~ (excbrst_rate - lag(excbrst_rate, 9)) / lag(excbrst_rate, 9),
+   !is.na(lag(excbrst_rate, 8)) ~ (excbrst_rate - lag(excbrst_rate, 8)) / lag(excbrst_rate, 8),
+   !is.na(lag(excbrst_rate, 7)) ~ (excbrst_rate - lag(excbrst_rate, 7)) / lag(excbrst_rate, 7),
+   !is.na(lag(excbrst_rate, 6)) ~ (excbrst_rate - lag(excbrst_rate, 6)) / lag(excbrst_rate, 6),
+   !is.na(lag(excbrst_rate, 5)) ~ (excbrst_rate - lag(excbrst_rate, 5)) / lag(excbrst_rate, 5),
+   !is.na(lag(excbrst_rate, 4)) ~ (excbrst_rate - lag(excbrst_rate, 4)) / lag(excbrst_rate, 4),
+   !is.na(lag(excbrst_rate, 3)) ~ (excbrst_rate - lag(excbrst_rate, 3)) / lag(excbrst_rate, 3),
+   !is.na(lag(excbrst_rate, 2)) ~ (excbrst_rate - lag(excbrst_rate, 2)) / lag(excbrst_rate, 2),
+   !is.na(lag(excbrst_rate, 1)) ~ (excbrst_rate - lag(excbrst_rate, 1)) / lag(excbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c16 <- dta %>%
+### Non-exclusive (any) human milk feeding ----
+
+c35 <- dta %>%
  group_by(FiscalYear, nexcbrst) %>%
  mutate(
   nexcbrst_count = n()
@@ -1120,16 +3690,29 @@ c16 <- dta %>%
   nexcbrst_rate = nexcbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(nexcbrst %in% 1) %>%
+ filter(nexcbrst %in% 1, lvb %in% 1) %>%
  select(FiscalYear, nexcbrst, nexcbrst_count,nexcbrst_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
+  nexcbrst_deltap = case_when(
+   !is.na(lag(nexcbrst_rate, 9)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 9)) / lag(nexcbrst_rate, 9),
+   !is.na(lag(nexcbrst_rate, 8)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 8)) / lag(nexcbrst_rate, 8),
+   !is.na(lag(nexcbrst_rate, 7)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 7)) / lag(nexcbrst_rate, 7),
+   !is.na(lag(nexcbrst_rate, 6)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 6)) / lag(nexcbrst_rate, 6),
+   !is.na(lag(nexcbrst_rate, 5)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 5)) / lag(nexcbrst_rate, 5),
+   !is.na(lag(nexcbrst_rate, 4)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 4)) / lag(nexcbrst_rate, 4),
+   !is.na(lag(nexcbrst_rate, 3)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 3)) / lag(nexcbrst_rate, 3),
+   !is.na(lag(nexcbrst_rate, 2)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 2)) / lag(nexcbrst_rate, 2),
+   !is.na(lag(nexcbrst_rate, 1)) ~ (nexcbrst_rate - lag(nexcbrst_rate, 1)) / lag(nexcbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c17 <- dta %>%
+### No breast/chest feeding among those who intended to breast/chest feed ----
+
+c36 <- dta %>%
  group_by(FiscalYear, nbrst) %>%
  mutate(
   nbrst_count = n()
@@ -1140,16 +3723,29 @@ c17 <- dta %>%
   nbrst_rate = nbrst_count/total_year
  ) %>%
  ungroup() %>%
- filter(nbrst %in% 1) %>%
+ filter(nbrst %in% 1, lvb %in% 1) %>%
  select(FiscalYear, nbrst, nbrst_count,nbrst_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
+  nbrst_deltap = case_when(
+   !is.na(lag(nbrst_rate, 9)) ~ (nbrst_rate - lag(nbrst_rate, 9)) / lag(nbrst_rate, 9),
+   !is.na(lag(nbrst_rate, 8)) ~ (nbrst_rate - lag(nbrst_rate, 8)) / lag(nbrst_rate, 8),
+   !is.na(lag(nbrst_rate, 7)) ~ (nbrst_rate - lag(nbrst_rate, 7)) / lag(nbrst_rate, 7),
+   !is.na(lag(nbrst_rate, 6)) ~ (nbrst_rate - lag(nbrst_rate, 6)) / lag(nbrst_rate, 6),
+   !is.na(lag(nbrst_rate, 5)) ~ (nbrst_rate - lag(nbrst_rate, 5)) / lag(nbrst_rate, 5),
+   !is.na(lag(nbrst_rate, 4)) ~ (nbrst_rate - lag(nbrst_rate, 4)) / lag(nbrst_rate, 4),
+   !is.na(lag(nbrst_rate, 3)) ~ (nbrst_rate - lag(nbrst_rate, 3)) / lag(nbrst_rate, 3),
+   !is.na(lag(nbrst_rate, 2)) ~ (nbrst_rate - lag(nbrst_rate, 2)) / lag(nbrst_rate, 2),
+   !is.na(lag(nbrst_rate, 1)) ~ (nbrst_rate - lag(nbrst_rate, 1)) / lag(nbrst_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
-c18 <- dta %>%
+### The breast/chest feeding initiation rate ----
+
+c37 <- dta %>%
  group_by(FiscalYear, brstinit) %>%
  mutate(
   brstinit_count = n()
@@ -1160,6319 +3756,153 @@ c18 <- dta %>%
   brstinit_rate = brstinit_count/total_year
  ) %>%
  ungroup() %>%
- filter(brstinit %in% 1) %>%
+ filter(brstinit %in% 1, lvb %in% 1) %>%
  select(FiscalYear, brstinit, brstinit_count,brstinit_rate) %>%
  distinct() %>%
  arrange(FiscalYear) %>%
  mutate(
   brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
+  brstinit_deltap = case_when(
+   !is.na(lag(brstinit_rate, 9)) ~ (brstinit_rate - lag(brstinit_rate, 9)) / lag(brstinit_rate, 9),
+   !is.na(lag(brstinit_rate, 8)) ~ (brstinit_rate - lag(brstinit_rate, 8)) / lag(brstinit_rate, 8),
+   !is.na(lag(brstinit_rate, 7)) ~ (brstinit_rate - lag(brstinit_rate, 7)) / lag(brstinit_rate, 7),
+   !is.na(lag(brstinit_rate, 6)) ~ (brstinit_rate - lag(brstinit_rate, 6)) / lag(brstinit_rate, 6),
+   !is.na(lag(brstinit_rate, 5)) ~ (brstinit_rate - lag(brstinit_rate, 5)) / lag(brstinit_rate, 5),
+   !is.na(lag(brstinit_rate, 4)) ~ (brstinit_rate - lag(brstinit_rate, 4)) / lag(brstinit_rate, 4),
+   !is.na(lag(brstinit_rate, 3)) ~ (brstinit_rate - lag(brstinit_rate, 3)) / lag(brstinit_rate, 3),
+   !is.na(lag(brstinit_rate, 2)) ~ (brstinit_rate - lag(brstinit_rate, 2)) / lag(brstinit_rate, 2),
+   !is.na(lag(brstinit_rate, 1)) ~ (brstinit_rate - lag(brstinit_rate, 1)) / lag(brstinit_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### ICU Admission during Pregnancy or Postpartum ----
+
+c38 <- dta %>%
+ mutate(
+  icu = case_when(
+   JOGC_ICU > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, JOGC_ICU) %>%
+ mutate(
+  icu_count = n()
+ ) %>%
+ group_by(FiscalYear) %>%
+ mutate(
+  total_year = n(),
+  icu_rate = icu_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(JOGC_ICU %in% 1) %>%
+ select(FiscalYear, icu, icu_count,icu_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  icu_delta = (icu_rate - lag(icu_rate))/lag(icu_rate),
+  icu_deltap = case_when(
+   !is.na(lag(icu_rate, 9)) ~ (icu_rate - lag(icu_rate, 9)) / lag(icu_rate, 9),
+   !is.na(lag(icu_rate, 8)) ~ (icu_rate - lag(icu_rate, 8)) / lag(icu_rate, 8),
+   !is.na(lag(icu_rate, 7)) ~ (icu_rate - lag(icu_rate, 7)) / lag(icu_rate, 7),
+   !is.na(lag(icu_rate, 6)) ~ (icu_rate - lag(icu_rate, 6)) / lag(icu_rate, 6),
+   !is.na(lag(icu_rate, 5)) ~ (icu_rate - lag(icu_rate, 5)) / lag(icu_rate, 5),
+   !is.na(lag(icu_rate, 4)) ~ (icu_rate - lag(icu_rate, 4)) / lag(icu_rate, 4),
+   !is.na(lag(icu_rate, 3)) ~ (icu_rate - lag(icu_rate, 3)) / lag(icu_rate, 3),
+   !is.na(lag(icu_rate, 2)) ~ (icu_rate - lag(icu_rate, 2)) / lag(icu_rate, 2),
+   !is.na(lag(icu_rate, 1)) ~ (icu_rate - lag(icu_rate, 1)) / lag(icu_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
+ )
+
+### Rate of Severe Morbidity in Pregnancy or Postpartum ----
+
+c39 <- dta %>%
+ mutate(
+  smm = case_when(
+   JOGC_AnySMM > 0 ~ 1,
+   TRUE ~ NA_integer_
+  )
+ ) %>%
+ group_by(FiscalYear, JOGC_AnySMM) %>%
+ mutate(
+  smm_count = n()
+ ) %>%
+ group_by(FiscalYear, lvb) %>%
+ mutate(
+  total_year = n(),
+  smm_rate = smm_count/total_year
+ ) %>%
+ ungroup() %>%
+ filter(JOGC_AnySMM %in% 1, lvb %in% 1) %>%
+ select(FiscalYear, smm, smm_count,smm_rate) %>%
+ distinct() %>%
+ arrange(FiscalYear) %>%
+ mutate(
+  smm_delta = (smm_rate - lag(smm_rate))/lag(smm_rate),
+  smm_deltap = case_when(
+   !is.na(lag(smm_rate, 9)) ~ (smm_rate - lag(smm_rate, 9)) / lag(smm_rate, 9),
+   !is.na(lag(smm_rate, 8)) ~ (smm_rate - lag(smm_rate, 8)) / lag(smm_rate, 8),
+   !is.na(lag(smm_rate, 7)) ~ (smm_rate - lag(smm_rate, 7)) / lag(smm_rate, 7),
+   !is.na(lag(smm_rate, 6)) ~ (smm_rate - lag(smm_rate, 6)) / lag(smm_rate, 6),
+   !is.na(lag(smm_rate, 5)) ~ (smm_rate - lag(smm_rate, 5)) / lag(smm_rate, 5),
+   !is.na(lag(smm_rate, 4)) ~ (smm_rate - lag(smm_rate, 4)) / lag(smm_rate, 4),
+   !is.na(lag(smm_rate, 3)) ~ (smm_rate - lag(smm_rate, 3)) / lag(smm_rate, 3),
+   !is.na(lag(smm_rate, 2)) ~ (smm_rate - lag(smm_rate, 2)) / lag(smm_rate, 2),
+   !is.na(lag(smm_rate, 1)) ~ (smm_rate - lag(smm_rate, 1)) / lag(smm_rate, 1),
+   TRUE ~ NA_real_ # if all lag values are NA
+  )
  )
 
 fyearly_stats <- cbind(
  c1 %>% select(-PreExisting_Hypertension),
  c2 %>% select(-Gestational_Hypertension,-FiscalYear),
  c3 %>% select(-Any_Hypertension,-FiscalYear),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear),
- c5 %>% select(-GDM,-FiscalYear),
- c6 %>% select(-Any_Diabetes,-FiscalYear),
- c7 %>% select(-RobsnGrp,-FiscalYear),
- c8 %>% select(-RobsnGrp,-FiscalYear),
- c9 %>% select(-RobsnGrp,-FiscalYear),
- c10 %>% select(-ppreadm,-FiscalYear),
- c11 %>% select(-sknskn,-FiscalYear),
- c12 %>% select(-sknsknvg,-FiscalYear),
- c13 %>% select(-sknskncs,-FiscalYear),
- c14 %>% select(-neoreadm,-FiscalYear),
- c15 %>% select(-excbrst,-FiscalYear),
- c16 %>% select(-nexcbrst,-FiscalYear),
- c17 %>% select(-nbrst,-FiscalYear),
- c18 %>% select(-brstinit,-FiscalYear)
+ c4 %>% select(-anemia,-FiscalYear),
+ c5 %>% select(-PreExisting_Diabetes,-FiscalYear),
+ c6 %>% select(-GDM,-FiscalYear),
+ c7 %>% select(-Any_Diabetes,-FiscalYear),
+ c8 %>% select(-sptvg,-FiscalYear),
+ c9 %>% select(-med,-FiscalYear),
+ c10 %>% select(-sptassvgmed,-FiscalYear),
+ c11 %>% select(-sptassvgnmed,-FiscalYear),
+ c12 %>% select(-RobsnGrp,-FiscalYear),
+ c13 %>% select(-RobsnGrp,-FiscalYear),
+ c14 %>% select(-RobsnGrp,-FiscalYear),
+ c15 %>% select(-pphbl,-FiscalYear),
+ c16 %>% select(-pphpi,-FiscalYear),
+ c17 %>% select(-ppreadm,-FiscalYear),
+ #c18 %>% select(-brstinit,-FiscalYear),
+ c19 %>% select(-sknskn,-FiscalYear),
+ c20 %>% select(-sknsknvg,-FiscalYear),
+ c21 %>% select(-sknskncs,-FiscalYear),
+ c22 %>% select(-pphiv,-FiscalYear),
+ c23 %>% select(-neoreadm,-FiscalYear),
+ c24 %>% select(-pretster,-FiscalYear),
+ c25 %>% select(-pretnnicu,-FiscalYear),
+ c26 %>% select(-newlwcs,-FiscalYear),
+ c27 %>% select(-delcord,-FiscalYear),
+ c28 %>% select(-delcordterm,-FiscalYear),
+ c29 %>% select(-delcordtermvg,-FiscalYear),
+ c30 %>% select(-delcordtermcs,-FiscalYear),
+ c31 %>% select(-delcordpreterm,-FiscalYear),
+ c32 %>% select(-delcordpretermvg,-FiscalYear),
+ c33 %>% select(-delcordpretermcs,-FiscalYear),
+ c34 %>% select(-excbrst,-FiscalYear),
+ c35 %>% select(-nexcbrst,-FiscalYear),
+ c36 %>% select(-nbrst,-FiscalYear),
+ c37 %>% select(-brstinit,-FiscalYear),
+ c38 %>% select(-icu,-FiscalYear),
+ c39 %>% select(-smm,-FiscalYear)
 )
 
 # Table stats ----
-## Calendar year ----
 
-ctab_stats <- cyearly_stats %>%
- filter(BrthYear %in% 2023) %>%
- select(BrthYear, ends_with(c("rate","deltap","delta"))) %>%
- tidyr::pivot_longer(
-  ends_with(c("rate")),
-  names_to = c("index_rate"),
-  values_to = "rate"
- ) %>%
- tidyr::pivot_longer(
-  ends_with(c("delta")),
-  names_to = c("index_delta"),
-  values_to = "delta"
- ) %>%
- tidyr::pivot_longer(
-  ends_with(c("deltap")),
-  names_to = c("index_delta10"),
-  values_to = "delta10"
- ) %>%
- filter(gsub("_rate","",index_rate) == gsub("_deltap","",index_delta10),
-        gsub("_rate","",index_rate) == gsub("_delta","",index_delta)) %>%
- select(-index_delta10, -index_delta) %>%
- mutate(
-  name = case_when(
-   startsWith(tolower(index_rate),"prehyp")  ~ "Pre-existing Hypertension",
-   startsWith(tolower(index_rate),"gesthyp") ~ "Gestational Hypertension",
-   startsWith(tolower(index_rate),"hyp") ~ "Any Hypertension<br>(Pre-existing/Gestational)",
-   startsWith(tolower(index_rate),"prediab") ~ "Pre-existing Diabetes",
-   startsWith(tolower(index_rate),"gestdiab") ~ "Gestational Diabetes",
-   startsWith(tolower(index_rate),"diab") ~ "Any Diabetes<br>(Pre-existing/Gestational)",
-   startsWith(tolower(index_rate),"rbs1") ~ "Robson Group 1",
-   startsWith(tolower(index_rate),"rbs21") ~ "Robson Group 2a",
-   startsWith(tolower(index_rate),"rbs51") ~ "Robson Group 5a",
-   startsWith(tolower(index_rate),"ppreadm") ~ "Postpartum Readmission",
-   startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
-   startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin <br> following Vaginal birth",
-   startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin  <br> following Caesarean birth",
-   startsWith(tolower(index_rate),"neoreadm") ~ "Neonatal Readmission",
-   startsWith(tolower(index_rate),"excbrst") ~ "Exclusive Breastfeeding",
-   startsWith(tolower(index_rate),"nexcbrst") ~ "Non-exclusive Breastfeeding",
-   startsWith(tolower(index_rate),"nbrst") ~ "No Breastfeeding",
-   startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding Initiation"
-  ),
-  status = case_when(
-   delta > 0 ~ "Increased",
-   delta < 0 ~ "Decreased",
-   delta == 0 ~ "Stable"
-  )
- ) %>%
- relocate(name, .after = "BrthYear") %>%
- relocate(status, .after = "rate") %>%
- relocate(index_rate, .after = "delta10") %>%
- mutate(
-  icon10_colors = case_when(
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#44AD99",
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#44AD99",
-   delta10 == 0 ~ "#F2C577"
-  ),
-  icon10 = case_when(
-   tolower(status) %in% "increased" ~ "circle-arrow-up",
-   tolower(status) %in% "decreased" ~ "circle-arrow-down",
-   TRUE ~ "-"
-  ),
-  icon_colors = case_when(
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#44AD99",
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#44AD99",
-   delta10 == 0 ~ "#F2C577"
-  )
-  # grp = case_when(
-  #  startsWith(tolower(index_rate),"prehyp")  ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"gesthyp") ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"hyp") ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"prediab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"gestdiab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"diab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"rbs1") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"rbs21") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"rbs51") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"ppreadm") ~ "Maternal health",
-  #  startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"neoreadm") ~ "Fetal and Infant health",
-  #  startsWith(tolower(index_rate),"excbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"nexcbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"nbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding"
-  # )
- )
-
-## Fiscal year ----
-
-ftab_stats <- fyearly_stats %>%
- filter(FiscalYear %in% "2023-2024") %>%
- select(FiscalYear, ends_with(c("rate","deltap","delta"))) %>%
- tidyr::pivot_longer(
-  ends_with(c("rate")),
-  names_to = c("index_rate"),
-  values_to = "rate"
- ) %>%
- tidyr::pivot_longer(
-  ends_with(c("delta")),
-  names_to = c("index_delta"),
-  values_to = "delta"
- ) %>%
- tidyr::pivot_longer(
-  ends_with(c("deltap")),
-  names_to = c("index_delta10"),
-  values_to = "delta10"
- ) %>%
- filter(gsub("_rate","",index_rate) == gsub("_deltap","",index_delta10)) %>%
- select(-index_delta10) %>%
- mutate(
-  name = case_when(
-   startsWith(tolower(index_rate),"prehyp")  ~ "Pre-existing Hypertension",
-   startsWith(tolower(index_rate),"gesthyp") ~ "Gestational Hypertension",
-   startsWith(tolower(index_rate),"hyp") ~ "Any Hypertension<br>(Pre-existing/Gestational)",
-   startsWith(tolower(index_rate),"prediab") ~ "Pre-existing Diabetes",
-   startsWith(tolower(index_rate),"gestdiab") ~ "Gestational Diabetes",
-   startsWith(tolower(index_rate),"diab") ~ "Any Diabetes<br>(Pre-existing/Gestational)",
-   startsWith(tolower(index_rate),"rbs1") ~ "Robson Group 1",
-   startsWith(tolower(index_rate),"rbs21") ~ "Robson Group 2a",
-   startsWith(tolower(index_rate),"rbs51") ~ "Robson Group 5a",
-   startsWith(tolower(index_rate),"ppreadm") ~ "Postpartum Readmission",
-   startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
-   startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin <br> following Vaginal birth",
-   startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin  <br> following Caesarean birth",
-   startsWith(tolower(index_rate),"neoreadm") ~ "Neonatal Readmission",
-   startsWith(tolower(index_rate),"excbrst") ~ "Exclusive Breastfeeding",
-   startsWith(tolower(index_rate),"nexcbrst") ~ "Non-exclusive Breastfeeding",
-   startsWith(tolower(index_rate),"nbrst") ~ "No Breastfeeding",
-   startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding Initiation"
-  ),status = case_when(
-   delta > 0 ~ "Increased",
-   delta < 0 ~ "Decreased",
-   delta == 0 ~ "Stable"
-  )
- ) %>%
- relocate(name, .after = "FiscalYear") %>%
- relocate(status, .after = "rate") %>%
- relocate(index_rate, .after = "delta10") %>%
- mutate(
-  icon10_colors = case_when(
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#44AD99",
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 > 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta10 < 0 ~ "#44AD99",
-   delta10 == 0 ~ "#F2C577"
-  ),
-  icon_colors = case_when(
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#44AD99",
-   grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta > 0 ~ "#D9715F",
-   !grepl("^sknskn|excbrst|nexcbrst|brstinit",tolower(index_rate)) & delta < 0 ~ "#44AD99",
-   delta10 == 0 ~ "#F2C577"
-  ),
-  status = case_when(
-   delta > 0 ~ "Increased",
-   delta < 0 ~ "Decreased",
-   delta == 0 ~ "Stable"
-  )
-  # grp = case_when(
-  #  startsWith(tolower(index_rate),"prehyp")  ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"gesthyp") ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"hyp") ~ "Hypertension during pregnancy",
-  #  startsWith(tolower(index_rate),"prediab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"gestdiab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"diab") ~ "Diabetes during pregnancy",
-  #  startsWith(tolower(index_rate),"rbs1") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"rbs21") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"rbs51") ~ "Robson classification",
-  #  startsWith(tolower(index_rate),"ppreadm") ~ "Maternal health",
-  #  startsWith(tolower(index_rate),"sknskn_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"sknsknvg_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"sknskncs_rate") ~ "Skin to Skin",
-  #  startsWith(tolower(index_rate),"neoreadm") ~ "Fetal and Infant health",
-  #  startsWith(tolower(index_rate),"excbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"nexcbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"nbrst") ~ "Breastfeeding",
-  #  startsWith(tolower(index_rate),"brstinit") ~ "Breastfeeding"
-  # )
- )
-
-# Table distribution ----
-## Calendar year ----
-
-ctab_dist <- cyearly_stats %>%
- select(BrthYear, ends_with(c("rate"))) %>%
- tidyr::pivot_longer(
-  ends_with(c("rate")),
-  names_to = c("index_rate"),
-  values_to = "rate"
- )
-
-## Fiscal year ----
-
-ftab_dist <- fyearly_stats %>%
- select(FiscalYear, ends_with(c("rate"))) %>%
- tidyr::pivot_longer(
-  ends_with(c("rate")),
-  names_to = c("index_rate"),
-  values_to = "rate"
- )
+source("./modules/data-arrange-tbl.R")
 
 # Map stats ----
-## Calendar year ----
-### Census division (CD) ----
-#### Hypertension ----
 
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Hypertension, CDuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, PreExisting_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(BrthYear == 2014, NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Gestational_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, Gestational_Hypertension, CDuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, Gestational_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(BrthYear == 2014, NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Hypertension, CDuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, Any_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(BrthYear == 2014, NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Diabetes, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Diabetes, CDuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, PreExisting_Diabetes)) %>%
- group_by(CDuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(BrthYear == 2014, NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, GDM, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, GDM, CDuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, GDM)) %>%
- group_by(CDuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(BrthYear == 2014, NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Diabetes, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Diabetes, CDuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, Any_Diabetes)) %>%
- group_by(CDuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(BrthYear == 2014, NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs1, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs1, CDuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(BrthYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, rbs1)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(BrthYear == 2014, NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs21, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs21, CDuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(BrthYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, rbs21)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(BrthYear == 2014, NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs51, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs51, CDuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(BrthYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, rbs51)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(BrthYear == 2014, NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, ppreadm, CDuid) %>%
- distinct() %>%
- group_by(BrthYear, ppreadm, CDuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(BrthYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, ppreadm)) %>%
- group_by(CDuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(BrthYear == 2014, NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskn, CDuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, sknskn, CDuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, sknskn)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(BrthYear == 2014, NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknsknvg, CDuid, lvbvg) %>%
- distinct() %>%
- group_by(BrthYear, sknsknvg, CDuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, sknsknvg)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(BrthYear == 2014, NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskncs, CDuid, lvbcs) %>%
- distinct() %>%
- group_by(BrthYear, sknskncs, CDuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, sknskncs)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(BrthYear == 2014, NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, neoreadm, CDuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, neoreadm, CDuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, neoreadm)) %>%
- group_by(CDuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(BrthYear == 2014, NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, excbrst, CDuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, excbrst, CDuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, excbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(BrthYear == 2014, NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nexcbrst, CDuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, nexcbrst, CDuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, nexcbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(BrthYear == 2014, NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nbrst, CDuid, lvbint) %>%
- distinct() %>%
- group_by(BrthYear, nbrst, CDuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, nbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(BrthYear == 2014, NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, brstinit, CDuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, brstinit, CDuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(BrthYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !CDuid %in% 1200) %>%
- select(BrthYear, CDuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CDuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CDuid, brstinit)) %>%
- group_by(CDuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(BrthYear == 2014, NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
- ) %>%
- ungroup()
-
-ccd_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-BrthYear, -CDuid),
- c3 %>% select(-Any_Hypertension,-BrthYear, -CDuid),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear, -CDuid),
- c5 %>% select(-GDM,-BrthYear, -CDuid),
- c6 %>% select(-Any_Diabetes,-BrthYear, -CDuid),
- c7 %>% select(-rbs1,-BrthYear, -CDuid),
- c8 %>% select(-rbs21,-BrthYear, -CDuid),
- c9 %>% select(-rbs51,-BrthYear, -CDuid),
- c10 %>% select(-ppreadm,-BrthYear, -CDuid),
- c11 %>% select(-sknskn,-BrthYear, -CDuid),
- c12 %>% select(-sknsknvg,-BrthYear, -CDuid),
- c13 %>% select(-sknskncs,-BrthYear, -CDuid),
- c14 %>% select(-neoreadm,-BrthYear, -CDuid),
- c15 %>% select(-excbrst,-BrthYear, -CDuid),
- c16 %>% select(-nexcbrst,-BrthYear, -CDuid),
- c17 %>% select(-nbrst,-BrthYear, -CDuid),
- c18 %>% select(-brstinit,-BrthYear, -CDuid)
-)
-
-### Community cluster (CL) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Hypertension, CLuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, PreExisting_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(BrthYear == 2014, NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Gestational_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, Gestational_Hypertension, CLuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, Gestational_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, Gestational_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(BrthYear == 2014, NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Hypertension, CLuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, Any_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, Any_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(BrthYear == 2014, NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Diabetes, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Diabetes, CLuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, PreExisting_Diabetes)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Diabetes)) %>%
- group_by(CLuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(BrthYear == 2014, NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, GDM, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, GDM, CLuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, GDM)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, GDM)) %>%
- group_by(CLuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(BrthYear == 2014, NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Diabetes, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Diabetes, CLuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, Any_Diabetes)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, Any_Diabetes)) %>%
- group_by(CLuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(BrthYear == 2014, NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs1, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs1, CLuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(BrthYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, rbs1)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, rbs1)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(BrthYear == 2014, NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs21, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs21, CLuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(BrthYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, rbs21)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, rbs21)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(BrthYear == 2014, NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs51, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs51, CLuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(BrthYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, rbs51)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, rbs51)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(BrthYear == 2014, NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, ppreadm, CLuid) %>%
- distinct() %>%
- group_by(BrthYear, ppreadm, CLuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(BrthYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, ppreadm)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, ppreadm)) %>%
- group_by(CLuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(BrthYear == 2014, NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskn, CLuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, sknskn, CLuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, sknskn)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, sknskn)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(BrthYear == 2014, NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknsknvg, CLuid, lvbvg) %>%
- distinct() %>%
- group_by(BrthYear, sknsknvg, CLuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, sknsknvg)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, sknsknvg)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(BrthYear == 2014, NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskncs, CLuid, lvbcs) %>%
- distinct() %>%
- group_by(BrthYear, sknskncs, CLuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, sknskncs)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, sknskncs)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(BrthYear == 2014, NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, neoreadm, CLuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, neoreadm, CLuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, neoreadm)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, neoreadm)) %>%
- group_by(CLuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(BrthYear == 2014, NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, excbrst, CLuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, excbrst, CLuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, excbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, excbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(BrthYear == 2014, NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nexcbrst, CLuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, nexcbrst, CLuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, nexcbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, nexcbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(BrthYear == 2014, NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nbrst, CLuid, lvbint) %>%
- distinct() %>%
- group_by(BrthYear, nbrst, CLuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, nbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, nbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(BrthYear == 2014, NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, brstinit, CLuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, brstinit, CLuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(BrthYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(CLuid)
-        ) %>%
- select(BrthYear, CLuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CLuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CLuid, brstinit)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(BrthYear, brstinit)) %>%
- group_by(CLuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(BrthYear == 2014, NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
- ) %>%
- ungroup()
-
-ccl_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-BrthYear, -CLuid),
- c3 %>% select(-Any_Hypertension,-BrthYear, -CLuid),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear, -CLuid),
- c5 %>% select(-GDM,-BrthYear, -CLuid),
- c6 %>% select(-Any_Diabetes,-BrthYear, -CLuid),
- c7 %>% select(-rbs1,-BrthYear, -CLuid),
- c8 %>% select(-rbs21,-BrthYear, -CLuid),
- c9 %>% select(-rbs51,-BrthYear, -CLuid),
- c10 %>% select(-ppreadm,-BrthYear, -CLuid),
- c11 %>% select(-sknskn,-BrthYear, -CLuid),
- c12 %>% select(-sknsknvg,-BrthYear, -CLuid),
- c13 %>% select(-sknskncs,-BrthYear, -CLuid),
- c14 %>% select(-neoreadm,-BrthYear, -CLuid),
- c15 %>% select(-excbrst,-BrthYear, -CLuid),
- c16 %>% select(-nexcbrst,-BrthYear, -CLuid),
- c17 %>% select(-nbrst,-BrthYear, -CLuid),
- c18 %>% select(-brstinit,-BrthYear, -CLuid)
-)
-
-### Community health network (CHN) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Hypertension, CHNuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, PreExisting_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(BrthYear == 2014, NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Gestational_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, Gestational_Hypertension, CHNuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, Gestational_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, Gestational_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(BrthYear == 2014, NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Hypertension, CHNuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, Any_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, Any_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(BrthYear == 2014, NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Diabetes, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Diabetes, CHNuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, PreExisting_Diabetes)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Diabetes)) %>%
- group_by(CHNuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(BrthYear == 2014, NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, GDM, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, GDM, CHNuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, GDM)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, GDM)) %>%
- group_by(CHNuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(BrthYear == 2014, NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Diabetes, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Diabetes, CHNuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, Any_Diabetes)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, Any_Diabetes)) %>%
- group_by(CHNuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(BrthYear == 2014, NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs1, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs1, CHNuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, rbs1)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, rbs1)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(BrthYear == 2014, NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs21, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs21, CHNuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, rbs21)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, rbs21)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(BrthYear == 2014, NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs51, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs51, CHNuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, rbs51)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, rbs51)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(BrthYear == 2014, NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, ppreadm, CHNuid) %>%
- distinct() %>%
- group_by(BrthYear, ppreadm, CHNuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(BrthYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, ppreadm)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, ppreadm)) %>%
- group_by(CHNuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(BrthYear == 2014, NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskn, CHNuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, sknskn, CHNuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, sknskn)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, sknskn)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(BrthYear == 2014, NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknsknvg, CHNuid, lvbvg) %>%
- distinct() %>%
- group_by(BrthYear, sknsknvg, CHNuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, sknsknvg)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, sknsknvg)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(BrthYear == 2014, NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskncs, CHNuid, lvbcs) %>%
- distinct() %>%
- group_by(BrthYear, sknskncs, CHNuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, sknskncs)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, sknskncs)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(BrthYear == 2014, NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, neoreadm, CHNuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, neoreadm, CHNuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, neoreadm)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, neoreadm)) %>%
- group_by(CHNuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(BrthYear == 2014, NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, excbrst, CHNuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, excbrst, CHNuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, excbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, excbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(BrthYear == 2014, NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nexcbrst, CHNuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, nexcbrst, CHNuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, nexcbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, nexcbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(BrthYear == 2014, NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nbrst, CHNuid, lvbint) %>%
- distinct() %>%
- group_by(BrthYear, nbrst, CHNuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, nbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, nbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(BrthYear == 2014, NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, brstinit, CHNuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, brstinit, CHNuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(BrthYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(CHNuid)
-        ) %>%
- select(BrthYear, CHNuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CHNuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(CHNuid, brstinit)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(BrthYear, brstinit)) %>%
- group_by(CHNuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(BrthYear == 2014, NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
- ) %>%
- ungroup()
-
-cchn_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-BrthYear, -CHNuid),
- c3 %>% select(-Any_Hypertension,-BrthYear, -CHNuid),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear, -CHNuid),
- c5 %>% select(-GDM,-BrthYear, -CHNuid),
- c6 %>% select(-Any_Diabetes,-BrthYear, -CHNuid),
- c7 %>% select(-rbs1,-BrthYear, -CHNuid),
- c8 %>% select(-rbs21,-BrthYear, -CHNuid),
- c9 %>% select(-rbs51,-BrthYear, -CHNuid),
- c10 %>% select(-ppreadm,-BrthYear, -CHNuid),
- c11 %>% select(-sknskn,-BrthYear, -CHNuid),
- c12 %>% select(-sknsknvg,-BrthYear, -CHNuid),
- c13 %>% select(-sknskncs,-BrthYear, -CHNuid),
- c14 %>% select(-neoreadm,-BrthYear, -CHNuid),
- c15 %>% select(-excbrst,-BrthYear, -CHNuid),
- c16 %>% select(-nexcbrst,-BrthYear, -CHNuid),
- c17 %>% select(-nbrst,-BrthYear, -CHNuid),
- c18 %>% select(-brstinit,-BrthYear, -CHNuid)
-)
-
-### Health authority zone (HR) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Hypertension, HRuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, PreExisting_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(BrthYear == 2014, NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Gestational_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, Gestational_Hypertension, HRuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, Gestational_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, Gestational_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(BrthYear == 2014, NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Hypertension, HRuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, Any_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, Any_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(BrthYear == 2014, NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Diabetes, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Diabetes, HRuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, PreExisting_Diabetes)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Diabetes)) %>%
- group_by(HRuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(BrthYear == 2014, NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, GDM, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, GDM, HRuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, GDM)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, GDM)) %>%
- group_by(HRuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(BrthYear == 2014, NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Diabetes, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Diabetes, HRuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, Any_Diabetes)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, Any_Diabetes)) %>%
- group_by(HRuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(BrthYear == 2014, NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs1, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs1, HRuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(BrthYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, rbs1)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, rbs1)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(BrthYear == 2014, NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs21, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs21, HRuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(BrthYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, rbs21)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, rbs21)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(BrthYear == 2014, NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs51, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs51, HRuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(BrthYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, rbs51)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, rbs51)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(BrthYear == 2014, NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, ppreadm, HRuid) %>%
- distinct() %>%
- group_by(BrthYear, ppreadm, HRuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(BrthYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, ppreadm)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, ppreadm)) %>%
- group_by(HRuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(BrthYear == 2014, NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskn, HRuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, sknskn, HRuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, sknskn)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, sknskn)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(BrthYear == 2014, NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknsknvg, HRuid, lvbvg) %>%
- distinct() %>%
- group_by(BrthYear, sknsknvg, HRuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, sknsknvg)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, sknsknvg)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(BrthYear == 2014, NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskncs, HRuid, lvbcs) %>%
- distinct() %>%
- group_by(BrthYear, sknskncs, HRuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, sknskncs)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, sknskncs)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(BrthYear == 2014, NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, neoreadm, HRuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, neoreadm, HRuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, neoreadm)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, neoreadm)) %>%
- group_by(HRuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(BrthYear == 2014, NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, excbrst, HRuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, excbrst, HRuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, excbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, excbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(BrthYear == 2014, NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nexcbrst, HRuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, nexcbrst, HRuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, nexcbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, nexcbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(BrthYear == 2014, NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nbrst, HRuid, lvbint) %>%
- distinct() %>%
- group_by(BrthYear, nbrst, HRuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, nbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, nbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(BrthYear == 2014, NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, brstinit, HRuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, brstinit, HRuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(BrthYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(BrthYear, HRuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(HRuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(HRuid, brstinit)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(BrthYear, brstinit)) %>%
- group_by(HRuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(BrthYear == 2014, NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
- ) %>%
- ungroup()
-
-chr_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-BrthYear, -HRuid),
- c3 %>% select(-Any_Hypertension,-BrthYear, -HRuid),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear, -HRuid),
- c5 %>% select(-GDM,-BrthYear, -HRuid),
- c6 %>% select(-Any_Diabetes,-BrthYear, -HRuid),
- c7 %>% select(-rbs1,-BrthYear, -HRuid),
- c8 %>% select(-rbs21,-BrthYear, -HRuid),
- c9 %>% select(-rbs51,-BrthYear, -HRuid),
- c10 %>% select(-ppreadm,-BrthYear, -HRuid),
- c11 %>% select(-sknskn,-BrthYear, -HRuid),
- c12 %>% select(-sknsknvg,-BrthYear, -HRuid),
- c13 %>% select(-sknskncs,-BrthYear, -HRuid),
- c14 %>% select(-neoreadm,-BrthYear, -HRuid),
- c15 %>% select(-excbrst,-BrthYear, -HRuid),
- c16 %>% select(-nexcbrst,-BrthYear, -HRuid),
- c17 %>% select(-nbrst,-BrthYear, -HRuid),
- c18 %>% select(-brstinit,-BrthYear, -HRuid)
-) %>%
- filter(!HRuid %in% "12 ") %>%
- mutate(HRuid = as.character(trimws(substr(HRuid,3,4))))
-
-### Urban x Rural (URB) ----
-
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Hypertension, URBuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, PreExisting_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(BrthYear == 2014, NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,9))/lag(prehyp_rate,9)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Gestational_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, Gestational_Hypertension, URBuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, Gestational_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, Gestational_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(BrthYear == 2014, NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,9))/lag(gesthyp_rate,9)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Hypertension, URBuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, Any_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, Any_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(BrthYear == 2014, NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,9))/lag(hyp_rate,9)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, PreExisting_Diabetes, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, PreExisting_Diabetes, URBuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, PreExisting_Diabetes)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, PreExisting_Diabetes)) %>%
- group_by(URBuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(BrthYear == 2014, NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,9))/lag(prediab_rate,9)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, GDM, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, GDM, URBuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, GDM)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, GDM)) %>%
- group_by(URBuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(BrthYear == 2014, NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,9))/lag(gestdiab_rate,9)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, Any_Diabetes, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, Any_Diabetes, URBuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, Any_Diabetes)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, Any_Diabetes)) %>%
- group_by(URBuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(BrthYear == 2014, NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,9))/lag(diab_rate,9)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs1, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs1, URBuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(BrthYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, rbs1)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, rbs1)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(BrthYear == 2014, NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,9))/lag(rbs1_rate,9)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs21, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs21, URBuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(BrthYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, rbs21)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, rbs21)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(BrthYear == 2014, NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,9))/lag(rbs21_rate,9)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, rbs51, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, rbs51, URBuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(BrthYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, rbs51)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, rbs51)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(BrthYear == 2014, NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,9))/lag(rbs51_rate,9)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, ppreadm, URBuid) %>%
- distinct() %>%
- group_by(BrthYear, ppreadm, URBuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(BrthYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, ppreadm)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, ppreadm)) %>%
- group_by(URBuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(BrthYear == 2014, NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,9))/lag(ppreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskn, URBuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, sknskn, URBuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, sknskn)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, sknskn)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(BrthYear == 2014, NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,9))/lag(sknskn_rate,9)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknsknvg, URBuid, lvbvg) %>%
- distinct() %>%
- group_by(BrthYear, sknsknvg, URBuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, sknsknvg)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, sknsknvg)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(BrthYear == 2014, NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,9))/lag(sknsknvg_rate,9)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, sknskncs, URBuid, lvbcs) %>%
- distinct() %>%
- group_by(BrthYear, sknskncs, URBuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, sknskncs)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, sknskncs)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(BrthYear == 2014, NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,9))/lag(sknskncs_rate,9)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, neoreadm, URBuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, neoreadm, URBuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, neoreadm)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, neoreadm)) %>%
- group_by(URBuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(BrthYear == 2014, NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,9))/lag(neoreadm_rate,9)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, excbrst, URBuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, excbrst, URBuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, excbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, excbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(BrthYear == 2014, NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,9))/lag(excbrst_rate,9)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nexcbrst, URBuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, nexcbrst, URBuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, nexcbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, nexcbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(BrthYear == 2014, NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,9))/lag(nexcbrst_rate,9)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, nbrst, URBuid, lvbint) %>%
- distinct() %>%
- group_by(BrthYear, nbrst, URBuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, nbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, nbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(BrthYear == 2014, NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,9))/lag(nbrst_rate,9)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, BrthYear, brstinit, URBuid, lvb) %>%
- distinct() %>%
- group_by(BrthYear, brstinit, URBuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(BrthYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(BrthYear, URBuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(URBuid, BrthYear) %>%
- ungroup() %>%
- tidyr::complete(BrthYear = (as.numeric(format(as.Date(Sys.Date()),"%Y"))-10):(as.numeric(format(as.Date(Sys.Date()),"%Y"))-1),
-                 tidyr::nesting(URBuid, brstinit)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(BrthYear, brstinit)) %>%
- group_by(URBuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(BrthYear == 2014, NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,9))/lag(brstinit_rate,9)
- ) %>%
- ungroup()
-
-curb_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-BrthYear, -URBuid),
- c3 %>% select(-Any_Hypertension,-BrthYear, -URBuid),
- c4 %>% select(-PreExisting_Diabetes,-BrthYear, -URBuid),
- c5 %>% select(-GDM,-BrthYear, -URBuid),
- c6 %>% select(-Any_Diabetes,-BrthYear, -URBuid),
- c7 %>% select(-rbs1,-BrthYear, -URBuid),
- c8 %>% select(-rbs21,-BrthYear, -URBuid),
- c9 %>% select(-rbs51,-BrthYear, -URBuid),
- c10 %>% select(-ppreadm,-BrthYear, -URBuid),
- c11 %>% select(-sknskn,-BrthYear, -URBuid),
- c12 %>% select(-sknsknvg,-BrthYear, -URBuid),
- c13 %>% select(-sknskncs,-BrthYear, -URBuid),
- c14 %>% select(-neoreadm,-BrthYear, -URBuid),
- c15 %>% select(-excbrst,-BrthYear, -URBuid),
- c16 %>% select(-nexcbrst,-BrthYear, -URBuid),
- c17 %>% select(-nbrst,-BrthYear, -URBuid),
- c18 %>% select(-brstinit,-BrthYear, -URBuid)
-)
-
-## Fiscal year ----
-### Census division (CD) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Hypertension, CDuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, PreExisting_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(FiscalYear == "2013-2014", NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,10))/lag(prehyp_rate,10)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Gestational_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, Gestational_Hypertension, CDuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, Gestational_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(FiscalYear == "2013-2014", NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,10))/lag(gesthyp_rate,10)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Hypertension, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Hypertension, CDuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, Any_Hypertension)) %>%
- group_by(CDuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(FiscalYear == "2013-2014", NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,10))/lag(hyp_rate,10)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Diabetes, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Diabetes, CDuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, PreExisting_Diabetes)) %>%
- group_by(CDuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(FiscalYear == "2013-2014", NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,10))/lag(prediab_rate,10)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, GDM, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, GDM, CDuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, GDM)) %>%
- group_by(CDuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(FiscalYear == "2013-2014", NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,10))/lag(gestdiab_rate,10)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Diabetes, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Diabetes, CDuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, Any_Diabetes)) %>%
- group_by(CDuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(FiscalYear == "2013-2014", NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,10))/lag(diab_rate,10)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs1, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs1, CDuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, rbs1)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(FiscalYear == "2013-2014", NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,10))/lag(rbs1_rate,10)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs21, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs21, CDuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, rbs21)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(FiscalYear == "2013-2014", NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,10))/lag(rbs21_rate,10)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs51, RobsnGrp, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs51, CDuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, rbs51)) %>%
- group_by(CDuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(FiscalYear == "2013-2014", NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,10))/lag(rbs51_rate,10)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, ppreadm, CDuid) %>%
- distinct() %>%
- group_by(FiscalYear, ppreadm, CDuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(FiscalYear, CDuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, ppreadm)) %>%
- group_by(CDuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(FiscalYear == "2013-2014", NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,10))/lag(ppreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskn, CDuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, sknskn, CDuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, sknskn)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(FiscalYear == "2013-2014", NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,10))/lag(sknskn_rate,10)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknsknvg, CDuid, lvbvg) %>%
- distinct() %>%
- group_by(FiscalYear, sknsknvg, CDuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, sknsknvg)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(FiscalYear == "2013-2014", NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,10))/lag(sknsknvg_rate,10)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskncs, CDuid, lvbcs) %>%
- distinct() %>%
- group_by(FiscalYear, sknskncs, CDuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, sknskncs)) %>%
- group_by(CDuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(FiscalYear == "2013-2014", NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,10))/lag(sknskncs_rate,10)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, neoreadm, CDuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, neoreadm, CDuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, neoreadm)) %>%
- group_by(CDuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(FiscalYear == "2013-2014", NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,10))/lag(neoreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, excbrst, CDuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, excbrst, CDuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, excbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(FiscalYear == "2013-2014", NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,10))/lag(excbrst_rate,10)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nexcbrst, CDuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, nexcbrst, CDuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, nexcbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,10))/lag(nexcbrst_rate,10)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nbrst, CDuid, lvbint) %>%
- distinct() %>%
- group_by(FiscalYear, nbrst, CDuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, nbrst)) %>%
- group_by(CDuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,10))/lag(nbrst_rate,10)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, brstinit, CDuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, brstinit, CDuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(FiscalYear, CDuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !CDuid %in% 1200) %>%
- select(FiscalYear, CDuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CDuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CDuid, brstinit)) %>%
- group_by(CDuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(FiscalYear == "2013-2014", NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,10))/lag(brstinit_rate,10)
- ) %>%
- ungroup()
-
-fcd_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-FiscalYear, -CDuid),
- c3 %>% select(-Any_Hypertension,-FiscalYear, -CDuid),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear, -CDuid),
- c5 %>% select(-GDM,-FiscalYear, -CDuid),
- c6 %>% select(-Any_Diabetes,-FiscalYear, -CDuid),
- c7 %>% select(-rbs1,-FiscalYear, -CDuid),
- c8 %>% select(-rbs21,-FiscalYear, -CDuid),
- c9 %>% select(-rbs51,-FiscalYear, -CDuid),
- c10 %>% select(-ppreadm,-FiscalYear, -CDuid),
- c11 %>% select(-sknskn,-FiscalYear, -CDuid),
- c12 %>% select(-sknsknvg,-FiscalYear, -CDuid),
- c13 %>% select(-sknskncs,-FiscalYear, -CDuid),
- c14 %>% select(-neoreadm,-FiscalYear, -CDuid),
- c15 %>% select(-excbrst,-FiscalYear, -CDuid),
- c16 %>% select(-nexcbrst,-FiscalYear, -CDuid),
- c17 %>% select(-nbrst,-FiscalYear, -CDuid),
- c18 %>% select(-brstinit,-FiscalYear, -CDuid)
-)
-
-### Community cluster (CL) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Hypertension, CLuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, PreExisting_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(FiscalYear == "2013-2014", NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,10))/lag(prehyp_rate,10)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Gestational_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, Gestational_Hypertension, CLuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, Gestational_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, Gestational_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(FiscalYear == "2013-2014", NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,10))/lag(gesthyp_rate,10)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Hypertension, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Hypertension, CLuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, Any_Hypertension)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, Any_Hypertension)) %>%
- group_by(CLuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(FiscalYear == "2013-2014", NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,10))/lag(hyp_rate,10)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Diabetes, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Diabetes, CLuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, PreExisting_Diabetes)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Diabetes)) %>%
- group_by(CLuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(FiscalYear == "2013-2014", NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,10))/lag(prediab_rate,10)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, GDM, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, GDM, CLuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, GDM)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, GDM)) %>%
- group_by(CLuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(FiscalYear == "2013-2014", NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,10))/lag(gestdiab_rate,10)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Diabetes, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Diabetes, CLuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, Any_Diabetes)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, Any_Diabetes)) %>%
- group_by(CLuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(FiscalYear == "2013-2014", NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,10))/lag(diab_rate,10)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs1, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs1, CLuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, rbs1)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, rbs1)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(FiscalYear == "2013-2014", NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,10))/lag(rbs1_rate,10)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs21, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs21, CLuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, rbs21)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, rbs21)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(FiscalYear == "2013-2014", NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,10))/lag(rbs21_rate,10)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs51, RobsnGrp, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs51, CLuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, rbs51)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, rbs51)) %>%
- group_by(CLuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(FiscalYear == "2013-2014", NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,10))/lag(rbs51_rate,10)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, ppreadm, CLuid) %>%
- distinct() %>%
- group_by(FiscalYear, ppreadm, CLuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(FiscalYear, CLuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, ppreadm)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, ppreadm)) %>%
- group_by(CLuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(FiscalYear == "2013-2014", NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,10))/lag(ppreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskn, CLuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, sknskn, CLuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, sknskn)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, sknskn)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(FiscalYear == "2013-2014", NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,10))/lag(sknskn_rate,10)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknsknvg, CLuid, lvbvg) %>%
- distinct() %>%
- group_by(FiscalYear, sknsknvg, CLuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, sknsknvg)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, sknsknvg)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(FiscalYear == "2013-2014", NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,10))/lag(sknsknvg_rate,10)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskncs, CLuid, lvbcs) %>%
- distinct() %>%
- group_by(FiscalYear, sknskncs, CLuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, sknskncs)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, sknskncs)) %>%
- group_by(CLuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(FiscalYear == "2013-2014", NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,10))/lag(sknskncs_rate,10)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, neoreadm, CLuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, neoreadm, CLuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, neoreadm)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, neoreadm)) %>%
- group_by(CLuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(FiscalYear == "2013-2014", NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,10))/lag(neoreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, excbrst, CLuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, excbrst, CLuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, excbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, excbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(FiscalYear == "2013-2014", NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,10))/lag(excbrst_rate,10)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nexcbrst, CLuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, nexcbrst, CLuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, nexcbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, nexcbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,10))/lag(nexcbrst_rate,10)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nbrst, CLuid, lvbint) %>%
- distinct() %>%
- group_by(FiscalYear, nbrst, CLuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, nbrst)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, nbrst)) %>%
- group_by(CLuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,10))/lag(nbrst_rate,10)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, brstinit, CLuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, brstinit, CLuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(FiscalYear, CLuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(CLuid)
- ) %>%
- select(FiscalYear, CLuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CLuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CLuid, brstinit)) %>%
- tidyr::complete(CLuid = sort(unique(dta$CLuid)),
-                 tidyr::nesting(FiscalYear, brstinit)) %>%
- group_by(CLuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(FiscalYear == "2013-2014", NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,10))/lag(brstinit_rate,10)
- ) %>%
- ungroup()
-
-fcl_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-FiscalYear, -CLuid),
- c3 %>% select(-Any_Hypertension,-FiscalYear, -CLuid),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear, -CLuid),
- c5 %>% select(-GDM,-FiscalYear, -CLuid),
- c6 %>% select(-Any_Diabetes,-FiscalYear, -CLuid),
- c7 %>% select(-rbs1,-FiscalYear, -CLuid),
- c8 %>% select(-rbs21,-FiscalYear, -CLuid),
- c9 %>% select(-rbs51,-FiscalYear, -CLuid),
- c10 %>% select(-ppreadm,-FiscalYear, -CLuid),
- c11 %>% select(-sknskn,-FiscalYear, -CLuid),
- c12 %>% select(-sknsknvg,-FiscalYear, -CLuid),
- c13 %>% select(-sknskncs,-FiscalYear, -CLuid),
- c14 %>% select(-neoreadm,-FiscalYear, -CLuid),
- c15 %>% select(-excbrst,-FiscalYear, -CLuid),
- c16 %>% select(-nexcbrst,-FiscalYear, -CLuid),
- c17 %>% select(-nbrst,-FiscalYear, -CLuid),
- c18 %>% select(-brstinit,-FiscalYear, -CLuid)
-)
-
-### Community health network (CHN) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Hypertension, CHNuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, PreExisting_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(FiscalYear == "2013-2014", NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,10))/lag(prehyp_rate,10)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Gestational_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, Gestational_Hypertension, CHNuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, Gestational_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, Gestational_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(FiscalYear == "2013-2014", NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,10))/lag(gesthyp_rate,10)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Hypertension, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Hypertension, CHNuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, Any_Hypertension)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, Any_Hypertension)) %>%
- group_by(CHNuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(FiscalYear == "2013-2014", NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,10))/lag(hyp_rate,10)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Diabetes, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Diabetes, CHNuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, PreExisting_Diabetes)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Diabetes)) %>%
- group_by(CHNuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(FiscalYear == "2013-2014", NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,10))/lag(prediab_rate,10)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, GDM, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, GDM, CHNuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, GDM)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, GDM)) %>%
- group_by(CHNuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(FiscalYear == "2013-2014", NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,10))/lag(gestdiab_rate,10)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Diabetes, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Diabetes, CHNuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, Any_Diabetes)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, Any_Diabetes)) %>%
- group_by(CHNuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(FiscalYear == "2013-2014", NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,10))/lag(diab_rate,10)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs1, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs1, CHNuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, rbs1)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, rbs1)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(FiscalYear == "2013-2014", NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,10))/lag(rbs1_rate,10)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs21, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs21, CHNuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, rbs21)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, rbs21)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(FiscalYear == "2013-2014", NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,10))/lag(rbs21_rate,10)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs51, RobsnGrp, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs51, CHNuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, rbs51)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, rbs51)) %>%
- group_by(CHNuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(FiscalYear == "2013-2014", NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,10))/lag(rbs51_rate,10)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, ppreadm, CHNuid) %>%
- distinct() %>%
- group_by(FiscalYear, ppreadm, CHNuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, ppreadm)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, ppreadm)) %>%
- group_by(CHNuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(FiscalYear == "2013-2014", NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,10))/lag(ppreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskn, CHNuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, sknskn, CHNuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, sknskn)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, sknskn)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(FiscalYear == "2013-2014", NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,10))/lag(sknskn_rate,10)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknsknvg, CHNuid, lvbvg) %>%
- distinct() %>%
- group_by(FiscalYear, sknsknvg, CHNuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, sknsknvg)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, sknsknvg)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(FiscalYear == "2013-2014", NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,10))/lag(sknsknvg_rate,10)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskncs, CHNuid, lvbcs) %>%
- distinct() %>%
- group_by(FiscalYear, sknskncs, CHNuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, sknskncs)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, sknskncs)) %>%
- group_by(CHNuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(FiscalYear == "2013-2014", NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,10))/lag(sknskncs_rate,10)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, neoreadm, CHNuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, neoreadm, CHNuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, neoreadm)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, neoreadm)) %>%
- group_by(CHNuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(FiscalYear == "2013-2014", NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,10))/lag(neoreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, excbrst, CHNuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, excbrst, CHNuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, excbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, excbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(FiscalYear == "2013-2014", NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,10))/lag(excbrst_rate,10)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nexcbrst, CHNuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, nexcbrst, CHNuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, nexcbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, nexcbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,10))/lag(nexcbrst_rate,10)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nbrst, CHNuid, lvbint) %>%
- distinct() %>%
- group_by(FiscalYear, nbrst, CHNuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, nbrst)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, nbrst)) %>%
- group_by(CHNuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,10))/lag(nbrst_rate,10)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, brstinit, CHNuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, brstinit, CHNuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(FiscalYear, CHNuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(CHNuid)
- ) %>%
- select(FiscalYear, CHNuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(CHNuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(CHNuid, brstinit)) %>%
- tidyr::complete(CHNuid = sort(unique(dta$CHNuid)),
-                 tidyr::nesting(FiscalYear, brstinit)) %>%
- group_by(CHNuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(FiscalYear == "2013-2014", NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,10))/lag(brstinit_rate,10)
- ) %>%
- ungroup()
-
-fchn_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-FiscalYear, -CHNuid),
- c3 %>% select(-Any_Hypertension,-FiscalYear, -CHNuid),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear, -CHNuid),
- c5 %>% select(-GDM,-FiscalYear, -CHNuid),
- c6 %>% select(-Any_Diabetes,-FiscalYear, -CHNuid),
- c7 %>% select(-rbs1,-FiscalYear, -CHNuid),
- c8 %>% select(-rbs21,-FiscalYear, -CHNuid),
- c9 %>% select(-rbs51,-FiscalYear, -CHNuid),
- c10 %>% select(-ppreadm,-FiscalYear, -CHNuid),
- c11 %>% select(-sknskn,-FiscalYear, -CHNuid),
- c12 %>% select(-sknsknvg,-FiscalYear, -CHNuid),
- c13 %>% select(-sknskncs,-FiscalYear, -CHNuid),
- c14 %>% select(-neoreadm,-FiscalYear, -CHNuid),
- c15 %>% select(-excbrst,-FiscalYear, -CHNuid),
- c16 %>% select(-nexcbrst,-FiscalYear, -CHNuid),
- c17 %>% select(-nbrst,-FiscalYear, -CHNuid),
- c18 %>% select(-brstinit,-FiscalYear, -CHNuid)
-)
-
-### Health authority zone (HR) ----
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Hypertension, HRuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, PreExisting_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(FiscalYear == "2013-2014", NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,10))/lag(prehyp_rate,10)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Gestational_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, Gestational_Hypertension, HRuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, Gestational_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, Gestational_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(FiscalYear == "2013-2014", NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,10))/lag(gesthyp_rate,10)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Hypertension, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Hypertension, HRuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, Any_Hypertension)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, Any_Hypertension)) %>%
- group_by(HRuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(FiscalYear == "2013-2014", NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,10))/lag(hyp_rate,10)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Diabetes, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Diabetes, HRuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, PreExisting_Diabetes)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Diabetes)) %>%
- group_by(HRuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(FiscalYear == "2013-2014", NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,10))/lag(prediab_rate,10)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, GDM, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, GDM, HRuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, GDM)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, GDM)) %>%
- group_by(HRuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(FiscalYear == "2013-2014", NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,10))/lag(gestdiab_rate,10)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Diabetes, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Diabetes, HRuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, Any_Diabetes)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, Any_Diabetes)) %>%
- group_by(HRuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(FiscalYear == "2013-2014", NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,10))/lag(diab_rate,10)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs1, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs1, HRuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, rbs1)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, rbs1)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(FiscalYear == "2013-2014", NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,10))/lag(rbs1_rate,10)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs21, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs21, HRuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, rbs21)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, rbs21)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(FiscalYear == "2013-2014", NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,10))/lag(rbs21_rate,10)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs51, RobsnGrp, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs51, HRuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, rbs51)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, rbs51)) %>%
- group_by(HRuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(FiscalYear == "2013-2014", NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,10))/lag(rbs51_rate,10)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, ppreadm, HRuid) %>%
- distinct() %>%
- group_by(FiscalYear, ppreadm, HRuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(FiscalYear, HRuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, ppreadm)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, ppreadm)) %>%
- group_by(HRuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(FiscalYear == "2013-2014", NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,10))/lag(ppreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskn, HRuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, sknskn, HRuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, sknskn)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, sknskn)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(FiscalYear == "2013-2014", NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,10))/lag(sknskn_rate,10)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknsknvg, HRuid, lvbvg) %>%
- distinct() %>%
- group_by(FiscalYear, sknsknvg, HRuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, sknsknvg)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, sknsknvg)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(FiscalYear == "2013-2014", NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,10))/lag(sknsknvg_rate,10)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskncs, HRuid, lvbcs) %>%
- distinct() %>%
- group_by(FiscalYear, sknskncs, HRuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, sknskncs)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, sknskncs)) %>%
- group_by(HRuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(FiscalYear == "2013-2014", NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,10))/lag(sknskncs_rate,10)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, neoreadm, HRuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, neoreadm, HRuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, neoreadm)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, neoreadm)) %>%
- group_by(HRuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(FiscalYear == "2013-2014", NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,10))/lag(neoreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, excbrst, HRuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, excbrst, HRuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, excbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, excbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(FiscalYear == "2013-2014", NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,10))/lag(excbrst_rate,10)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nexcbrst, HRuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, nexcbrst, HRuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, nexcbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, nexcbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,10))/lag(nexcbrst_rate,10)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nbrst, HRuid, lvbint) %>%
- distinct() %>%
- group_by(FiscalYear, nbrst, HRuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, nbrst)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, nbrst)) %>%
- group_by(HRuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,10))/lag(nbrst_rate,10)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, brstinit, HRuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, brstinit, HRuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(FiscalYear, HRuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(HRuid)
- ) %>%
- select(FiscalYear, HRuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(HRuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(HRuid, brstinit)) %>%
- tidyr::complete(HRuid = sort(unique(dta$HRuid)),
-                 tidyr::nesting(FiscalYear, brstinit)) %>%
- group_by(HRuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(FiscalYear == "2013-2014", NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,10))/lag(brstinit_rate,10)
- ) %>%
- ungroup()
-
-fhr_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-FiscalYear, -HRuid),
- c3 %>% select(-Any_Hypertension,-FiscalYear, -HRuid),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear, -HRuid),
- c5 %>% select(-GDM,-FiscalYear, -HRuid),
- c6 %>% select(-Any_Diabetes,-FiscalYear, -HRuid),
- c7 %>% select(-rbs1,-FiscalYear, -HRuid),
- c8 %>% select(-rbs21,-FiscalYear, -HRuid),
- c9 %>% select(-rbs51,-FiscalYear, -HRuid),
- c10 %>% select(-ppreadm,-FiscalYear, -HRuid),
- c11 %>% select(-sknskn,-FiscalYear, -HRuid),
- c12 %>% select(-sknsknvg,-FiscalYear, -HRuid),
- c13 %>% select(-sknskncs,-FiscalYear, -HRuid),
- c14 %>% select(-neoreadm,-FiscalYear, -HRuid),
- c15 %>% select(-excbrst,-FiscalYear, -HRuid),
- c16 %>% select(-nexcbrst,-FiscalYear, -HRuid),
- c17 %>% select(-nbrst,-FiscalYear, -HRuid),
- c18 %>% select(-brstinit,-FiscalYear, -HRuid)
-)
-
-### Urban x Rural (URB) ----
-
-#### Hypertension ----
-
-c1 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Hypertension, URBuid) %>%
- mutate(
-  prehyp_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  prehyp_rate = prehyp_count/total_year
- ) %>%
- filter(PreExisting_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, PreExisting_Hypertension, prehyp_count, prehyp_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, PreExisting_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  prehyp_delta = (prehyp_rate - lag(prehyp_rate))/lag(prehyp_rate),
-  prehyp_delta = ifelse(FiscalYear == "2013-2014", NA, prehyp_delta),
-  prehyp_deltap = (prehyp_rate - lag(prehyp_rate,10))/lag(prehyp_rate,10)
- ) %>%
- ungroup()
-
-c2 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Gestational_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, Gestational_Hypertension, URBuid) %>%
- mutate(
-  gesthyp_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  gesthyp_rate = gesthyp_count/total_year
- ) %>%
- filter(Gestational_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, Gestational_Hypertension, gesthyp_count, gesthyp_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, Gestational_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, Gestational_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  gesthyp_delta = (gesthyp_rate - lag(gesthyp_rate))/lag(gesthyp_rate),
-  gesthyp_delta = ifelse(FiscalYear == "2013-2014", NA, gesthyp_delta),
-  gesthyp_deltap = (gesthyp_rate - lag(gesthyp_rate,10))/lag(gesthyp_rate,10)
- ) %>%
- ungroup()
-
-c3 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Hypertension, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Hypertension, URBuid) %>%
- mutate(
-  hyp_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  hyp_rate = hyp_count/total_year
- ) %>%
- filter(Any_Hypertension %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, Any_Hypertension, hyp_count, hyp_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, Any_Hypertension)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, Any_Hypertension)) %>%
- group_by(URBuid) %>%
- mutate(
-  hyp_delta = (hyp_rate - lag(hyp_rate))/lag(hyp_rate),
-  hyp_delta = ifelse(FiscalYear == "2013-2014", NA, hyp_delta),
-  hyp_deltap = (hyp_rate - lag(hyp_rate,10))/lag(hyp_rate,10)
- ) %>%
- ungroup()
-
-#### Diabetes ----
-
-c4 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, PreExisting_Diabetes, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, PreExisting_Diabetes, URBuid) %>%
- mutate(
-  prediab_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  prediab_rate = prediab_count/total_year
- ) %>%
- filter(PreExisting_Diabetes %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, PreExisting_Diabetes, prediab_count, prediab_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, PreExisting_Diabetes)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, PreExisting_Diabetes)) %>%
- group_by(URBuid) %>%
- mutate(
-  prediab_delta = (prediab_rate - lag(prediab_rate))/lag(prediab_rate),
-  prediab_delta = ifelse(FiscalYear == "2013-2014", NA, prediab_delta),
-  prediab_deltap = (prediab_rate - lag(prediab_rate,10))/lag(prediab_rate,10)
- ) %>%
- ungroup()
-
-c5 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, GDM, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, GDM, URBuid) %>%
- mutate(
-  gestdiab_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  gestdiab_rate = gestdiab_count/total_year
- ) %>%
- filter(GDM %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, GDM, gestdiab_count, gestdiab_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, GDM)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, GDM)) %>%
- group_by(URBuid) %>%
- mutate(
-  gestdiab_delta = (gestdiab_rate - lag(gestdiab_rate))/lag(gestdiab_rate),
-  gestdiab_delta = ifelse(FiscalYear == "2013-2014", NA, gestdiab_delta),
-  gestdiab_deltap = (gestdiab_rate - lag(gestdiab_rate,10))/lag(gestdiab_rate,10)
- ) %>%
- ungroup()
-
-c6 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, Any_Diabetes, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, Any_Diabetes, URBuid) %>%
- mutate(
-  diab_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  diab_rate = diab_count/total_year
- ) %>%
- filter(Any_Diabetes %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, Any_Diabetes, diab_count, diab_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, Any_Diabetes)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, Any_Diabetes)) %>%
- group_by(URBuid) %>%
- mutate(
-  diab_delta = (diab_rate - lag(diab_rate))/lag(diab_rate),
-  diab_delta = ifelse(FiscalYear == "2013-2014", NA, diab_delta),
-  diab_deltap = (diab_rate - lag(diab_rate,10))/lag(diab_rate,10)
- ) %>%
- ungroup()
-
-#### Robson group ----
-
-c7 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs1, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs1, URBuid) %>%
- mutate(
-  rbs1_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs1_rate = rbs1_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs1 %in% 1,
-        RobsnGrp %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, rbs1, rbs1_count, rbs1_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, rbs1)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, rbs1)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs1_delta = (rbs1_rate - lag(rbs1_rate))/lag(rbs1_rate),
-  rbs1_delta = ifelse(FiscalYear == "2013-2014", NA, rbs1_delta),
-  rbs1_deltap = (rbs1_rate - lag(rbs1_rate,10))/lag(rbs1_rate,10)
- ) %>%
- ungroup()
-
-c8 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs21, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs21, URBuid) %>%
- mutate(
-  rbs21_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs21_rate = rbs21_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs21 %in% 1,
-        RobsnGrp %in% 2.1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, rbs21, rbs21_count, rbs21_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, rbs21)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, rbs21)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs21_delta = (rbs21_rate - lag(rbs21_rate))/lag(rbs21_rate),
-  rbs21_delta = ifelse(FiscalYear == "2013-2014", NA, rbs21_delta),
-  rbs21_deltap = (rbs21_rate - lag(rbs21_rate,10))/lag(rbs21_rate,10)
- ) %>%
- ungroup()
-
-c9 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, rbs51, RobsnGrp, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, rbs51, URBuid) %>%
- mutate(
-  rbs51_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, RobsnGrp) %>%
- mutate(
-  total_year = n(),
-  rbs51_rate = rbs51_count/total_year
- ) %>%
- ungroup() %>%
- filter(rbs51 %in% 1,
-        RobsnGrp %in% 5.1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, rbs51, rbs51_count, rbs51_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, rbs51)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, rbs51)) %>%
- group_by(URBuid) %>%
- mutate(
-  rbs51_delta = (rbs51_rate - lag(rbs51_rate))/lag(rbs51_rate),
-  rbs51_delta = ifelse(FiscalYear == "2013-2014", NA, rbs51_delta),
-  rbs51_deltap = (rbs51_rate - lag(rbs51_rate,10))/lag(rbs51_rate,10)
- ) %>%
- ungroup()
-
-#### Postpartum readmission ----
-
-c10 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, ppreadm, URBuid) %>%
- distinct() %>%
- group_by(FiscalYear, ppreadm, URBuid) %>%
- mutate(
-  ppreadm_count = n()
- ) %>%
- group_by(FiscalYear, URBuid) %>%
- mutate(
-  total_year = n(),
-  ppreadm_rate = ppreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(ppreadm %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, ppreadm, ppreadm_count, ppreadm_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, ppreadm)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, ppreadm)) %>%
- group_by(URBuid) %>%
- mutate(
-  ppreadm_delta = (ppreadm_rate - lag(ppreadm_rate))/lag(ppreadm_rate),
-  ppreadm_delta = ifelse(FiscalYear == "2013-2014", NA, ppreadm_delta),
-  ppreadm_deltap = (ppreadm_rate - lag(ppreadm_rate,10))/lag(ppreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Skin to skin ----
-
-c11 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskn, URBuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, sknskn, URBuid) %>%
- mutate(
-  sknskn_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  sknskn_rate = sknskn_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskn %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, sknskn, sknskn_count, sknskn_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, sknskn)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, sknskn)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknskn_delta = (sknskn_rate - lag(sknskn_rate))/lag(sknskn_rate),
-  sknskn_delta = ifelse(FiscalYear == "2013-2014", NA, sknskn_delta),
-  sknskn_deltap = (sknskn_rate - lag(sknskn_rate,10))/lag(sknskn_rate,10)
- ) %>%
- ungroup()
-
-c12 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknsknvg, URBuid, lvbvg) %>%
- distinct() %>%
- group_by(FiscalYear, sknsknvg, URBuid) %>%
- mutate(
-  sknsknvg_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvbvg) %>%
- mutate(
-  total_year = n(),
-  sknsknvg_rate = sknsknvg_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknsknvg %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, sknsknvg, sknsknvg_count, sknsknvg_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, sknsknvg)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, sknsknvg)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknsknvg_delta = (sknsknvg_rate - lag(sknsknvg_rate))/lag(sknsknvg_rate),
-  sknsknvg_delta = ifelse(FiscalYear == "2013-2014", NA, sknsknvg_delta),
-  sknsknvg_deltap = (sknsknvg_rate - lag(sknsknvg_rate,10))/lag(sknsknvg_rate,10)
- ) %>%
- ungroup()
-
-c13 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, sknskncs, URBuid, lvbcs) %>%
- distinct() %>%
- group_by(FiscalYear, sknskncs, URBuid) %>%
- mutate(
-  sknskncs_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvbcs) %>%
- mutate(
-  total_year = n(),
-  sknskncs_rate = sknskncs_count/total_year
- ) %>%
- ungroup() %>%
- filter(sknskncs %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, sknskncs, sknskncs_count, sknskncs_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, sknskncs)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, sknskncs)) %>%
- group_by(URBuid) %>%
- mutate(
-  sknskncs_delta = (sknskncs_rate - lag(sknskncs_rate))/lag(sknskncs_rate),
-  sknskncs_delta = ifelse(FiscalYear == "2013-2014", NA, sknskncs_delta),
-  sknskncs_deltap = (sknskncs_rate - lag(sknskncs_rate,10))/lag(sknskncs_rate,10)
- ) %>%
- ungroup()
-
-#### Neonatal readmission ----
-
-c14 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, neoreadm, URBuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, neoreadm, URBuid) %>%
- mutate(
-  neoreadm_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  neoreadm_rate = neoreadm_count/total_year
- ) %>%
- ungroup() %>%
- filter(neoreadm %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, neoreadm, neoreadm_count, neoreadm_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, neoreadm)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, neoreadm)) %>%
- group_by(URBuid) %>%
- mutate(
-  neoreadm_delta = (neoreadm_rate - lag(neoreadm_rate))/lag(neoreadm_rate),
-  neoreadm_delta = ifelse(FiscalYear == "2013-2014", NA, neoreadm_delta),
-  neoreadm_deltap = (neoreadm_rate - lag(neoreadm_rate,10))/lag(neoreadm_rate,10)
- ) %>%
- ungroup()
-
-#### Milk feeding ----
-
-c15 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, excbrst, URBuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, excbrst, URBuid) %>%
- mutate(
-  excbrst_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  excbrst_rate = excbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(excbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, excbrst, excbrst_count, excbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, excbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, excbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  excbrst_delta = (excbrst_rate - lag(excbrst_rate))/lag(excbrst_rate),
-  excbrst_delta = ifelse(FiscalYear == "2013-2014", NA, excbrst_delta),
-  excbrst_deltap = (excbrst_rate - lag(excbrst_rate,10))/lag(excbrst_rate,10)
- ) %>%
- ungroup()
-
-c16 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nexcbrst, URBuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, nexcbrst, URBuid) %>%
- mutate(
-  nexcbrst_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  nexcbrst_rate = nexcbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nexcbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, nexcbrst, nexcbrst_count, nexcbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, nexcbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, nexcbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  nexcbrst_delta = (nexcbrst_rate - lag(nexcbrst_rate))/lag(nexcbrst_rate),
-  nexcbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nexcbrst_delta),
-  nexcbrst_deltap = (nexcbrst_rate - lag(nexcbrst_rate,10))/lag(nexcbrst_rate,10)
- ) %>%
- ungroup()
-
-c17 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, nbrst, URBuid, lvbint) %>%
- distinct() %>%
- group_by(FiscalYear, nbrst, URBuid) %>%
- mutate(
-  nbrst_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvbint) %>%
- mutate(
-  total_year = n(),
-  nbrst_rate = nbrst_count/total_year
- ) %>%
- ungroup() %>%
- filter(nbrst %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, nbrst, nbrst_count, nbrst_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, nbrst)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, nbrst)) %>%
- group_by(URBuid) %>%
- mutate(
-  nbrst_delta = (nbrst_rate - lag(nbrst_rate))/lag(nbrst_rate),
-  nbrst_delta = ifelse(FiscalYear == "2013-2014", NA, nbrst_delta),
-  nbrst_deltap = (nbrst_rate - lag(nbrst_rate,10))/lag(nbrst_rate,10)
- ) %>%
- ungroup()
-
-c18 <- dta %>%
- select(BIRTHID, CONTCTID, FiscalYear, brstinit, URBuid, lvb) %>%
- distinct() %>%
- group_by(FiscalYear, brstinit, URBuid) %>%
- mutate(
-  brstinit_count = n()
- ) %>%
- group_by(FiscalYear, URBuid, lvb) %>%
- mutate(
-  total_year = n(),
-  brstinit_rate = brstinit_count/total_year
- ) %>%
- ungroup() %>%
- filter(brstinit %in% 1,
-        !is.na(URBuid)
- ) %>%
- select(FiscalYear, URBuid, brstinit, brstinit_count, brstinit_rate) %>%
- distinct() %>%
- arrange(URBuid, FiscalYear) %>%
- ungroup() %>%
- tidyr::complete(FiscalYear = unique(levels(dta$FiscalYear)),
-                 tidyr::nesting(URBuid, brstinit)) %>%
- tidyr::complete(URBuid = sort(unique(dta$URBuid)),
-                 tidyr::nesting(FiscalYear, brstinit)) %>%
- group_by(URBuid) %>%
- mutate(
-  brstinit_delta = (brstinit_rate - lag(brstinit_rate))/lag(brstinit_rate),
-  brstinit_delta = ifelse(FiscalYear == "2013-2014", NA, brstinit_delta),
-  brstinit_deltap = (brstinit_rate - lag(brstinit_rate,10))/lag(brstinit_rate,10)
- ) %>%
- ungroup()
-
-furb_stats <- cbind(
- c1 %>% select(-PreExisting_Hypertension),
- c2 %>% select(-Gestational_Hypertension,-FiscalYear, -URBuid),
- c3 %>% select(-Any_Hypertension,-FiscalYear, -URBuid),
- c4 %>% select(-PreExisting_Diabetes,-FiscalYear, -URBuid),
- c5 %>% select(-GDM,-FiscalYear, -URBuid),
- c6 %>% select(-Any_Diabetes,-FiscalYear, -URBuid),
- c7 %>% select(-rbs1,-FiscalYear, -URBuid),
- c8 %>% select(-rbs21,-FiscalYear, -URBuid),
- c9 %>% select(-rbs51,-FiscalYear, -URBuid),
- c10 %>% select(-ppreadm,-FiscalYear, -URBuid),
- c11 %>% select(-sknskn,-FiscalYear, -URBuid),
- c12 %>% select(-sknsknvg,-FiscalYear, -URBuid),
- c13 %>% select(-sknskncs,-FiscalYear, -URBuid),
- c14 %>% select(-neoreadm,-FiscalYear, -URBuid),
- c15 %>% select(-excbrst,-FiscalYear, -URBuid),
- c16 %>% select(-nexcbrst,-FiscalYear, -URBuid),
- c17 %>% select(-nbrst,-FiscalYear, -URBuid),
- c18 %>% select(-brstinit,-FiscalYear, -URBuid)
-)
-
-## Add shapefile to stats ----
-### Census district (CD) ----
-
-# ccd_stats <- merge(
-#  ccd_stats,
-#  cd_shp,
-#  by.x = "CDuid",
-#  by.y = "GeoUID"
-# ) %>%
-#  sf::st_sf() %>%
-#  sf::st_make_valid() %>%
-#  rmapshaper::ms_simplify() %>%
-#  st_geometry
-#
-# fcd_stats <- merge(
-#  fcd_stats,
-#  cd_shp,
-#  by.x = "CDuid",
-#  by.y = "GeoUID"
-# )
-#
-# ### Community cluster (CL) ----
-#
-# ccl_stats <- merge(
-#  ccl_stats,
-#  cl_shp,
-#  by.x = "CLuid",
-#  by.y = "GeoUID"
-# )
-#
-# fcl_stats <- merge(
-#  fcl_stats,
-#  cl_shp,
-#  by.x = "CLuid",
-#  by.y = "GeoUID"
-# )
-#
-# ### Community health network (CHN) ----
-#
-# cchn_stats <- merge(
-#  cchn_stats,
-#  chn_shp,
-#  by.x = "CHNuid",
-#  by.y = "GeoUID"
-# )
-#
-# fchn_stats <- merge(
-#  fchn_stats,
-#  chn_shp,
-#  by.x = "CHNuid",
-#  by.y = "GeoUID"
-# )
-#
-# ### Health authority zone (HR) ----
-#
-# chr_stats <- merge(
-#  chr_stats,
-#  hr_shp,
-#  by.x = "HRuid",
-#  by.y = "GeoUID"
-# )
-#
-# fhr_stats <- merge(
-#  fhr_stats,
-#  hr_shp,
-#  by.x = "HRuid",
-#  by.y = "GeoUID"
-# )
-#
-# ### Urban x Rural (URB) ----
-#
-# curb_stats <- merge(
-#  curb_stats,
-#  urb_shp,
-#  by.x = "URBuid",
-#  by.y = "GeoUID"
-# )
-#
-# fcurb_stats <- merge(
-#  fcurb_stats,
-#  urb_shp,
-#  by.x = "URBuid",
-#  by.y = "GeoUID"
-# )
+source("./modules/data-arrange-map.R")
 
 # Export dashboard dataset ----
 
@@ -7501,6 +3931,10 @@ arrow::write_parquet(
  "./data/ctab_dist.parquet")
 
 arrow::write_parquet(
+ ftab_dist,
+ "./data/ftab_dist.parquet")
+
+arrow::write_parquet(
  ccd_stats,
  "./data/ccd_stats.parquet")
 
@@ -7517,10 +3951,6 @@ arrow::write_parquet(
  "./data/chr_stats.parquet")
 
 arrow::write_parquet(
- curb_stats,
- "./data/curb_stats.parquet")
-
-arrow::write_parquet(
  fcd_stats,
  "./data/fcd_stats.parquet")
 
@@ -7535,11 +3965,6 @@ arrow::write_parquet(
 arrow::write_parquet(
  fhr_stats,
  "./data/fhr_stats.parquet")
-
-arrow::write_parquet(
- furb_stats,
- "./data/furb_stats.parquet")
-
 
 # Color palettes ----
 # https://colors.muz.li/

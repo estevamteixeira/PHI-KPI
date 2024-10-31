@@ -308,7 +308,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
       # color palette
       pal <- leaflet::colorBin(
        c("#D8FFFB", "#44AD99", "#307972"), # https://colors.muz.li/
-       domain = dta[[input$metric]]
+       domain = geodta()[[input$metric]]
       )
 
       Sys.sleep(0.25)
@@ -334,6 +334,8 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
       # Map title
       tlt_txt <- paste(
        lbl(),
+       "<br>",
+       dta$name,
        "<br>",
        input$t0) |>
        htmltools::HTML()
@@ -378,7 +380,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        nsmap(dta, input$metric) |>
         leaflet::addLegend(
          pal = pal,
-         values = ~dta[[input$metric]],
+         values = ~geodta()[[input$metric]],
          opacity = 1,
          title = "",
          position = "bottomright",
@@ -525,7 +527,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
     style = "auto",
     selection = 'single',
     extensions = "Buttons",
-    caption = lbl(),
+    # caption = lbl(),
     options = list(
      dom = 'B<t>ftp',
      extensions = "Buttons",
