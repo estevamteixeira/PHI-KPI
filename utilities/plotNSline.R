@@ -13,15 +13,15 @@ plot_line <- function(data, var, ylab){
  pal <- "#44AD99"
 
  plotly::plot_ly(
-  data = dta %>% arrange(BrthYear),
-  x = ~BrthYear,
+  data = dta %>% arrange(period),
+  x = ~period,
   y = ~.data[[var]],
   type = "scatter",
   mode = "lines+markers",
   hovertemplate = ~ifelse(
    !is.na(.data[[delta]]),
    paste(paste0(
-    "<b>",.data[["label"]]," in ",BrthYear,"</b>",
+    "<b>",.data[["label"]]," in ",period,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (<b><span style='color:",
@@ -35,7 +35,7 @@ plot_line <- function(data, var, ylab){
     ", year on year)"),
     "<extra></extra>"),
    paste(paste0(
-    "<b>",.data[["label"]]," in ",BrthYear,"</b>",
+    "<b>",.data[["label"]]," in ",period,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (-, year on year)"),
@@ -123,7 +123,7 @@ plot_line_index <- function(data){
  ggplot(
   data = data,
   aes(
-  x = BrthYear,
+  x = period,
   y = rate)) +
   geom_area(
    fill = "#44AD99",

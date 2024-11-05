@@ -39,18 +39,32 @@ trendUI <- function(id){
     fill = FALSE,
     selectInput(
      inputId = ns("t0"),
-     label = "Initial year",
+     label = "Initial period",
      choices = NULL,
      selected = NULL
     ),
     selectInput(
      inputId = ns("tn"),
-     label = "Final year",
+     label = "Final period",
      choices = NULL,
      selected = NULL
     )
+   ),
+   ## Select which data to analyze:
+   ## Calendar/Fiscal year
+   input_switch(ns("fdata"), "Fiscal Year", FALSE),
+   tags$span(
+    style = "display: flex; justify-content: center;",
+    tags$a(
+     href = "https://rcp.nshealth.ca/",
+     tags$img(
+      src = "logo/rcp-logo-transparent.svg",
+      width = "100%",
+      height = "auto",
+      alt = "RCP logo"
+     )
+    )
    )
-   # tags$img(src = "logo/rcp-logo-transparent.svg", width = "100%", height = "auto")
   ),
   layout_columns(
    col_widths = c(12),
@@ -75,7 +89,7 @@ trendUI <- function(id){
   ))
 }
 
-trendServer <- function(id, df1, df2, df3){
+trendServer <- function(id, df1, df2, df3, df4){
  moduleServer(id, function(input, output, session){
   ## Setting id for session
   ns <- session$ns
@@ -88,6 +102,19 @@ trendServer <- function(id, df1, df2, df3){
    choices = df1,
    selected = c("prehyp_rate")
   )
+
+  # `selected_dta` is a reactive expression whose results will depend on ----
+  # the fdata input selection: Calendar or Fiscal year.
+  selected_dta <- reactive({
+   if(isTRUE(input$fdata)){
+    return(df4 %>%
+            rename("period" = "FiscalYear"))
+   } else {
+    return(df2 %>%
+            rename("period" = "BrthYear"))
+   }
+  })
+
   ## Update the options for the initial year selectInput
   ## The values should reflect the data availability
   observeEvent(input$metric,{
@@ -95,20 +122,21 @@ trendServer <- function(id, df1, df2, df3){
    updateSelectInput(
     session,
     inputId = "t0",
-    choices = sort(
-     unique(
-      df2 %>%
-       select(BrthYear, !!sym(input$metric)) %>%
+    choices = unique(
+      selected_dta() %>%
+       select(period, !!sym(input$metric)) %>%
        collect() %>%
-       pull(BrthYear)
-     )),
+       pull(period) %>%
+       as.character() %>%
+       sort()
+     ),
     selected = c(
-     min(
-      df2 %>%
-       select(BrthYear, !!sym(input$metric)) %>%
-       collect() %>%
-       pull(BrthYear), na.rm = TRUE
-     )
+     selected_dta() %>%
+      select(period, !!sym(input$metric)) %>%
+      collect() %>%
+      pull(period) %>%
+      as.character() %>%
+      min()
     )
    )
   })
@@ -123,29 +151,31 @@ trendServer <- function(id, df1, df2, df3){
     choices = c(
      sort(
       unique(
-       df2 %>%
-        select(BrthYear, !!sym(input$metric)) %>%
+       selected_dta() %>%
+        select(period, !!sym(input$metric)) %>%
         collect() %>%
-        pull(BrthYear)
+        pull(period) %>%
+        as.character()
       )))[
        c(
         sort(
          unique(
-          df2 %>%
-           select(BrthYear, !!sym(input$metric)) %>%
+          selected_dta() %>%
+           select(period, !!sym(input$metric)) %>%
            collect() %>%
-           pull(BrthYear)
+           pull(period) %>%
+           as.character()
          )
         )
        ) >= input$t0],
     selected = c(
-     max(
-      df2 %>%
-       select(BrthYear, !!sym(input$metric)) %>%
-       collect() %>%
-       pull(BrthYear), na.rm = TRUE
+     selected_dta() %>%
+      select(period, !!sym(input$metric)) %>%
+      collect() %>%
+      pull(period) %>%
+      as.character() %>%
+      max()
      )
-    )
    )
   })
 
@@ -176,12 +206,12 @@ trendServer <- function(id, df1, df2, df3){
 
   # `selected_dta` is a reactive expression whose results will depend on ----
   # the t0, tn, metric
-  selected_dta <- reactive({
+  final_dta <- reactive({
    return(
-    df2 %>%
-     select(BrthYear, starts_with(sub("_.*", "", input$metric))) %>%
-     filter(BrthYear >= as.numeric(input$t0),
-            BrthYear <= as.numeric(input$tn)) %>%
+    selected_dta() %>%
+     select(period, starts_with(sub("_.*", "", input$metric))) %>%
+     filter(as.character(period) >= as.character(input$t0),
+            as.character(period) <= as.character(input$tn)) %>%
      distinct() %>%
      mutate(label = lbl()) %>%
      collect()
@@ -191,12 +221,12 @@ trendServer <- function(id, df1, df2, df3){
 
   # Line plot output ----
   output$line <- renderPlotly({
-   req(selected_dta())
-   validate(need(nrow(selected_dta()) > 0,
+   req(final_dta())
+   validate(need(nrow(final_dta()) > 0,
                  "Sorry, there is no data available for the selected options.
              \nPlease, choose different years and/or indicators."))
 
-   plot_line(selected_dta(),
+   plot_line(final_dta(),
              input$metric,
              ylab = paste("Proportion of patients with",lbl(),sep = "<br>")
              )
