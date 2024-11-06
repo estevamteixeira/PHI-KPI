@@ -25,6 +25,9 @@ trendUI <- function(id){
  layout_sidebar(
   shinyjs::useShinyjs(),
   sidebar = sidebar(
+   ## Select which data to analyze:
+   ## Calendar/Fiscal year
+   input_switch(ns("fdata"), "Fiscal Year", FALSE),
    ## Metric option to select ----
    # Options are categorized in groups
    selectInput(
@@ -48,21 +51,6 @@ trendUI <- function(id){
      label = "Final period",
      choices = NULL,
      selected = NULL
-    )
-   ),
-   ## Select which data to analyze:
-   ## Calendar/Fiscal year
-   input_switch(ns("fdata"), "Fiscal Year", FALSE),
-   tags$span(
-    style = "display: flex; justify-content: center;",
-    tags$a(
-     href = "https://rcp.nshealth.ca/",
-     tags$img(
-      src = "logo/rcp-logo-transparent.svg",
-      width = "100%",
-      height = "auto",
-      alt = "RCP logo"
-     )
     )
    )
   ),
@@ -117,7 +105,7 @@ trendServer <- function(id, df1, df2, df3, df4){
 
   ## Update the options for the initial year selectInput
   ## The values should reflect the data availability
-  observeEvent(input$metric,{
+  observeEvent(c(input$fdata,input$metric),{
 
    updateSelectInput(
     session,
@@ -143,7 +131,7 @@ trendServer <- function(id, df1, df2, df3, df4){
 
   ## Make the final year option greater than or equal the
   ## initial year option
-  observeEvent(c(input$metric, input$t0),{
+  observeEvent(c(input$fdata, input$metric, input$t0),{
 
    updateSelectInput(
     session,

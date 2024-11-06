@@ -94,26 +94,98 @@ metrics_lbl <- list(
  stats::setNames(
   cyearly_stats %>% select(contains("hyp_rate"),
                            contains("diab_rate")) %>% collect() %>% names(),
-  c("Pre-existing Hypertension","Gestational Hypertension", "Any Hypertension (Pre-existing/Gestational)",
-  "Pre-existing Diabetes","Gestational Diabetes", "Any Diabetes (Pre-existing/Gestational)")),
+  c("Pre-existing Hypertension",
+    "Gestational Hypertension",
+    "Any Hypertension (Pre-existing/Gestational)",
+    "Pre-existing Diabetes",
+    "Gestational Diabetes",
+    "Any Diabetes (Pre-existing/Gestational)")),
+ ### Anaemia in pregnancy
+ stats::setNames(
+  cyearly_stats %>% select(contains("anemia_rate")) %>% collect() %>% names(),
+  c("Anaemia")),
+ ### Severe Perineal Trauma with Spontaneous Vaginal Birth
+ ### Mediolateral Episiotomy with Operative Vaginal Birth
+ ### Severe Perineal Trauma with Operative Vaginal Birth and mediolateral episiotomy
+ ### Severe Perineal Trauma with Operative Vaginal Birth without mediolateral episiotomy
+ stats::setNames(
+  cyearly_stats %>% select(contains("spt_rate"),
+                           contains("med_rate"),
+                           contains("sptassvgmed_rate"),
+                           contains("sptassvgnmed_rate")) %>% collect() %>% names(),
+  c("Severe Perineal Trauma with Spontaneous Vaginal Birth",
+    "Mediolateral Episiotomy with Operative Vaginal Birth",
+    "Severe Perineal Trauma with Operative Vaginal Birth and Mediolateral Episiotomy",
+    "Severe Perineal Trauma with Operative Vaginal Birth without Mediolateral Episiotomy")),
  ### Robson
  stats::setNames(
   cyearly_stats %>% select(contains("rbs") & ends_with("rate")) %>% collect() %>% names(),
-  c("Robson Group 1","Robson Group 2a", "Robson Group 5a")),
+  c("Robson Group 1",
+    "Robson Group 2a",
+    "Robson Group 5a")),
+ ### Postpartum hemorrhage treated with a blood transfusion
+ ### Postpartum hemorrhage resulting in procedural intervention
+ stats::setNames(
+  cyearly_stats %>% select(contains("pphbl_rate"),
+                           contains("pphpi_rate")) %>% collect() %>% names(),
+  c("Postpartum Hemorrhage Treated with a Blood Transfusion",
+    "Postpartum Hemorrhage Resulting in Procedural Intervention")),
  ### Postpartum readmission
+ ### Postpartum patients who received medical anticoagulation prophylaxis when indicated
  ### Skin to skin
  stats::setNames(
   cyearly_stats %>% select(contains("ppre") & ends_with("rate"),
                            contains("skn") & ends_with("rate")) %>% collect() %>% names(),
-  c("Postpartum Readmission","Skin to Skin", "Skin to Skin: vaginal birth","Skin to Skin: C-section")),
+  c("Postpartum Readmission",
+    "Skin to Skin",
+    "Skin to Skin: Vaginal Birth",
+    "Skin to Skin: C-section")),
+ ### Postpartum blood products amongst those who received antenatal iron therapy
+ stats::setNames(
+  cyearly_stats %>% select(contains("pphiv_rate")) %>% collect() %>% names(),
+  c("Postpartum blood products amongst those who received antenatal iron therapy")),
  ### Neonatal readmission
  stats::setNames(
   cyearly_stats %>% select(contains("neo") & ends_with("rate")) %>% collect() %>% names(),
   c("Neonatal Readmission")),
+ ### Preterm infants who received complete course of steroids >24h and < 7 days prior to birth
+ ### Preterm babies born in facility without NICU
+ stats::setNames(
+  cyearly_stats %>% select(contains("pretster") & ends_with("rate"),
+                           contains("pretnnicu") & ends_with("rate")) %>% collect() %>% names(),
+  c("Preterm infants who received steroids prior to birth",
+    "Preterm infants born in facility without NICU")),
+ ### Newborn respiratory distress associated with low-risk repeat cesarean at term gestation (≥ 37 weeks < 39 weeks)
+ ### Delayed Cord Clamping
+ ### Delayed Cord Clamping amongst Term Newborns
+ ### Delayed Cord Clamping amongst Term Newborns following spontaneous vaginal birth
+ ### Delayed Cord Clamping amongst Term Newborns following cesarean birth
+ ### Delayed Cord Clamping amongst Preterm Newborns
+ ### Delayed Cord Clamping amongst Preterm Newborns following spontaneous vaginal birth
+ ### Delayed Cord Clamping amongst Preterm Newborns following cesarean birth
+ stats::setNames(
+  cyearly_stats %>% select(contains("newlwcs_rate"),
+                           contains("delcord_rate"),
+                           contains("delcordterm_rate"),
+                           contains("delcordtermvg_rate"),
+                           contains("delcordtermcs_rate"),
+                           contains("delcordpreterm_rate"),
+                           contains("delcordpretermvg_rate"),
+                           contains("delcordpretermcs_rate")) %>% collect() %>% names(),
+  c("Newborn respiratory distress associated with low-risk repeat Caesarean at term gestation",
+    "Delayed Cord Clamping",
+    "Delayed Cord Clamping amongst Term Newborns",
+    "Delayed Cord Clamping amongst Term Newborns after Spontaneous Vaginal Birth",
+    "Delayed Cord Clamping amongst Term Newborns after Caesarean Birth",
+    "Delayed Cord Clamping amongst Preterm Newborns",
+    "Delayed Cord Clamping amongst Preterm Newborns after Spontaneous Vaginal Birth",
+    "Delayed Cord Clamping amongst Preterm Newborns after Caesarean Birth")),
  ### Breastfeeding
  stats::setNames(
   cyearly_stats %>% select(contains("brst") & ends_with("rate")) %>% collect() %>% names(),
-  c("Exclusive Breastfeeding", "Non-Exclusive Breastfeeding", "No Breastfeeding",
+  c("Exclusive Breastfeeding",
+    "Non-Exclusive Breastfeeding",
+    "No Breastfeeding",
     "Breastfeeding Initiation"))
  )
 
