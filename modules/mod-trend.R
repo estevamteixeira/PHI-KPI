@@ -4,6 +4,7 @@ modules::import("arrow")
 modules::import("bsicons")
 modules::import("bslib")
 modules::import("dplyr")
+modules::import("glue")
 modules::import("plotly")
 modules::import("shiny")
 
@@ -197,7 +198,7 @@ trendServer <- function(id, df1, df2, df3, df4){
   final_dta <- reactive({
    return(
     selected_dta() %>%
-     select(period, starts_with(sub("_.*", "", input$metric))) %>%
+     select(period, matches(paste0("^", sub("_.*", "", input$metric), "_(rate|delta|deltap)$"))) %>%
      filter(as.character(period) >= as.character(input$t0),
             as.character(period) <= as.character(input$tn)) %>%
      distinct() %>%

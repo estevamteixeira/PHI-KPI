@@ -5,10 +5,24 @@ plot_line <- function(data, var, ylab){
  import("dplyr")
  import("ggplot2")
  import("plotly")
+ import("stringr")
 
  dta <- data
  var <- unlist(var)
  delta <- unlist(names(dta)[endsWith(names(dta),"delta")])
+
+ # Get the range of your y variable
+ y_range <- range(dta[[var]], na.rm = TRUE)
+
+ tick_format <- if (y_range[2] < 0.01) {
+  ".3%"    # 3 decimal places for small values
+ } else if (y_range[2] < 0.1) {
+  ".2%"    # 2 decimal places for medium-small values
+ } else if (y_range[2] < 1) {
+  ".1%"    # 1 decimal place for medium values
+ } else {
+  "%"      # no decimal places for large values
+ }
 
  pal <- "#44AD99"
 
@@ -78,17 +92,17 @@ plot_line <- function(data, var, ylab){
    ),
    yaxis = list(
     color = "#307972",
+    rangemode = "tozero",
     title = list(
-     text = ylab,
+     text = stringr::str_wrap(ylab, width = 80),
      face = "bold",
-     size = 14,
-     rangemode = "tozero"
+     size = 14
     ),
     tickfont = list(
      face = "bold",
      size = 14
     ),
-    tickformat = ".1%"
+    tickformat = "0.2%"
    ),
    font = list(
     family = "Montserrat",
