@@ -91,70 +91,58 @@ app_time_range <- paste(min(cyearly_stats %>% select(BrthYear) %>% collect(), na
 metrics_lbl <- list(
  ### Hypertension
  ### Diabetes
+ ### Anaemia in pregnancy
  stats::setNames(
   cyearly_stats %>% select(contains("hyp_rate"),
+                           contains("anemia_rate"),
                            contains("diab_rate")) %>% collect() %>% names(),
   c("Pre-existing Hypertension",
     "Gestational Hypertension",
     "Any Hypertension (Pre-existing/Gestational)",
+    "Anaemia",
     "Pre-existing Diabetes",
     "Gestational Diabetes",
     "Any Diabetes (Pre-existing/Gestational)")),
- ### Anaemia in pregnancy
- stats::setNames(
-  cyearly_stats %>% select(contains("anemia_rate")) %>% collect() %>% names(),
-  c("Anaemia")),
  ### Severe Perineal Trauma with Spontaneous Vaginal Birth
  ### Mediolateral Episiotomy with Operative Vaginal Birth
  ### Severe Perineal Trauma with Operative Vaginal Birth and mediolateral episiotomy
  ### Severe Perineal Trauma with Operative Vaginal Birth without mediolateral episiotomy
+ ### Robson
  stats::setNames(
   cyearly_stats %>% select(contains("spt_rate"),
                            contains("med_rate"),
                            contains("sptassvgmed_rate"),
-                           contains("sptassvgnmed_rate")) %>% collect() %>% names(),
+                           contains("sptassvgnmed_rate"),
+                           contains("rbs") & ends_with("rate")) %>% collect() %>% names(),
   c("Severe Perineal Trauma with Spontaneous Vaginal Birth",
     "Mediolateral Episiotomy with Operative Vaginal Birth",
     "Severe Perineal Trauma with Operative Vaginal Birth and Mediolateral Episiotomy",
-    "Severe Perineal Trauma with Operative Vaginal Birth without Mediolateral Episiotomy")),
- ### Robson
- stats::setNames(
-  cyearly_stats %>% select(contains("rbs") & ends_with("rate")) %>% collect() %>% names(),
-  c("Robson Group 1",
+    "Severe Perineal Trauma with Operative Vaginal Birth without Mediolateral Episiotomy",
+    "Robson Group 1",
     "Robson Group 2a",
     "Robson Group 5a")),
  ### Postpartum hemorrhage treated with a blood transfusion
  ### Postpartum hemorrhage resulting in procedural intervention
- stats::setNames(
-  cyearly_stats %>% select(contains("pphbl_rate"),
-                           contains("pphpi_rate")) %>% collect() %>% names(),
-  c("Postpartum Hemorrhage Treated with a Blood Transfusion",
-    "Postpartum Hemorrhage Resulting in Procedural Intervention")),
  ### Postpartum readmission
  ### Postpartum patients who received medical anticoagulation prophylaxis when indicated
  ### Skin to skin
- stats::setNames(
-  cyearly_stats %>% select(contains("ppre") & ends_with("rate"),
-                           contains("skn") & ends_with("rate")) %>% collect() %>% names(),
-  c("Postpartum Readmission",
-    "Skin to Skin",
-    "Skin to Skin: Vaginal Birth",
-    "Skin to Skin: C-section")),
  ### Postpartum blood products amongst those who received antenatal iron therapy
  stats::setNames(
-  cyearly_stats %>% select(contains("pphiv_rate")) %>% collect() %>% names(),
-  c("Postpartum blood products amongst those who received antenatal iron therapy")),
+  cyearly_stats %>% select(contains("pphbl_rate"),
+                           contains("pphpi_rate"),
+                           contains("ppre") & ends_with("rate"),
+                           contains("skn") & ends_with("rate"),
+                           contains("pphiv_rate")) %>% collect() %>% names(),
+  c("Postpartum Hemorrhage Treated with a Blood Transfusion",
+    "Postpartum Hemorrhage Resulting in Procedural Intervention",
+    "Postpartum Readmission",
+    "Skin to Skin",
+    "Skin to Skin: Vaginal Birth",
+    "Skin to Skin: C-section",
+    "Postpartum blood products amongst those who received antenatal iron therapy")),
  ### Neonatal readmission
- stats::setNames(
-  cyearly_stats %>% select(contains("neo") & ends_with("rate")) %>% collect() %>% names(),
-  c("Neonatal Readmission")),
  ### Preterm infants who received complete course of steroids >24h and < 7 days prior to birth
  ### Preterm babies born in facility without NICU
- stats::setNames(
-  cyearly_stats %>% select(contains("pretster") & ends_with("rate"),
-                           contains("pretnnicu") & ends_with("rate")) %>% collect() %>% names(),
-  c("Preterm infants who received steroids prior to birth",
-    "Preterm infants born in facility without NICU")),
  ### Newborn respiratory distress associated with low-risk repeat cesarean at term gestation (≥ 37 weeks < 39 weeks)
  ### Delayed Cord Clamping
  ### Delayed Cord Clamping amongst Term Newborns
@@ -164,7 +152,10 @@ metrics_lbl <- list(
  ### Delayed Cord Clamping amongst Preterm Newborns following spontaneous vaginal birth
  ### Delayed Cord Clamping amongst Preterm Newborns following cesarean birth
  stats::setNames(
-  cyearly_stats %>% select(contains("newlwcs_rate"),
+  cyearly_stats %>% select(contains("neo") & ends_with("rate"),
+                           contains("pretster") & ends_with("rate"),
+                           contains("pretnnicu") & ends_with("rate"),
+                           contains("newlwcs_rate"),
                            contains("delcord_rate"),
                            contains("delcordterm_rate"),
                            contains("delcordtermvg_rate"),
@@ -172,7 +163,10 @@ metrics_lbl <- list(
                            contains("delcordpreterm_rate"),
                            contains("delcordpretermvg_rate"),
                            contains("delcordpretermcs_rate")) %>% collect() %>% names(),
-  c("Newborn respiratory distress associated with low-risk repeat Caesarean at term gestation",
+  c("Neonatal Readmission",
+    "Preterm infants who received steroids prior to birth",
+    "Preterm infants born in facility without NICU",
+    "Newborn respiratory distress associated with low-risk repeat Caesarean at term gestation",
     "Delayed Cord Clamping",
     "Delayed Cord Clamping amongst Term Newborns",
     "Delayed Cord Clamping amongst Term Newborns after Spontaneous Vaginal Birth",
@@ -186,7 +180,14 @@ metrics_lbl <- list(
   c("Exclusive Breastfeeding",
     "Non-Exclusive Breastfeeding",
     "No Breastfeeding",
-    "Breastfeeding Initiation"))
+    "Breastfeeding Initiation")),
+ ### ICU Admission during Pregnancy or Postpartum
+ ### Rate of Severe Morbidity in Pregnancy or Postpartum
+ stats::setNames(
+  cyearly_stats %>% select(matches("^icu_rate$"),
+                           contains("smm_rate")) %>% collect() %>% names(),
+  c("ICU Admission during Pregnancy or Postpartum",
+    "Severe Maternal Morbidity in Pregnancy or Postpartum"))
  )
 
 # List name ----
@@ -196,7 +197,8 @@ names(metrics_lbl) <- c("Antenatal",
                         "Intrapartum",
                         "Postpartum",
                         "Newborn",
-                        "Infant Feeding")
+                        "Infant Feeding",
+                        "Other")
 
 # Tooltip text ----
 
@@ -222,6 +224,13 @@ ttip <- list(
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
+ anemia_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with hypertension (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
+  "<li style='text-align:left;'> <b>Numerator:</b> Patients with Hgb &#8804; 100 g/L during pregnancy.</li>",
+  "<br>",
+  "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
+ ),
  prediab_rate = paste0(
   # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with pre-existing diabetes during pregnancy.</li>",
   # "<br>",
@@ -243,6 +252,34 @@ ttip <- list(
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients.</li></ul>"
  ),
+ spt_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
+  "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients with documented 3<sup>rd</sup> or 4<sup>th</sup> degree perineal laceration following spontaneous vaginal birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients with spontaneous vaginal birth.</li>"
+ ),
+ med_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
+  "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients with documented mediolateral episiotomy following vaginal birth assisted by forceps or vacuum.</li>",
+  "<br>",
+  "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients with operative vaginal birth.</li>"
+ ),
+ sptassvgmed_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
+  "<li style='text-align:left;'><b>Numerator:</b> Postpartum patients with documented 3<sup>rd</sup> or 4<sup>th</sup> degree laceration following forceps or vacuum-assisted vaginal birth, with a mediolateral episiotomy.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All postpartum patients with operative vaginal birth.</li>"
+ ),
+ sptassvgnmed_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of pregnant patients diagnosed with diabetes (pre-existing, gestational, and other or unspecified) during pregnancy.</li>",
+  # "<br>",
+  "<li style='text-align:left;'><b>Numerator:</b> Postpartum patients with documented 3<sup>rd</sup> or 4<sup>th</sup> degree laceration following forceps or vacuum-assisted vaginal birth, without a mediolateral episiotomy.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All postpartum patients with operative vaginal birth.</li>"
+ ),
  rbs1_rate = paste0(
   # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of postpartum primiparous patients (without other specified risk factors) who had spontaneous onset of labor and a Caesarean birth.</li>",
   # "<br>",
@@ -263,6 +300,20 @@ ttip <- list(
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, multiparous, previous cesarean, spontaneous labor who have Caesarean.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> Postpartum patients 37+ weeks, singleton, cephalic presentation, multiparous, previous cesarean, spontaneous labor.</li></ul>"
+ ),
+ pphbl_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of patients who were readmitted to the hospital within the first 6 weeks postpartum.</li>",
+  # "<br>",
+  "<li style='text-align:left;'><b>Numerator:</b> Postpartum patients with documented postpartum hemorrhage (PPH) per CIHI definition (500+ mL with vaginal birth or 1000+ mL with cesarean) who received blood products.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All postpartum patients.</li>"
+ ),
+ pphpi_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of patients who were readmitted to the hospital within the first 6 weeks postpartum.</li>",
+  # "<br>",
+  "<li style='text-align:left;'><b>Numerator:</b> Postpartum patients with documented postpartum hemorrhage (PPH) per CIHI definition (500+ mL with vaginal birth or 1000+ mL with cesarean) who received uterine compression sutures, uterine artery ligation or embolization, uterine tamponade, or hysterectomy.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> Postpartum patients with documented PPH.</li>"
  ),
  ppreadm_rate = paste0(
   # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of patients who were readmitted to the hospital within the first 6 weeks postpartum.</li>",
@@ -292,12 +343,89 @@ ttip <- list(
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All live babies born via Caesarean.</li></ul>"
  ),
+ pphiv_rate = paste0(
+  # "<ul> <li style='text-align:left;'> <b>Definition:</b> Proportion of babies placed skin-to-skin with the birthing parent within five minutes of the recorded time of Caesarean birth (exception: Caesarean-section with general anesthesia) for at least one hour, or until completion of the first feed (as recorded in NSAPD as 'baby to breast').</li>",
+  # "<br>",
+  "<li style='text-align:left;'><b>Numerator:</b> Patients who received IV iron therapy during pregnancy and blood products postpartum.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All patients who received postpartum blood products.</li>"
+ ),
  neoreadm_rate = paste0(
   # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of newborns who were readmitted to the hospital within 42 days after birth, following discharge from the birth admission.</li>",
   # "<br>",
   "<li style='text-align:left;'> <b>Numerator:</b> Number of newborns readmitted to the hospital within 42 days after birth, following discharge from the birth admission.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All live newborns discharged from the hospital within 42 days after birth.</li></ul>"
+ ),
+ pretster_rate = paste0(
+  #"<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> Infants with a gestational age at birth from 24 0/7 weeks to < 35 0/7 weeks whose mothers received 2 doses of corticosteroids > 24 hours < 7 days prior to birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> Number of newborns with a gestational age at birth from 24 0/7 weeks to 34 6/7 weeks.</li>"
+  #"</ul>"
+ ),
+ pretnnicu_rate = paste0(
+  #"<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> Newborns < 34 weeks gestation born in Nova Scotia facilities without Level 3 ICU (excluding IWK or CBRH) or without active perinatal services.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All newborns born in Nova Scotia at < 34 weeks gestation.</li>"
+  #"</ul>"
+ ),
+ newlwcs_rate = paste0(
+  #"<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> Live infants born by elective (or maternal choice) repeat cesarean 37+ to < 39 weeks gestation, coded for respiratory distress.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> Live infants born by elective (or maternal choice) repeat cesarean 37+ to < 39 weeks gestation.</li>"
+  #"</ul>"
+ ),
+ delcord_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live newborns with documented umbilical cord clamping > 1 to 3 minutes after birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All liveborn newborns.</li>"
+  # "</ul>"
+ ),
+ delcordterm_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live newborns at term (37+ weeks) gestation with documented umbilical cord clamping > 1 to 3 minutes after birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All liveborn newborns at term (37+ weeks) gestation.</li>"
+  # "</ul>"
+ ),
+ delcordtermvg_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live newborns at term (37+ weeks) gestation with documented umbilical cord clamping > 1 to 3 minutes following spontaneous vaginal birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All liveborn newborns at term (37+ weeks) gestation following spontaneous vaginal birth.</li>"
+  # "</ul>"
+ ),
+ delcordtermcs_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live newborns at term (37+ weeks) gestation with documented umbilical cord clamping > 1 to 3 minutes following Caesarean birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All liveborn newborns at term (37+ weeks) gestation following Caesarean birth.</li>"
+  # "</ul>"
+ ),
+ delcordpreterm_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live preterm newborns (< 37 weeks gestation) with documented umbilical cord clamping > 1 to 3 minutes after birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All live preterm newborns (< 37 weeks gestation).</li>"
+  # "</ul>"
+ ),
+ delcordpretermvg_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live preterm newborns (< 37 weeks gestation) with documented umbilical cord clamping > 1 to 3 minutes following spontaneous vaginal birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All live preterm newborns (< 37 weeks gestation) following spontaneous vaginal birth.</li>"
+  # "</ul>"
+ ),
+ delcordpretermcs_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> All live preterm newborns (< 37 weeks gestation) with documented umbilical cord clamping > 1 to 3 minutes following Caesarean birth.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All live preterm newborns (< 37 weeks gestation) following Caesarean birth.</li>"
+  # "</ul>"
  ),
  excbrst_rate = paste0(
   # "<ul> <li style='text-align:left;'> <b>Definition:</b> The proportion of infants born at a specified facility within a given time period who received human milk exclusively during the hospital stay (from birth to discharge), including those supplemented with expressed or donor human milk or who received medically indicated supplementation with human milk substitute.</li>",
@@ -326,6 +454,20 @@ ttip <- list(
   "<li style='text-align:left;'> <b>Numerator:</b> Postpartum patients with at least one liveborn infant whose infant received any human milk from birth to discharge.</li>",
   "<br>",
   "<li style='text-align:left;'> <b>Denominator:</b> All postpartum patients with at least one liveborn infant.</li></ul>"
+ ),
+ icu_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> Patients admitted or transferred to ICU during pregnancy or up to 6 weeks postpartum.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All pregnant and postpartum patients.</li>"
+  # "</ul>"
+ ),
+ smm_rate = paste0(
+  # "<ul>",
+  "<li style='text-align:left;'><b>Numerator:</b> Number of disease-specific, intervention-specific, or organ dysfunction-based morbidities associated with delivery. The definition of Severe Maternal Morbidity can be found <a href='https://www.jogc.com/action/showPdf?pii=S1701-2163%2819%2930089-1'>here</a>.</li>",
+  "<br>",
+  "<li style='text-align:left;'><b>Denominator:</b> All liveborn babies.</li>"
+  # "</ul>"
  )
 )
 
