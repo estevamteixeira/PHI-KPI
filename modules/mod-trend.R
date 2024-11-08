@@ -54,7 +54,20 @@ trendUI <- function(id){
      selected = NULL
     )
    )
-  ),
+   # The picture only shows if running the app through the 'Run App' btn
+   # tags$span(
+   #  style = "display: flex; justify-content: center; align-items: center; width: 100%;position: absolute; bottom: 0; left: 50%;transform: translateX(-50%);",
+   #  tags$a(
+   #   href = "https://rcp.nshealth.ca/",
+   #   tags$img(
+   #    src = "logo/rcp-logo-transparent.svg",
+   #    width = "50%",
+   #    height = "auto",
+   #    alt = "RCP logo"
+   #    )
+   #   )
+   #  )
+   ),
   layout_columns(
    col_widths = c(12),
    card(
@@ -217,7 +230,9 @@ trendServer <- function(id, df1, df2, df3, df4){
 
    plot_line(final_dta(),
              input$metric,
-             ylab = paste("Proportion of patients with",lbl(),sep = "<br>")
+             ylab = paste("Proportion of patients with",
+                          stringr::str_wrap(lbl(), width = 35),
+                          sep = "<br>") %>% stringr::str_replace_all("\n", "<br>")
              )
    })
  })

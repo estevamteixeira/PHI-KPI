@@ -14,14 +14,12 @@ plot_line <- function(data, var, ylab){
  # Get the range of your y variable
  y_range <- range(dta[[var]], na.rm = TRUE)
 
- tick_format <- if (y_range[2] < 0.01) {
-  ".3%"    # 3 decimal places for small values
- } else if (y_range[2] < 0.1) {
-  ".2%"    # 2 decimal places for medium-small values
- } else if (y_range[2] < 1) {
-  ".1%"    # 1 decimal place for medium values
+ tick_format <- if ((y_range[2] - y_range[1]) < 0.002) {
+  ".2%"    # 2 decimal places for small values
+ } else if ((y_range[2] - y_range[1]) < 0.015) {
+  ".1%"    # 1 decimal places for medium-small values
  } else {
-  "%"      # no decimal places for large values
+  "1%"      # no decimal places for large values
  }
 
  pal <- "#44AD99"
@@ -94,7 +92,8 @@ plot_line <- function(data, var, ylab){
     color = "#307972",
     rangemode = "tozero",
     title = list(
-     text = stringr::str_wrap(ylab, width = 80),
+     text = ylab %>%
+      stringr::str_replace_all("\n", "<br>"),
      face = "bold",
      size = 14
     ),
@@ -102,7 +101,9 @@ plot_line <- function(data, var, ylab){
      face = "bold",
      size = 14
     ),
-    tickformat = "0.2%"
+    tickformat = tick_format,
+    automargin = TRUE, # Automatically adjusts margin for large labels
+    title_standoff = 20 # Adds space between title and tick values
    ),
    font = list(
     family = "Montserrat",

@@ -15,18 +15,7 @@ Sys.setenv("OPENSSL_CONF"="/dev/null")
 webshot::install_phantomjs()
 
 ui <- page_navbar(
- title = tags$span(
-  tags$a(
-   href = "https://rcp.nshealth.ca/",
-   tags$img(
-    src = "./logo/rcp-logo-transparent.svg",
-    width = "46px",
-    height = "auto",
-    alt = "RCP logo"
-   )
-  ),
-  consts$app_title
- ),
+ title = consts$app_title,
  id = "navbar",
  collapsible = TRUE,
  fillable = TRUE,
