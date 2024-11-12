@@ -15289,3 +15289,5 @@ fhr_stats <- cbind(
 ) %>%
  filter(!HRuid %in% "12 ") %>%
  mutate(HRuid = as.character(trimws(substr(HRuid,3,4))))
+
+

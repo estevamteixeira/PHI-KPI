@@ -4,7 +4,6 @@ modules::import("arrow")
 modules::import("bsicons")
 modules::import("bslib")
 modules::import("dplyr")
-modules::import("glue")
 modules::import("plotly")
 modules::import("shiny")
 

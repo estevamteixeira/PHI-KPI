@@ -27,6 +27,9 @@ mapUI <- function(id){
  layout_sidebar(
   shinyjs::useShinyjs(),
   sidebar = sidebar(
+   ## Select which data to analyze:
+   ## Calendar/Fiscal year
+   input_switch(ns("fdata"), "Fiscal Year", FALSE),
    ## Indicator option to select ----
    # Options are categorized in groups
    selectInput(

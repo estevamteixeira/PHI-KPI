@@ -33,6 +33,7 @@ cd_shp <-  sf::read_sf("./data/NSC_cd.shp") %>%
 # geoarrow_collect_sf()
 
 ccd_stats <- arrow::read_parquet("./data/ccd_stats.parquet", as_data_frame = FALSE)
+fcd_stats <- arrow::read_parquet("./data/fcd_stats.parquet", as_data_frame = FALSE)
 
 ## Community Clusters (CL) ----
 
@@ -41,6 +42,7 @@ cl_shp <- sf::read_sf("./data/NSC_cl.shp") %>%
           name = cluster))
 
 ccl_stats <- arrow::read_parquet("./data/ccl_stats.parquet", as_data_frame = FALSE)
+fcl_stats <- arrow::read_parquet("./data/fcl_stats.parquet", as_data_frame = FALSE)
 
 ## Community Health Networks (CHN) ----
 
@@ -50,6 +52,7 @@ chn_shp <- sf::read_sf("./data/NSC_chn.shp") %>%
  mutate(name = gsub(" Comm H. Network","",name))
 
 cchn_stats <- arrow::read_parquet("./data/cchn_stats.parquet", as_data_frame = FALSE)
+fchn_stats <- arrow::read_parquet("./data/fchn_stats.parquet", as_data_frame = FALSE)
 
 ## Health Authority Zones (HR) ----
 
@@ -59,6 +62,7 @@ hr_shp <- sf::read_sf("./data/NSC_hr.shp") %>%
           name = Name))
 
 chr_stats <- arrow::read_parquet("./data/chr_stats.parquet", as_data_frame = FALSE)
+fhr_stats <- arrow::read_parquet("./data/fhr_stats.parquet", as_data_frame = FALSE)
 
 ## Urban x Rural (urb) ----
 

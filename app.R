@@ -35,14 +35,14 @@ ui <- page_navbar(
  #           tableTab$tableUI("table"),
  #           icon = bsicons::bs_icon("house-fill")
  # ),
- nav_panel("Trend",
-           trendTab$trendUI("trend"),
-           icon = bsicons::bs_icon("graph-up-arrow")
+ # nav_panel("Trend",
+ #           trendTab$trendUI("trend"),
+ #           icon = bsicons::bs_icon("graph-up-arrow")
+ # ),
+ nav_panel("Map Tool",
+           mapTab$mapUI("map"),
+           icon = bsicons::bs_icon("geo-fill")
  )
- # nav_panel("Map Tool",
- #           mapTab$mapUI("map"),
- #           icon = bsicons::bs_icon("geo-fill")
- # )
 )
 
 server <- function(input, output, session) {
@@ -55,27 +55,27 @@ server <- function(input, output, session) {
  #  )
 
  # Lineplot tab server ----
- session$userData$trendTab <- trendTab$trendServer(
-  id = "trend",
-  df1 = consts$metrics_lbl,
-  df2 = consts$cyearly_stats,
-  df3 = consts$ttip,
-  df4 = consts$fyearly_stats)
+ # session$userData$trendTab <- trendTab$trendServer(
+ #  id = "trend",
+ #  df1 = consts$metrics_lbl,
+ #  df2 = consts$cyearly_stats,
+ #  df3 = consts$ttip,
+ #  df4 = consts$fyearly_stats)
 
  # Map tab server ----
- # session$userData$mapTab <- mapTab$mapServer(
- #  id = "map",
- #  df1 = consts$metrics_lbl,
- #  df2 = consts$ttip,
- #  df3 = consts$geo_lbl,
- #  df4 = consts$ccd_stats,
- #  df5 = consts$ccl_stats,
- #  df6 = consts$cchn_stats,
- #  df7 = consts$chr_stats,
- #  df8 = consts$cd_shp,
- #  df9 = consts$cl_shp,
- #  df10 = consts$chn_shp,
- #  df11 = consts$hr_shp)
+ session$userData$mapTab <- mapTab$mapServer(
+  id = "map",
+  df1 = consts$metrics_lbl,
+  df2 = consts$ttip,
+  df3 = consts$geo_lbl,
+  df4 = consts$ccd_stats,
+  df5 = consts$ccl_stats,
+  df6 = consts$cchn_stats,
+  df7 = consts$chr_stats,
+  df8 = consts$cd_shp,
+  df9 = consts$cl_shp,
+  df10 = consts$chn_shp,
+  df11 = consts$hr_shp)
 
 }
 
