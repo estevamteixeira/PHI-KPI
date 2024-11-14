@@ -6,6 +6,7 @@ modules::import("bslib")
 modules::import("dplyr")
 modules::import("plotly")
 modules::import("shiny")
+modules::import("stringr")
 
 # Define which objects from the module you make available to a user ----
 # All other objects are kept private, local, to the module.

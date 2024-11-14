@@ -8,6 +8,7 @@ modules::import("leaflet")
 modules::import("mapview")
 modules::import("sf")
 modules::import("shiny")
+modules::import("stringr")
 
 # Define which objects from the module you make available to a user ----
 # All other objects are kept private, local, to the module.
@@ -269,11 +270,13 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   # Tooltip (i button) dynamic
 
   output$map_btn <- renderUI({
-   HTML(vals$ibtn)
+   HTML(stringr::str_wrap(vals$ibtn), width = 40) %>%
+    stringr::str_replace_all("\n", "<br>")
   })
 
   output$tab_btn <- renderUI({
-   HTML(vals$ibtn)
+   HTML(stringr::str_wrap(vals$ibtn), width = 40) %>%
+    stringr::str_replace_all("\n", "<br>")
   })
 
   # `selected_dta` is a reactive expression whose results will depend on ----
