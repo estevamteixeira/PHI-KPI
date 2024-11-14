@@ -52,11 +52,11 @@ mapUI <- function(id){
    ),
    ## Put year options side-by-side ----
    layout_column_wrap(
-    width = 1/2,
+    width = 1/1,
     fill = FALSE,
     selectInput(
      inputId = ns("t0"),
-     label = "Year",
+     label = "Period",
      choices = NULL,
      selected = NULL
     )
@@ -125,7 +125,8 @@ mapUI <- function(id){
 }
 
 mapServer <- function(id, df1, df2, df3, df4, df5,
-                      df6, df7, df8, df9 ,df10, df11){
+                      df6, df7, df8, df9 ,df10, df11,
+                      df12, df13 ,df14, df15){
  moduleServer(id, function(input, output, session){
   ## Setting id for session
   ns <- session$ns
@@ -157,20 +158,56 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   })
 
   # Select the stats file depending on the selected geographic unit ----
+  # and by calendar/fical year
   stats <- reactive({
 
    # Ensure input$geo is available before proceeding
    req(input$geo)
 
-   if(input$geo %in% "cd")  return(df4)
-   if(input$geo %in% "cl")  return(df5)
-   if(input$geo %in% "chn") return(df6)
-   if(input$geo %in% "hr")  return(df7)
+   if(input$geo %in% "cd"){
+    if(isTRUE(input$fdata)){
+     return(df12 %>%
+             rename("period" = "FiscalYear"))
+    } else {
+     return(df4 %>%
+             rename("period" = "BrthYear"))
+    }
+   }
+
+   if(input$geo %in% "cl"){
+    if(isTRUE(input$fdata)){
+     return(df13 %>%
+             rename("period" = "FiscalYear"))
+    } else {
+     return(df5 %>%
+             rename("period" = "BrthYear"))
+    }
+   }
+
+   if(input$geo %in% "chn"){
+    if(isTRUE(input$fdata)){
+     return(df14 %>%
+             rename("period" = "FiscalYear"))
+    } else {
+     return(df6 %>%
+             rename("period" = "BrthYear"))
+    }
+   }
+
+   if(input$geo %in% "hr"){
+    if(isTRUE(input$fdata)){
+     return(df15 %>%
+             rename("period" = "FiscalYear"))
+    } else {
+     return(df7 %>%
+             rename("period" = "BrthYear"))
+    }
+   }
   })
 
   ## Update the options for the initial year selectInput()
   ## The values should reflect the data availability
-  observeEvent(input$geo,{
+  observeEvent(c(input$fdata,input$geo),{
 
    # Ensure stats() is not NULL
    req(stats())
@@ -180,58 +217,63 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
    updateSelectInput(
     session,
     inputId = "t0",
-    choices = sort(
-     unique(
-      df %>%
-       select(BrthYear) %>%
-       distinct() %>%
-       pull()
-      )
-     ),
-    selected = min(
-     sort(
-      unique(
-       df %>%
-        select(BrthYear) %>%
-        distinct() %>%
-        pull()
-      )
-     ),
-     na.rm = TRUE)
+    choices = unique(
+     df %>%
+      select(period) %>%
+      collect() %>%
+      pull(period) %>%
+      as.character() %>%
+      sort()
+    ),
+    selected = c(
+     df %>%
+      select(period) %>%
+      collect() %>%
+      pull(period) %>%
+      as.character() %>%
+      min()
+    )
    )
   })
 
   # Get the list name to make the
   # Card header dynamic
-  lbl <- reactive({
-   metric <- input$metric
-   label <- names(unlist(unname(df1)))[unlist(df1) %in% metric]
-   return(label)
+  vals <- reactiveValues(metric = NULL, label = NULL, ibtn= NULL)
+
+  # Observe input and update metric and label within vals
+  observeEvent(input$metric, {
+   vals$metric <- input$metric
+
+   # Calculate label based on the updated metric
+   vals$label <- names(unlist(unname(df1)))[unlist(df1) %in% vals$metric]
+
+   vals$ibtn <- unlist(unname(df2))[names(unlist(df2)) %in% vals$metric]
+
+   # Validate that a label is found
+   validate(need(length(vals$label) > 0, "Label not found for selected metric"))
   })
 
   output$map_title <- renderUI({
-   lbl()
+   req(vals$label)  # Ensure label is available
+
+   vals$label  # Output label as UI element
   })
 
   output$tab_title <- renderUI({
-   lbl()
+   req(vals$label)  # Ensure label is available
+
+   vals$label  # Output label as UI element
   })
 
   # Get the list name to make the
   # Tooltip (i button) dynamic
 
-  ibtn <- reactive({
-   metric <- input$metric
-   text <- unlist(unname(df2))[names(unlist(df2)) %in% metric]
-   return(HTML(text))
-  })
-
   output$map_btn <- renderUI({
-   ibtn()
+   HTML(vals$ibtn)
   })
 
   output$tab_btn <- renderUI({
-   ibtn()
+   HTML(vals$ibtn)
   })
 
   # `selected_dta` is a reactive expression whose results will depend on ----
@@ -239,10 +281,10 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   selected_dta <- reactive({
    return(
     stats() %>%
-     select(contains("id"), BrthYear, input$metric) %>%
-     filter(BrthYear == as.numeric(input$t0)) %>%
+     select(contains("id"), period, input$metric) %>%
+     filter(period %in% as.character(input$t0)) %>%
      distinct() %>%
-     mutate(label = lbl()) %>%
+     mutate(label = as.character(vals$label)) %>%
      collect()
    )
   })
@@ -322,13 +364,15 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        is.na(dta[[input$metric]]) | dta[[input$metric]] %in% 0,
        paste(
         "<b>",dta[["label"]],"</b>",
-        "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+        "<br><b>",dta[["name"]],
+        "<br>",dta[["period"]],"</b>",
         "<br>",
         "No information provided"
        ),
        paste(
         "<b>",dta[["label"]],"</b>",
-        "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+        "<br><b>",dta[["name"]],
+        "<br>",dta[["period"]],"</b>",
         "<br>",
         scales::percent(dta[[input$metric]], accuracy = 0.01)
        )
@@ -510,7 +554,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
    req(field())
 
    htmltools::withTags(table(
-    tableHeader(c("GeoUID", "BrthYear", field(), "Rate"),
+    tableHeader(c("GeoUID", "period", field(), "Rate"),
                 escape = FALSE)
    ))
 
@@ -524,7 +568,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
             \nPlease, choose different year and/or indicator."))
 
    DT::datatable(
-    geodta() %>% as_tibble() %>% select(GeoUID, BrthYear, name, ends_with("rate")),
+    geodta() %>% as_tibble() %>% select(GeoUID, period, name, ends_with("rate")),
     container = sketch(),
     rownames = FALSE,
     style = "auto",

@@ -17,13 +17,15 @@ nsmap <- function(df, var){
   is.na(dta[[var]]) | dta[[var]] %in% 0,
   paste(
    "<b>",dta[["label"]],"</b>",
-   "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+   "<br><b>",dta[["name"]],
+   "<br>",dta[["period"]],"</b>",
    "<br>",
    "No information provided"
   ),
   paste(
    "<b>",dta[["label"]],"</b>",
-   "<br><b>",dta[["name"]],"-",dta[["BrthYear"]],"</b>",
+   "<br><b>",dta[["name"]],
+   "<br>",dta[["period"]],"</b>",
    "<br>",
    scales::percent(dta[[var]], accuracy = 0.01)
   )

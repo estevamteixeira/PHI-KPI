@@ -1,5 +1,5 @@
 ## lineplot for total -------
-plot_line <- function(data, var, ylab){
+plot_line <- function(data, var, ylab, xlab){
  # Use 'import' from the 'modules' package.
  # These listed imports are made available inside the module scope.
  import("dplyr")
@@ -33,7 +33,8 @@ plot_line <- function(data, var, ylab){
   hovertemplate = ~ifelse(
    !is.na(.data[[delta]]),
    paste(paste0(
-    "<b>",.data[["label"]]," in ",period,"</b>",
+    "<b>",stringr::str_wrap(.data[["label"]], width = 35)," in",
+    "<br>",period,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (<b><span style='color:",
@@ -47,7 +48,8 @@ plot_line <- function(data, var, ylab){
     ", year on year)"),
     "<extra></extra>"),
    paste(paste0(
-    "<b>",.data[["label"]]," in ",period,"</b>",
+    "<b>",stringr::str_wrap(.data[["label"]], width = 35)," in",
+    "<br>",period,"</b>",
     "<br><br>",
     scales::percent(.data[[var]], accuracy = 0.01),
     " (-, year on year)"),
@@ -78,7 +80,7 @@ plot_line <- function(data, var, ylab){
    xaxis = list(
     color = "#307972",
     title = list(
-     text = "Year",
+     text = xlab,
      face = "bold",
      size = 14
     ),

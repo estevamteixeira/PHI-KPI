@@ -182,39 +182,52 @@ trendServer <- function(id, df1, df2, df3, df4){
 
   # Get the list name to make the
   # Card header dynamic
-  lbl <- reactive({
-   metric <- input$metric
-   label <- names(unlist(unname(df1)))[unlist(df1) %in% metric]
-   return(label)
+  vals <- reactiveValues(metric = NULL, label = NULL,
+                         ibtn = NULL, xlbl = NULL
+                         )
+
+  # Observe input and update metric and label within vals
+  observeEvent(input$metric, {
+   vals$metric <- input$metric
+
+   # Calculate label based on the updated metric
+   vals$label <- names(unlist(unname(df1)))[unlist(df1) %in% vals$metric]
+
+   vals$ibtn <- unlist(unname(df3))[names(unlist(df3)) %in% vals$metric]
+
+   # Validate that a label is found
+   validate(need(length(vals$label) > 0, "Label not found for selected metric"))
+  })
+
+  observeEvent(input$fdata, {
+   vals$xlbl <- if(isTRUE(input$fdata)) "Period" else "Year"
   })
 
   output$card_title <- renderUI({
-   lbl()
+   req(vals$label)  # Ensure label is available
+
+   vals$label  # Output label as UI element
   })
 
   # Get the list name to make the
   # Tooltip (i button) dynamic
 
-  ibtn <- reactive({
-   metric <- input$metric
-   text <- unlist(unname(df3))[names(unlist(df3)) %in% metric]
-   return(HTML(text))
-  })
-
   output$i_btn <- renderUI({
-   ibtn()
+   HTML(vals$ibtn)
   })
 
   # `selected_dta` is a reactive expression whose results will depend on ----
   # the t0, tn, metric
   final_dta <- reactive({
+   req(vals$label, input$t0, input$tn)
+
    return(
     selected_dta() %>%
      select(period, matches(paste0("^", sub("_.*", "", input$metric), "_(rate|delta|deltap)$"))) %>%
      filter(as.character(period) >= as.character(input$t0),
             as.character(period) <= as.character(input$tn)) %>%
      distinct() %>%
-     mutate(label = lbl()) %>%
+     mutate(label = as.character(vals$label)) %>%
      collect()
    )
   })
@@ -230,8 +243,9 @@ trendServer <- function(id, df1, df2, df3, df4){
    plot_line(final_dta(),
              input$metric,
              ylab = paste("Proportion of patients with",
-                          stringr::str_wrap(lbl(), width = 35),
-                          sep = "<br>") %>% stringr::str_replace_all("\n", "<br>")
+                          stringr::str_wrap(as.character(vals$label), width = 35),
+                          sep = "<br>") %>% stringr::str_replace_all("\n", "<br>"),
+             xlab = vals$xlbl
              )
    })
  })

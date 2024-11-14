@@ -487,3 +487,22 @@ names(geo_lbl) <- c(
  "Census Divisions", "Community Clusters", "Community Health Networks", "Health Authority Zones"#, "Urban x Rural"
 )
 
+## Footer ----
+
+rcp_legal <- tags$span(
+ HTML("&copy; "),  # This generates the copyright symbol
+ format(Sys.Date(), "%Y"),  # Displays the current year dynamically
+ tags$a(
+  href = "https://rcp.nshealth.ca/",
+  target = "_blank",
+  rel = "nofollow noreferrer",
+  "Reproductive Care Program of Nova Scotia"
+ ),
+ # tags$img(
+ #  src = "logo/rcp-logo-transparent.svg",
+ #  alt = "RCP logo",
+ #  style = "height:20px; margin-left: 10px;"
+ # ),
+ style = "float:right !important; padding-right: 30px; font-size: 0.75rem;text-decoration: none;"
+ )
+

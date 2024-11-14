@@ -130,7 +130,7 @@ tableServer <- function(id, df1, df2){
     columns = list(
      size = colDef(show = FALSE),
      category = colDef(
-      name = "Category",
+      name = "",
       align = "left",
       style = list(fontWeight = "bold")
      )
