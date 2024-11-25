@@ -1910,7 +1910,8 @@ ccd_stats <- cbind(
  c37 %>% select(-brstinit,-CDuid,-BrthYear),
  c38 %>% select(-icu,-CDuid,-BrthYear),
  c39 %>% select(-smm,-CDuid,-BrthYear)
-)
+) %>%
+ mutate(CDuid = as.character(CDuid))
 
 ### Community cluster (CL) ----
 #### Hypertension ----

@@ -1,5 +1,7 @@
 nsmap <- function(df, var){
  import("leaflet")
+ import("stringr")
+ import("htmltools")
 
  dta <- df
  var <- unlist(var)
@@ -16,14 +18,16 @@ nsmap <- function(df, var){
  lab <- ifelse(
   is.na(dta[[var]]) | dta[[var]] %in% 0,
   paste(
-   "<b>",dta[["label"]],"</b>",
+   "<b>",stringr::str_wrap(dta[["label"]], width = 40) |>
+    stringr::str_replace_all("\n", "<br>"),"</b>",
    "<br><b>",dta[["name"]],
    "<br>",dta[["period"]],"</b>",
    "<br>",
    "No information provided"
   ),
   paste(
-   "<b>",dta[["label"]],"</b>",
+   "<b>",stringr::str_wrap(dta[["label"]], width = 40) |>
+    stringr::str_replace_all("\n", "<br>"),"</b>",
    "<br><b>",dta[["name"]],
    "<br>",dta[["period"]],"</b>",
    "<br>",
@@ -36,8 +40,23 @@ nsmap <- function(df, var){
  leaflet::leaflet(
   data = dta,
   padding = 0,
-  options = leafletOptions(minZoom = 6.45)
+  options = leafletOptions(
+   minZoom = 6.45,
+   attributionControl = FALSE) # Removes leaflet link in the bottom right corner of the map
  ) |>
+  # addControl(
+  #  html = tags$div(
+  #   HTML("&copy; "),  # This generates the copyright symbol
+  #   # format(Sys.Date(), "%Y"),  # Displays the current year dynamically
+  #   tags$a(
+  #    href = "https://rcp.nshealth.ca/",
+  #    target = "_blank",
+  #    rel = "nofollow noreferrer",
+  #    "Reproductive Care Program of Nova Scotia"
+  #    ),
+  #   class = "leaflet-control-attribution leaflet-control"
+  #   ), position = "bottomright"
+  #  ) |>
   leaflet::addPolygons(
    layerId = ~GeoUID,
    stroke = TRUE,

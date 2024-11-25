@@ -128,6 +128,7 @@ trendServer <- function(id, df1, df2, df3, df4){
       selected_dta() %>%
        select(period, !!sym(input$metric)) %>%
        collect() %>%
+       dplyr::filter(stats::complete.cases(.)) %>%
        pull(period) %>%
        as.character() %>%
        sort()
@@ -136,6 +137,7 @@ trendServer <- function(id, df1, df2, df3, df4){
      selected_dta() %>%
       select(period, !!sym(input$metric)) %>%
       collect() %>%
+      dplyr::filter(stats::complete.cases(.)) %>%
       pull(period) %>%
       as.character() %>%
       min()
@@ -156,6 +158,7 @@ trendServer <- function(id, df1, df2, df3, df4){
        selected_dta() %>%
         select(period, !!sym(input$metric)) %>%
         collect() %>%
+        dplyr::filter(stats::complete.cases(.)) %>%
         pull(period) %>%
         as.character()
       )))[
@@ -165,6 +168,7 @@ trendServer <- function(id, df1, df2, df3, df4){
           selected_dta() %>%
            select(period, !!sym(input$metric)) %>%
            collect() %>%
+           dplyr::filter(stats::complete.cases(.)) %>%
            pull(period) %>%
            as.character()
          )

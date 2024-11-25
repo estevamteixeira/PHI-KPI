@@ -159,7 +159,7 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   })
 
   # Select the stats file depending on the selected geographic unit ----
-  # and by calendar/fical year
+  # and by calendar/fiscal year
   stats <- reactive({
 
    # Ensure input$geo is available before proceeding
@@ -168,70 +168,73 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
    if(input$geo %in% "cd"){
     if(isTRUE(input$fdata)){
      return(df12 %>%
-             rename("period" = "FiscalYear"))
+             rename("period" = "FiscalYear")
+      )
     } else {
      return(df4 %>%
-             rename("period" = "BrthYear"))
+             rename("period" = "BrthYear")
+     )
     }
    }
 
    if(input$geo %in% "cl"){
     if(isTRUE(input$fdata)){
      return(df13 %>%
-             rename("period" = "FiscalYear"))
+             rename("period" = "FiscalYear")
+            )
     } else {
      return(df5 %>%
-             rename("period" = "BrthYear"))
+             rename("period" = "BrthYear")
+     )
     }
    }
 
    if(input$geo %in% "chn"){
     if(isTRUE(input$fdata)){
      return(df14 %>%
-             rename("period" = "FiscalYear"))
+             rename("period" = "FiscalYear")
+     )
     } else {
      return(df6 %>%
-             rename("period" = "BrthYear"))
+             rename("period" = "BrthYear")
+     )
     }
    }
 
    if(input$geo %in% "hr"){
     if(isTRUE(input$fdata)){
      return(df15 %>%
-             rename("period" = "FiscalYear"))
+             rename("period" = "FiscalYear")
+     )
     } else {
      return(df7 %>%
-             rename("period" = "BrthYear"))
+             rename("period" = "BrthYear")
+     )
     }
    }
   })
 
   ## Update the options for the initial year selectInput()
   ## The values should reflect the data availability
-  observeEvent(c(input$fdata,input$geo),{
-
-   # Ensure stats() is not NULL
-   req(stats())
-
-   df <- stats()
+  observeEvent(c(input$fdata,input$metric, input$geo),{
 
    updateSelectInput(
     session,
     inputId = "t0",
     choices = unique(
-     df %>%
-      select(period) %>%
+     stats() %>%
+      select(period, !!sym(input$metric)) %>%
       collect() %>%
+      dplyr::filter(stats::complete.cases(.)) %>%
       pull(period) %>%
-      as.character() %>%
       sort()
     ),
     selected = c(
-     df %>%
-      select(period) %>%
+     stats() %>%
+      select(period, !!sym(input$metric)) %>%
       collect() %>%
+      dplyr::filter(stats::complete.cases(.)) %>%
       pull(period) %>%
-      as.character() %>%
       min()
     )
    )
@@ -257,26 +260,28 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   output$map_title <- renderUI({
    req(vals$label)  # Ensure label is available
 
-   vals$label  # Output label as UI element
+   stringr::str_wrap(vals$label, width = 40) %>% # Break labels longer than 40 chars
+    stringr::str_replace_all("\n", "<br>") %>%
+    HTML()
   })
 
-  output$tab_title <- renderUI({
+  output$tab_title <- renderUI({# Output label as UI element
    req(vals$label)  # Ensure label is available
 
-   vals$label  # Output label as UI element
+   stringr::str_wrap(vals$label, width = 40) %>% # Break labels longer than 40 chars
+    stringr::str_replace_all("\n", "<br>") %>%
+    HTML()
   })
 
   # Get the list name to make the
   # Tooltip (i button) dynamic
 
   output$map_btn <- renderUI({
-   HTML(stringr::str_wrap(vals$ibtn), width = 40) %>%
-    stringr::str_replace_all("\n", "<br>")
+   HTML(vals$ibtn)
   })
 
   output$tab_btn <- renderUI({
-   HTML(stringr::str_wrap(vals$ibtn), width = 40) %>%
-    stringr::str_replace_all("\n", "<br>")
+   HTML(vals$ibtn)
   })
 
   # `selected_dta` is a reactive expression whose results will depend on ----
@@ -284,8 +289,8 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
   selected_dta <- reactive({
    return(
     stats() %>%
-     select(contains("id"), period, input$metric) %>%
-     filter(period %in% as.character(input$t0)) %>%
+     select(contains("id"), period, all_of(input$metric)) %>%
+     filter(as.character(period) == as.character(input$t0)) %>% # for some reason, using `%in%` gives this message: Warning: Error in compute.arrow_dplyr_query: Type error: Array type doesn't match type of values set: double vs string
      distinct() %>%
      mutate(label = as.character(vals$label)) %>%
      collect()
@@ -296,7 +301,10 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
 
   geodta <- reactive({
 
-   req(selected_dta())
+   req(selected_dta(), shape())
+   validate(need(nrow(selected_dta()) > 0,
+                 "Sorry, there is no data available for the selected options.
+             \nPlease, choose different years, geographies, and/or conditions."))
 
    merge(
     shape(),
@@ -332,7 +340,8 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
     req(input$metric, input$t0)
 
     paste0(sub("_.*", "", input$metric),
-           "_", input$t0, ".png")
+           "_", toupper(input$geo),
+           "_",input$t0, ".png")
    },
 
    content = function(file){
@@ -346,12 +355,12 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
      withProgress(message = "Creating file", value = 0,{
 
       Sys.sleep(0.25)
-      incProgress(1/10)
+      incProgress(1/8)
 
       dta <- geodta() %>% filter(GeoUID %in% map$mapView$GeoUID)
 
       Sys.sleep(0.25)
-      incProgress(3/10)
+      incProgress(2/8)
 
       # color palette
       pal <- leaflet::colorBin(
@@ -360,20 +369,22 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
       )
 
       Sys.sleep(0.25)
-      incProgress(5/10)
+      incProgress(3/8)
 
       # Popup label
       lab <- ifelse(
        is.na(dta[[input$metric]]) | dta[[input$metric]] %in% 0,
        paste(
-        "<b>",dta[["label"]],"</b>",
+        "<b>",stringr::str_wrap(dta[["label"]], width = 40) |>
+         stringr::str_replace_all("\n", "<br>"),"</b>",
         "<br><b>",dta[["name"]],
         "<br>",dta[["period"]],"</b>",
         "<br>",
         "No information provided"
        ),
        paste(
-        "<b>",dta[["label"]],"</b>",
+        "<b>",stringr::str_wrap(dta[["label"]], width = 40) |>
+         stringr::str_replace_all("\n", "<br>"),"</b>",
         "<br><b>",dta[["name"]],
         "<br>",dta[["period"]],"</b>",
         "<br>",
@@ -381,32 +392,42 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        )
       )|> lapply(htmltools::HTML)
 
-      # Map title
-      tlt_txt <- paste(
-       lbl(),
-       "<br>",
-       dta$name,
-       "<br>",
-       input$t0) |>
-       htmltools::HTML()
+      Sys.sleep(0.25)
+      incProgress(4/8)
 
-      tlt <- tags$div(
-       tags$style(
-        HTML(
-         ".leaflet-control.map-title {
-    background: rgba(221,221,221,0.5);
-    font-weight: bold;
-    font-size: 20px;
-    font-family: Montserrat;
-  }"
-        )
-       ), tlt_txt)
+      # Map title
+      # tlt_txt <- paste(
+      #  stringr::str_wrap(vals$label, width = 40),
+      #  "<br>",
+      #  dta$name,
+      #  "<br>",
+      #  input$t0) |>
+      #  stringr::str_replace_all("\n", "<br>") |>
+      #  htmltools::HTML()
+
+      Sys.sleep(0.25)
+      incProgress(5/8)
+
+  #     tlt <- tags$div(
+  #      tags$style(
+  #       HTML(
+  #        ".leaflet-control.map-title {
+  #   background: rgba(221,221,221,0.5);
+  #   font-weight: bold;
+  #   font-size: 20px;
+  #   font-family: Montserrat;
+  # }"
+  #       )
+  #      ), tlt_txt)
+
+      Sys.sleep(0.25)
+      incProgress(6/8)
 
       # Footnote
       foot_txt <- tags$p(style = "bottom: 0; width: 100%; font-family: Montserrat;",
                          tags$span(HTML("&copy;"),
                                    paste(format(Sys.Date(), "%Y"),
-                                         c("| All Rights Reserved | Built with")), HTML("&#x2764;"),paste("by"),
+                                         c("| Built with")), HTML("&#x2764;"),paste("by"),
                                    tags$a(href = "http://rcp.nshealth.ca/", style = "color: #000000;",
                                           tags$strong("Reproductive Care Program of Nova Scotia")
                                    )
@@ -424,22 +445,27 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        ), foot_txt)
 
       Sys.sleep(0.25)
-      incProgress(7/10)
+      incProgress(7/8)
 
       mapview::mapshot(
-       nsmap(dta, input$metric) |>
+       nsmap(geodta(), input$metric) |>
         leaflet::addLegend(
          pal = pal,
          values = ~geodta()[[input$metric]],
          opacity = 1,
+         labFormat = labelFormat(
+          suffix = "%",
+          between = "% - ",
+          transform = function(x) 100*x
+          ),
          title = "",
          position = "bottomright",
          na.label = "Not informed"
         ) |>
-        leaflet::setView(
-         lat = mean(sf::st_bbox(dta)[c(2,4)]),
-         lng = mean(sf::st_bbox(dta)[c(1,3)]),
-         zoom = 9) |>
+        leaflet::fitBounds(
+         lng1 = sf::st_bbox(dta)[["xmin"]], lat1 = sf::st_bbox(dta)[["ymin"]],
+         lng2 = sf::st_bbox(dta)[["xmax"]], lat2 = sf::st_bbox(dta)[["ymax"]]
+         ) |>
         leaflet::addPolygons(data = dta,
                              color = "#FF0000",# red
                              opacity = 1,
@@ -453,18 +479,19 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
          options = leaflet::popupOptions(
           closeButton = FALSE,
           maxWidth = 600)) |>
-        leaflet::addControl(tlt, position = "topleft", className = "map-title") |>
+        # leaflet::addControl(tlt, position = "topleft", className = "map-title") |>
         leaflet::addControl(foot, position = "bottomleft", className = "map-foot"),
        file = file)
 
       Sys.sleep(0.25)
-      incProgress(10/10)
+      incProgress(8/8)
 
      })
     } else{
+
      withProgress(message = "Creating file, please wait.", value = 0,{
       Sys.sleep(0.25)
-      incProgress(1/10)
+      incProgress(1/7)
 
       # color palette
       pal <- leaflet::colorBin(
@@ -472,12 +499,20 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        domain = geodta()[[input$metric]]
       )
 
+      Sys.sleep(0.25)
+      incProgress(2/7)
+
       # Map title
       tlt_txt <- paste(
-       lbl(),
-       "<br>",
-       input$t0) |>
+       stringr::str_wrap(vals$label, width = 40),
+       field(),
+       input$t0,
+       sep = "<br>") |>
+       stringr::str_replace_all("\n", "<br>") |>
        htmltools::HTML()
+
+      Sys.sleep(0.25)
+      incProgress(3/7)
 
       tlt <- tags$div(
        tags$style(
@@ -491,15 +526,21 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
         )
        ), tlt_txt)
 
+      Sys.sleep(0.25)
+      incProgress(4/7)
+
       # Footnote
       foot_txt <- tags$p(style = "bottom: 0; width: 100%;",
                          tags$span(HTML("&copy;"),
                                    paste(format(Sys.Date(), "%Y"),
-                                         c("| All Rights Reserved | Built with")), HTML("&#x2764;"),paste("by"),
+                                         c("| Built with")), HTML("&#x2764;"),paste("by"),
                                    tags$a(href = "http://rcp.nshealth.ca/", style = "color: #000000;",
                                           tags$strong("Reproductive Care Program of Nova Scotia")
                                    )
                          ))
+
+      Sys.sleep(0.25)
+      incProgress(5/7)
 
       foot <- tags$div(
        tags$style(
@@ -514,13 +555,18 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        ), foot_txt)
 
       Sys.sleep(0.25)
-      incProgress(5/10)
+      incProgress(6/7)
 
       mapview::mapshot(
        map$dat |>
         leaflet::addLegend(
          pal = pal,
          values = ~geodta()[[input$metric]],
+         labFormat = labelFormat(
+          suffix = "%",
+          between = "% - ",
+          transform = function(x) 100*x
+         ),
          opacity = 1,
          title = "",
          position = "bottomright",
@@ -531,21 +577,17 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
        file = file)
 
       Sys.sleep(0.25)
-      incProgress(10/10)
+      incProgress(7/7)
      }) }
    }
   )
-
-  # This allows to add footer with totals
-  # Here we need to make use of the isolate() function
-  # Otherwise, this object should be put inside the DT::renderDT() call
 
   field <- reactive({
 
    # Ensure input$geo is available before proceeding
    req(input$geo)
 
-   if(input$geo %in% "cd")  return("County")
+   if(input$geo %in% "cd")  return("Census <br> Division")
    if(input$geo %in% "cl")  return("Community <br> Cluster")
    if(input$geo %in% "chn") return("Community <br> Health Network")
    if(input$geo %in% "hr")  return("Health <br> Management Zone")
@@ -610,10 +652,10 @@ mapServer <- function(id, df1, df2, df3, df4, df5,
    # Update map with selected line
    leaflet::leafletProxy("geomap", session, data = geodta()[l,]) |>
     leaflet::removeShape("bounds") |>
-    leaflet::setView(
-     lat = mean(sf::st_bbox(geodta()[l,])[c(2,4)]),
-     lng = mean(sf::st_bbox(geodta()[l,])[c(1,3)]),
-     zoom = 8) |>
+    leaflet::fitBounds(
+     lng1 = sf::st_bbox(geodta()[l,])[["xmin"]], lat1 = sf::st_bbox(geodta()[l,])[["ymin"]],
+     lng2 = sf::st_bbox(geodta()[l,])[["xmax"]], lat2 = sf::st_bbox(geodta()[l,])[["ymax"]]
+    ) |>
     leaflet::addPolygons(data = geodta()[l,],
                          color = "#FF0000",
                          opacity = 1,

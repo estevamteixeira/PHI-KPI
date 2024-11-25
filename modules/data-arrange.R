@@ -3935,35 +3935,43 @@ arrow::write_parquet(
  "./data/ftab_dist.parquet")
 
 arrow::write_parquet(
- ccd_stats,
+ ccd_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/ccd_stats.parquet")
 
 arrow::write_parquet(
- ccl_stats,
+ ccl_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/ccl_stats.parquet")
 
 arrow::write_parquet(
- cchn_stats,
+ cchn_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/cchn_stats.parquet")
 
 arrow::write_parquet(
- chr_stats,
+ chr_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/chr_stats.parquet")
 
 arrow::write_parquet(
- fcd_stats,
+ fcd_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/fcd_stats.parquet")
 
 arrow::write_parquet(
- fcl_stats,
+ fcl_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/fcl_stats.parquet")
 
 arrow::write_parquet(
- fchn_stats,
+ fchn_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/fchn_stats.parquet")
 
 arrow::write_parquet(
- fhr_stats,
+ fhr_stats %>%
+  mutate(across(ends_with("id"), as.character)),
  "./data/fhr_stats.parquet")
 
 # Color palettes ----
