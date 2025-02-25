@@ -1,0 +1,54 @@
+meta:
+  name:
+    full: Reproductive Care Program of Nova Scotia
+    short: RCP
+  link:
+    home: https://rcp.nshealth.ca/
+  logo:
+    images:
+      icon:
+        path: www/logos/icon/PNHNS_ICON_FullColour.svg
+        alt: "Reproductive Care Program of Nova Scotia icon."
+      icon-white:
+        path: www/logos/icon/PNHNS_ICON_White.svg
+        alt: "Reproductive Care Program of Nova Scotia icon in white color."
+      header:
+        path: www/logos/Secondary/PNHNS_SECONDARY_FullColour.svg
+        alt: "Reproductive Care Program of Nova Scotia logo."
+      header-white:
+        path: www/logos/Secondary/PNHNS_SECONDARY_White.svg
+        alt: "Reproductive Care Program of Nova Scotia logo in white color."
+      full:
+        path: www/logos/Primary/PNHNS_PRIMARY_FullColour.svg
+        alt: "Reproductive Care Program of Nova Scotia logo."
+      full-white:
+        path: www/logos/Primary/PNHNS_PRIMARY_White.svg
+        alt: "Reproductive Care Program of Nova Scotia logo in white color."
+    small:
+      light: icon
+      dark: icon-white
+    medium:
+      light: header
+      dark: header-white
+    large:
+      light: full
+      dark: full-white
+  color:
+    palette:
+      white: "#FFFFFF"
+      black: "#000000"
+      deep-blue: "#000054"
+      coastal-blue: "#196FA3"
+      tranquil-teal: "#44AD99"
+      coral-comfort: "#D9715F"
+      mellow-yellow: "#F2C577"
+      charade: "#2F2f3F"
+      santas-gray: "#A1A1BB"
+      dawn-pink: "#F2EBE2"
+      gray: "#AAAAAA"
+    foreground: "#307972"
+    background: white
+    primary: tranquil-teal
+    secondary: gray
+
+
